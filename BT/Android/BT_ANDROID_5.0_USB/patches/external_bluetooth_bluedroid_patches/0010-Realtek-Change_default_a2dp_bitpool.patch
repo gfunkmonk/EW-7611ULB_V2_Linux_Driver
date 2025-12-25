@@ -1,0 +1,19 @@
+commit 0a88e40b4966f50edbd1dd94309f9470fcf7223f
+Author: kyle_xu <kyle_xu@realsil.com.cn>
+Date:   Tue Jan 27 19:01:00 2015 +0800
+
+    change default a2dp encode bitpool to 35
+
+diff --git a/btif/src/btif_media_task.c b/btif/src/btif_media_task.c
+index ff9f92c..2f7a416 100755
+--- a/btif/src/btif_media_task.c
++++ b/btif/src/btif_media_task.c
+@@ -138,7 +138,7 @@ enum {
+ #endif
+ 
+ /* Middle quality quality setting @ 44.1 khz */
+-#define DEFAULT_SBC_BITRATE 328
++#define DEFAULT_SBC_BITRATE 229
+ 
+ #ifndef BTIF_A2DP_NON_EDR_MAX_RATE
+ #define BTIF_A2DP_NON_EDR_MAX_RATE 229

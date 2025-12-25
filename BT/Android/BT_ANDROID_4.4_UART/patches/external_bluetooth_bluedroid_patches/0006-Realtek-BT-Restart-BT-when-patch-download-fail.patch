@@ -1,0 +1,47 @@
+From 2855a9ed08f3a5f1d079dd9b10f7876e5682d5a0 Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Thu, 12 Dec 2013 11:23:33 +0800
+Subject: [PATCH 06/13] Realtek BT: Restart BT when patch download fail
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ stack/btm/btm_devctl.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/stack/btm/btm_devctl.c b/stack/btm/btm_devctl.c
+index 49e05b4..99288e0 100644
+--- a/stack/btm/btm_devctl.c
++++ b/stack/btm/btm_devctl.c
+@@ -27,6 +27,9 @@
+ #include <string.h>
+ #include <stdio.h>
+ #include <stddef.h>
++//RTK add start
++#include <fcntl.h>
++//RTK add end
+ 
+ #include "bt_types.h"
+ #include "hcimsgs.h"
+@@ -903,6 +906,19 @@ void btm_read_local_version_complete (UINT8 *p, UINT16 evt_len)
+         STREAM_TO_UINT8  (p_vi->lmp_version, p);
+         STREAM_TO_UINT16 (p_vi->manufacturer, p);
+         STREAM_TO_UINT16 (p_vi->lmp_subversion, p);
++
++        //RTK add start
++        BTM_TRACE_ERROR4("hci_version(0x%02x), hci_revision(0x%04x), lmp_version(0x%02x),\
++        lmp_subversion(0x%024)",p_vi->hci_version, p_vi->hci_revision, p_vi->lmp_version,\
++        p_vi->lmp_subversion);
++
++        if(p_vi->hci_version == 0x06&& p_vi->hci_revision == 0x000b)
++        {
++            usleep(10000); /* 10 milliseconds */
++            /* Killing the process to force a restart as part of fault tolerance */
++            kill(getpid(), SIGKILL);
++        }
++        //RTK add end
+     }
+ 
+     if (p_vi->hci_version >= HCI_PROTO_VERSION_1_2)
+-- 
+1.8.5.rc2
+

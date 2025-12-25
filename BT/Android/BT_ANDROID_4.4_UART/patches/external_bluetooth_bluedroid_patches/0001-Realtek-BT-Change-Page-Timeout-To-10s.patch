@@ -1,0 +1,26 @@
+From e6043a166454e20404031ea4d6455a51f5016236 Mon Sep 17 00:00:00 2001
+From: champion_chen <champion_chen@realsil.com.cn>
+Date: Wed, 16 Apr 2014 18:04:04 +0800
+Subject: [PATCH] Realtek BT: Change Page Timeout To 10s
+
+Signed-off-by: champion_chen <champion_chen@realsil.com.cn>
+---
+ bta/dm/bta_dm_cfg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bta/dm/bta_dm_cfg.c b/bta/dm/bta_dm_cfg.c
+index 5caf04a..b9f0c23 100644
+--- a/bta/dm/bta_dm_cfg.c
++++ b/bta/dm/bta_dm_cfg.c
+@@ -35,7 +35,7 @@
+ 
+ /* page timeout in 625uS */
+ #ifndef BTA_DM_PAGE_TIMEOUT
+-#define BTA_DM_PAGE_TIMEOUT    8192
++#define BTA_DM_PAGE_TIMEOUT   16386 /*8192 RTK Modified*/
+ #endif
+ 
+ /* link supervision timeout in 625uS (5 secs) */
+-- 
+1.8.5.rc2
+

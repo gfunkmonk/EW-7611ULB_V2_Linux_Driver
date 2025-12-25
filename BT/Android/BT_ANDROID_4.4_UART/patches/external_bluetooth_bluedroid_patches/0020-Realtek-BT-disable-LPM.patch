@@ -1,0 +1,26 @@
+From c185ff1ab710653a14ddfaeac53dadba91e8ed84 Mon Sep 17 00:00:00 2001
+From: champion_chen <champion_chen@realsil.com.cn>
+Date: Thu, 22 May 2014 14:33:24 +0800
+Subject: [PATCH] Realtek BT : disable LPM
+
+Signed-off-by: champion_chen <champion_chen@realsil.com.cn>
+---
+ include/bt_target.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/bt_target.h b/include/bt_target.h
+index 2af663b..ceca83a 100644
+--- a/include/bt_target.h
++++ b/include/bt_target.h
+@@ -3661,7 +3661,7 @@ The maximum number of payload octets that the local device can receive in a sing
+ ******************************************************************************/
+ 
+ #ifndef HCILP_INCLUDED
+-#define HCILP_INCLUDED                  TRUE
++#define HCILP_INCLUDED               FALSE		//TRUE
+ #endif
+ 
+ /******************************************************************************
+-- 
+1.8.5.rc2
+

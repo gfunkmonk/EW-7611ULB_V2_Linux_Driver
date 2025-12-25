@@ -1,0 +1,28 @@
+From 3c501199e27409e0debf181f30097f4b3358af5d Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Thu, 12 Dec 2013 10:29:31 +0800
+Subject: [PATCH 03/13] Realtek BT: BT open fail workaround
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ btif/src/btif_core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/btif/src/btif_core.c b/btif/src/btif_core.c
+index 40f19d0..ccaef17 100644
+--- a/btif/src/btif_core.c
++++ b/btif/src/btif_core.c
+@@ -527,6 +527,10 @@ bt_status_t btif_enable_bluetooth(void)
+ 
+     if (btif_core_state != BTIF_CORE_STATE_DISABLED)
+     {
++        //RTK add start
++        usleep(10000); /* 10 milliseconds */
++        kill(getpid(), SIGKILL);
++        //RTK add end
+         ALOGD("not disabled\n");
+         return BT_STATUS_DONE;
+     }
+-- 
+1.8.5.rc2
+

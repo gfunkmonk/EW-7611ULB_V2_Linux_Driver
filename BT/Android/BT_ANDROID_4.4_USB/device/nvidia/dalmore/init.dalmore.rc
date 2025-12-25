@@ -1,0 +1,32 @@
+...
+
+on boot
+
+# bluetooth
+    # change back to bluetooth from system
+    chown bluetooth net_bt_stack /data/misc/bluetooth
+
+    # USB device
+    insmod /system/lib/modules/rtk_btusb.ko
+    chmod 0660 /dev/rtk_btusb
+    chown bluetooth net_bt_stack /dev/rtk_btusb
+
+    # bluetooth MAC address programming
+    chown bluetooth net_bt_stack ro.bt.bdaddr_path
+    chown bluetooth net_bt_stack /system/etc/bluetooth
+    chown bluetooth net_bt_stack /data/misc/bluetooth
+    setprop ro.bt.bdaddr_path "/data/misc/bluetooth/bdaddr"
+
+...
+
+# for BT PAN
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service iprenew_bt-pan /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+...

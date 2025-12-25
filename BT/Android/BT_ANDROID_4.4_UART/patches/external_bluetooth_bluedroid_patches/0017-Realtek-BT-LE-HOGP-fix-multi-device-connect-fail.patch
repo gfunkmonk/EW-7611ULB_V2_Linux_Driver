@@ -1,0 +1,30 @@
+From be77ea1b1857d223193580a5a639a6bde2600d69 Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Mon, 17 Feb 2014 16:49:57 +0800
+Subject: [PATCH] Realtek BT:LE HOGP fix multi device connect fail
+
+modify BTA_HH_IS_LE_DEV_HDL_VALID definition
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ bta/hh/bta_hh_int.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/bta/hh/bta_hh_int.h b/bta/hh/bta_hh_int.h
+index 99a8b82..13d2edf 100644
+--- a/bta/hh/bta_hh_int.h
++++ b/bta/hh/bta_hh_int.h
+@@ -236,7 +236,9 @@ typedef struct
+ #define BTA_HH_GET_LE_DEV_HDL(x)        (UINT8)(((x)  + 1) << 4)
+ /* check to see if th edevice handle is a LE device handle */
+ #define BTA_HH_IS_LE_DEV_HDL(x)        ((x) & 0xf0)
+-#define BTA_HH_IS_LE_DEV_HDL_VALID(x)  (((x)>>4) < BTA_HH_LE_MAX_KNOWN)
++//REALTEK MODIFIED START
++#define BTA_HH_IS_LE_DEV_HDL_VALID(x)  (((x)>>4) <= BTA_HH_LE_MAX_KNOWN)
++//REALTEK MODIFIED END
+ #endif
+ 
+ /* device control block */
+-- 
+1.8.5.rc2
+

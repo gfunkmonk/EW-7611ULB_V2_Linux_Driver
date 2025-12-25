@@ -1,0 +1,27 @@
+From c7c71d274957b5a9dc6a25829daffe667c34d108 Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Thu, 12 Dec 2013 10:21:10 +0800
+Subject: [PATCH 02/13] Realtek BT: Modify PRELOAD_MAX_RETRY_ATTEMPTS
+ parameters
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ main/bte_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/main/bte_main.c b/main/bte_main.c
+index 62c6b6b..de031ec 100644
+--- a/main/bte_main.c
++++ b/main/bte_main.c
+@@ -58,7 +58,7 @@
+ 
+ /* Stack preload process maximum retry attempts  */
+ #ifndef PRELOAD_MAX_RETRY_ATTEMPTS
+-#define PRELOAD_MAX_RETRY_ATTEMPTS 0
++#define PRELOAD_MAX_RETRY_ATTEMPTS 3    //0 is original, REALTEK modified to 3
+ #endif
+ 
+ /*******************************************************************************
+-- 
+1.8.5.rc2
+
