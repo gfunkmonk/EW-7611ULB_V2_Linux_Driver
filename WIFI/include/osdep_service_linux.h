@@ -24,23 +24,18 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/namei.h>
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 5))
-	#include <linux/kref.h>
-#endif
+#include <linux/kref.h>
 /* #include <linux/smp_lock.h> */
 #include <linux/netdevice.h>
 #include <linux/inetdevice.h>
 #include <linux/skbuff.h>
 #include <linux/circ_buf.h>
+#include <linux/completion.h>
 #include <asm/uaccess.h>
 #include <asm/byteorder.h>
 #include <asm/atomic.h>
 #include <asm/io.h>
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26))
-	#include <asm/semaphore.h>
-#else
-	#include <linux/semaphore.h>
-#endif
+#include <linux/semaphore.h>
 #include <linux/sem.h>
 #include <linux/sched.h>
 #include <linux/etherdevice.h>
@@ -56,19 +51,9 @@
 #include <linux/list.h>
 #include <linux/vmalloc.h>
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0))
-	#include <uapi/linux/sched/types.h>
-#endif
+#include <uapi/linux/sched/types.h>
 
-#if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 5, 41))
-	#include <linux/tqueue.h>
-#endif
-
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 7, 0))
-	#include <uapi/linux/limits.h>
-#else
-	#include <linux/limits.h>
-#endif
+#include <uapi/linux/limits.h>
 
 #ifdef RTK_DMP_PLATFORM
 	#if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 12))

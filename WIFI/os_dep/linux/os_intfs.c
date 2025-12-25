@@ -1996,13 +1996,13 @@ static void rtw_ethtool_get_drvinfo(struct net_device *dev, struct ethtool_drvin
 
 	wdev = dev->ieee80211_ptr;
 	if (wdev) {
-		strlcpy(info->driver, wiphy_dev(wdev->wiphy)->driver->name,
+		strscpy(info->driver, wiphy_dev(wdev->wiphy)->driver->name,
 			sizeof(info->driver));
 	} else {
-		strlcpy(info->driver, "N/A", sizeof(info->driver));
+		strscpy(info->driver, "N/A", sizeof(info->driver));
 	}
 
-	strlcpy(info->version, DRIVERVERSION, sizeof(info->version));
+	strscpy(info->version, DRIVERVERSION, sizeof(info->version));
 
 	padapter = (_adapter *)rtw_netdev_priv(dev);
 	if (padapter) {
@@ -2013,10 +2013,10 @@ static void rtw_ethtool_get_drvinfo(struct net_device *dev, struct ethtool_drvin
 		scnprintf(info->fw_version, sizeof(info->fw_version), "%d.%d",
 			  hal_data->firmware_version, hal_data->firmware_sub_version);
 	} else {
-		strlcpy(info->fw_version, "N/A", sizeof(info->fw_version));
+		strscpy(info->fw_version, "N/A", sizeof(info->fw_version));
 	}
 
-	strlcpy(info->bus_info, dev_name(wiphy_dev(wdev->wiphy)),
+	strscpy(info->bus_info, dev_name(wiphy_dev(wdev->wiphy)),
 		sizeof(info->bus_info));
 }
 
@@ -2127,7 +2127,7 @@ int rtw_os_ndev_register(_adapter *adapter, const char *name)
 	/* alloc netdev name */
 	rtw_init_netdev_name(ndev, name);
 
-	_rtw_memcpy(ndev->dev_addr, adapter_mac_addr(adapter), ETH_ALEN);
+	eth_hw_addr_set(ndev, adapter_mac_addr(adapter));
 
 	/* Tell the network stack we exist */
 

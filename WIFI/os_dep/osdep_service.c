@@ -1302,7 +1302,8 @@ u32 _rtw_down_sema(_sema *sema)
 inline void thread_exit(_completion *comp)
 {
 #ifdef PLATFORM_LINUX
-	complete_and_exit(comp, 0);
+	complete(comp);
+	do_exit(0);
 #endif
 
 #ifdef PLATFORM_FREEBSD
