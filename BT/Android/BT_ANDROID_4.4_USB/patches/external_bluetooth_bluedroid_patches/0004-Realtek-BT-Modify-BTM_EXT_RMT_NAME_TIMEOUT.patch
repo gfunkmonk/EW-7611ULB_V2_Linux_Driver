@@ -1,0 +1,28 @@
+From 95cb31c6dddcbc3accb0aac2b0decb816fa2ad8e Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Thu, 12 Dec 2013 10:35:37 +0800
+Subject: [PATCH 04/13] Realtek BT: Modify BTM_EXT_RMT_NAME_TIMEOUT
+
+it will cause pair fail sometimes
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ stack/btm/btm_int.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/stack/btm/btm_int.h b/stack/btm/btm_int.h
+index 2f9b232..8f988ca 100644
+--- a/stack/btm/btm_int.h
++++ b/stack/btm/btm_int.h
+@@ -271,7 +271,7 @@ typedef struct
+ {
+     tBTM_CMPL_CB *p_remname_cmpl_cb;
+ 
+-#define BTM_EXT_RMT_NAME_TIMEOUT    40
++#define BTM_EXT_RMT_NAME_TIMEOUT    30    //original is 40, REALTEK modify it to 30
+ 
+ 
+     TIMER_LIST_ENT  rmt_name_timer_ent;
+-- 
+1.8.5.rc2
+

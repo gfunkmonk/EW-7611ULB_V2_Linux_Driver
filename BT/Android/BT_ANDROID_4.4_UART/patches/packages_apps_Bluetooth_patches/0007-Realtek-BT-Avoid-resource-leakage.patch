@@ -1,0 +1,31 @@
+From 010e171e048e3d4d620e28a0117e85c49ff5433e Mon Sep 17 00:00:00 2001
+From: champion_chen <champion_chen@realsil.com.cn>
+Date: Wed, 4 Jun 2014 11:13:43 +0800
+Subject: [PATCH] Realtek BT: Avoid resource leakage
+
+Signed-off-by: champion_chen <champion_chen@realsil.com.cn>
+---
+ src/com/android/bluetooth/btservice/AdapterService.java | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/com/android/bluetooth/btservice/AdapterService.java b/src/com/android/bluetooth/btservice/AdapterService.java
+index b22cc4f..dc9fa79 100755
+--- a/src/com/android/bluetooth/btservice/AdapterService.java
++++ b/src/com/android/bluetooth/btservice/AdapterService.java
+@@ -289,6 +289,13 @@ public class AdapterService extends Service {
+         mRemoteDevices = new RemoteDevices(this);
+         mAdapterProperties.init(mRemoteDevices);
+ 
++        if(mBondStateMachine != null) //Avoid resource leakage
++        {
++            mBondStateMachine.doQuit();
++            mBondStateMachine.cleanup();
++        }
++
++
+         if (DBG) {debugLog("processStart(): Make Bond State Machine");}
+         mBondStateMachine = BondStateMachine.make(this, mAdapterProperties, mRemoteDevices);
+ 
+-- 
+1.8.5.rc2
+

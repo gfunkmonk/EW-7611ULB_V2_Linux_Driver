@@ -1,0 +1,33 @@
+From 7cca3b5377cbe56ec9518358a6412df96bcac072 Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Thu, 12 Dec 2013 11:48:02 +0800
+Subject: [PATCH 09/13] Realtek BT: Disable inquiry when pair is on going
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ btif/src/btif_dm.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/btif/src/btif_dm.c b/btif/src/btif_dm.c
+index 20089ac..319eeae 100644
+--- a/btif/src/btif_dm.c
++++ b/btif/src/btif_dm.c
+@@ -1796,6 +1796,15 @@ bt_status_t btif_dm_start_discovery(void)
+     BTIF_TRACE_EVENT1("%s", __FUNCTION__);
+     /* TODO: Do we need to handle multiple inquiries at the same time? */
+ 
++    //REALTEK ADD START
++    if (pairing_cb.state != BT_BOND_STATE_NONE)
++    {
++        BTIF_TRACE_EVENT1("%s, bonding is on the way, inquiry return", __FUNCTION__);
++        return BT_STATUS_BUSY;
++    }
++    BTIF_TRACE_EVENT1("%s, bonding is not on the way, inquiry continue", __FUNCTION__);
++    //REALTEK ADD END
++
+     /* Set inquiry params and call API */
+ #if (defined(BLE_INCLUDED) && (BLE_INCLUDED == TRUE))
+     inq_params.mode = BTA_DM_GENERAL_INQUIRY|BTA_BLE_GENERAL_INQUIRY;
+-- 
+1.8.5.rc2
+

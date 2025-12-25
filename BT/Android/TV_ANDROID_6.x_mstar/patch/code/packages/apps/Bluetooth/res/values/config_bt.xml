@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright (C) 2012-2013 Broadcom Corporation
+
+   This program is the proprietary software of Broadcom Corporation and/or its
+   licensors, and may only be used, duplicated, modified or distributed
+   pursuant to the terms and conditions of a separate, written license
+   agreement executed between you and Broadcom (an "Authorized License").
+   Except as set forth in an Authorized License, Broadcom grants no license
+   (express or implied), right to use, or waiver of any kind with respect to
+   the Software, and Broadcom expressly reserves all rights in and to the
+   Software and all intellectual property rights therein.
+   IF YOU HAVE NO AUTHORIZED LICENSE, THEN YOU HAVE NO RIGHT TO USE THIS
+   SOFTWARE IN ANY WAY, AND SHOULD IMMEDIATELY NOTIFY BROADCOM AND DISCONTINUE
+   ALL USE OF THE SOFTWARE.
+
+   Except as expressly set forth in the Authorized License,
+
+   1.     This program, including its structure, sequence and organization,
+          constitutes the valuable trade secrets of Broadcom, and you shall
+          use all reasonable efforts to protect the confidentiality thereof,
+          and to use this information only in connection with your use of
+          Broadcom integrated circuit products.
+
+   2.     TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED
+          "AS IS" AND WITH ALL FAULTS AND BROADCOM MAKES NO PROMISES,
+          REPRESENTATIONS OR WARRANTIES, EITHER EXPRESS, IMPLIED, STATUTORY,
+          OR OTHERWISE, WITH RESPECT TO THE SOFTWARE.  BROADCOM SPECIFICALLY
+          DISCLAIMS ANY AND ALL IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY,
+          NONINFRINGEMENT, FITNESS FOR A PARTICULAR PURPOSE, LACK OF VIRUSES,
+          ACCURACY OR COMPLETENESS, QUIET ENJOYMENT, QUIET POSSESSION OR
+          CORRESPONDENCE TO DESCRIPTION. YOU ASSUME THE ENTIRE RISK ARISING OUT
+          OF USE OR PERFORMANCE OF THE SOFTWARE.
+
+   3.     TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL BROADCOM OR
+          ITS LICENSORS BE LIABLE FOR
+          (i)   CONSEQUENTIAL, INCIDENTAL, SPECIAL, INDIRECT, OR EXEMPLARY
+                DAMAGES WHATSOEVER ARISING OUT OF OR IN ANY WAY RELATING TO
+                YOUR USE OF OR INABILITY TO USE THE SOFTWARE EVEN IF BROADCOM
+                HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES; OR
+          (ii)  ANY AMOUNT IN EXCESS OF THE AMOUNT ACTUALLY PAID FOR THE
+                SOFTWARE ITSELF OR U.S. $1, WHICHEVER IS GREATER. THESE
+                LIMITATIONS SHALL APPLY NOTWITHSTANDING ANY FAILURE OF
+                ESSENTIAL PURPOSE OF ANY LIMITED REMEDY.
+-->
+<resources>
+
+    <!-- Supports advanced settings configuration by user -->
+    <bool name="supports_advanced_settings">true</bool>
+
+
+    <bool name="supports_device_mode_cfg">true</bool>
+
+
+    <!-- Standard Profiles. Enable/disable from config.xml -->
+    <!--Refer ProfileConfig.java for configuring profile_cfg_run_in_device_mode_-->
+    <bool name="profile_default_start_hs_hfp">false</bool>
+    <bool name="profile_configurable_hs_hfp">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_hs_hfp">2</integer>
+    <bool name="profile_default_start_a2dp">true</bool>
+    <bool name="profile_default_start_a2dp_sink">false</bool>
+    <bool name="profile_configurable_a2dp">false</bool>
+    <bool name="profile_configurable_a2dp_sink">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_a2dp">2</integer>
+    <integer name="profile_cfg_run_in_device_mode_a2dp_sink">1</integer>
+    <bool name="profile_default_start_hid">true</bool>
+    <bool name="profile_configurable_hid">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_hid">0</integer>
+    <bool name="profile_default_start_hdp">true</bool>
+    <bool name="profile_configurable_hdp">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_hdp">0</integer>
+    <bool name="profile_default_start_pan">false</bool>
+    <bool name="profile_configurable_pan">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_pan">0</integer>
+    <bool name="profile_default_start_mse">false</bool>
+    <bool name="profile_configurable_mse">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_mse">0</integer>
+
+    <bool name="profile_configurable_hfclient">false</bool>
+    <bool name="profile_default_start_hfclient">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_hfclient">0</integer>
+    <!-- Broadcom Profiles -->
+    <bool name="profile_default_start_3d_sync">true</bool>
+    <bool name="profile_configurable_3d_sync">false</bool>
+    <bool name="run_in_quiet_mode_3d_sync">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_3d_sync">0</integer>
+
+    <!-- Gatt Profile -->
+    <bool name="profile_default_start_gatt">true</bool>
+    <bool name="profile_configurable_gatt">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_gatt">0</integer>
+    <!-- RTKBT profile -->
+    <bool name="profile_default_start_rtkbt">true</bool>
+    <bool name="profile_configurable_rtkbt">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_rtkbt">0</integer>
+
+    <!-- Opp Profile  -->
+    <bool name="profile_supported_opp_1_2_service">true</bool>
+    <bool name="profile_default_start_opp_service">true</bool>
+    <bool name="profile_configurable_opp_service">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_opp">0</integer>
+
+
+    <!-- FTP Profile -->
+    <bool name="profile_supported_ftp_server">false</bool>
+    <bool name="profile_default_start_ftp_server">false</bool>
+    <bool name="profile_configurable_ftp_server">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_ftp_server">0</integer>
+
+    <!-- SAP Profile -->
+    <bool name="profile_default_start_sap">false</bool>
+    <bool name="profile_configurable_sap">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_sap">0</integer>
+
+    <!-- MAP MSE Profile -->
+    <bool name="mse_datasource_supported_sms">false</bool>
+    <bool name="mse_datasource_supported_mms">false</bool>
+    <string name="profile_map_version">MAP 1.2</string>
+
+    <!-- DUN Profile -->
+    <bool name="profile_supported_dun">false</bool>
+    <bool name="profile_default_start_dun">false</bool>
+    <bool name="profile_configurable_dun">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_dun">0</integer>
+
+    <!-- HID Device Profile -->
+    <bool name="profile_supported_hidd">false</bool>
+    <bool name="profile_default_start_hidd">false</bool>
+    <bool name="profile_configurable_hidd">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_hidd">0</integer>
+
+    <!-- AVRCP Controller Profile -->
+    <bool name="profile_default_start_avrcp_ct">true</bool>
+    <bool name="profile_configurable_avrcp_ct">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_avrcp_ct">0</integer>
+
+    <!-- MAP MCE Profile -->
+    <bool name="profile_supported_mce">false</bool>
+    <bool name="profile_default_start_mce">false</bool>
+    <bool name="profile_configurable_mce">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_mce">0</integer>
+
+    <bool name="tv_mode">true</bool>
+
+    <!-- HF device Profile -->
+    <bool name="profile_supported_hfdevice">false</bool>
+    <bool name="profile_default_start_hfdevice">false</bool>
+    <bool name="profile_configurable_hfdevice">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_hfdevice">1</integer>
+
+    <!-- IPSP Profile -->
+    <bool name="profile_supported_ipsp">false</bool>
+    <bool name="profile_default_start_ipsp">false</bool>
+    <bool name="profile_configurable_ipsp">false</bool>
+    <integer name="profile_cfg_run_in_device_mode_ipsp">0</integer>
+
+</resources>

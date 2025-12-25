@@ -1,0 +1,27 @@
+From e402827800f33f41749b613f023493548d5a9e62 Mon Sep 17 00:00:00 2001
+From: iris_wang <iris_wang@realsil.com.cn>
+Date: Tue, 12 Jul 2016 14:03:15 +0800
+Subject: [PATCH] prolong the dw-fw-time 3s to 6s for the update ICs
+
+Change-Id: Ibcbbf76ae61082488a6ae7ad42abc711c39ac8de
+Signed-off-by: iris_wang <iris_wang@realsil.com.cn>
+---
+ main/bte_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/main/bte_main.c b/main/bte_main.c
+index 75cc440..e28f5c2 100755
+--- a/main/bte_main.c
++++ b/main/bte_main.c
+@@ -58,7 +58,7 @@
+ 
+ /* Stack preload process timeout period  */
+ #ifndef PRELOAD_START_TIMEOUT_MS
+-#define PRELOAD_START_TIMEOUT_MS 3000  // 3 seconds
++#define PRELOAD_START_TIMEOUT_MS 6000  // 6 seconds
+ #endif
+ 
+ /* Stack preload process maximum retry attempts  */
+-- 
+1.9.1
+

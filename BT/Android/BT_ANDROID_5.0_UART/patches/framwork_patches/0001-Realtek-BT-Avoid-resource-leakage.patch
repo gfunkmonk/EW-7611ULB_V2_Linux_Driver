@@ -1,0 +1,40 @@
+From c4dc46e628966c92bcc45a731a09e4904c2741cc Mon Sep 17 00:00:00 2001
+From: champion_chen <champion_chen@realsil.com.cn>
+Date: Wed, 4 Jun 2014 11:48:33 +0800
+Subject: [PATCH] Realtek BT : Avoid resource leakage, Revert android
+ bug:9960585 patch
+
+Signed-off-by: champion_chen <champion_chen@realsil.com.cn>
+---
+ frameworks/base/core/java/android/net/LocalSocketImpl.java | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+ mode change 100644 => 100755 frameworks/base/core/java/android/net/LocalSocketImpl.java
+
+diff --git a/frameworks/base/core/java/android/net/LocalSocketImpl.java b/frameworks/base/core/java/android/net/LocalSocketImpl.java
+old mode 100644
+new mode 100755
+index b2ee50a..40c316a
+--- a/frameworks/base/core/java/android/net/LocalSocketImpl.java
++++ b/frameworks/base/core/java/android/net/LocalSocketImpl.java
+@@ -249,7 +249,7 @@ class LocalSocketImpl
+             }
+             try {
+                 fd = Libcore.os.socket(OsConstants.AF_UNIX, osType, 0);
+-                mFdCreatedInternally = true;
++				//mFdCreatedInternally = true;  /*Realtek modified*/
+             } catch (ErrnoException e) {
+                 e.rethrowAsIOException();
+             }
+@@ -263,7 +263,8 @@ class LocalSocketImpl
+      */
+     public void close() throws IOException {
+         synchronized (LocalSocketImpl.this) {
+-            if ((fd == null) || (mFdCreatedInternally == false)) {
++			//if ((fd == null) || (mFdCreatedInternally == false)) {
++			if (fd == null) {   /*REALTEK Modified*/
+                 fd = null;
+                 return;
+             }
+-- 
+1.8.5.rc2
+
