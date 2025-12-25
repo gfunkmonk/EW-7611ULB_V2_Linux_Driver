@@ -1707,12 +1707,15 @@ unsigned int rtw_classify8021d(struct sk_buff *skb)
 
 
 static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 2, 0)
+	/* Kernel 5.2+ simplified the signature */
 	, struct net_device *sb_dev
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 13, 0)
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+	, struct net_device *sb_dev
+	, select_queue_fallback_t fallback
+#else
+	/* Kernel 4.0-4.18 */
 	, void *accel_priv
-#endif
-#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(5, 2, 0)))
 	, select_queue_fallback_t fallback
 #endif
 )

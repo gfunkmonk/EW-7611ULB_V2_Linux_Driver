@@ -141,6 +141,8 @@ CONFIG_LAYER2_ROAMING = y
 #bit0: ROAM_ON_EXPIRED, #bit1: ROAM_ON_RESUME, #bit2: ROAM_ACTIVE
 CONFIG_ROAMING_FLAG = 0x3
 ###################### Platform Related #######################
+# NOTE: Set only ONE platform to 'y' based on your system architecture
+# Default is I386_PC for x86_64 systems. Change as needed for your platform.
 CONFIG_PLATFORM_I386_PC = y
 CONFIG_PLATFORM_ARM_RPI = n
 CONFIG_PLATFORM_ARM64_RPI = n
