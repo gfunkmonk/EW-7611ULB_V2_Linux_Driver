@@ -1671,7 +1671,6 @@ static struct net_device_stats *rtw_net_get_stats(struct net_device *pnetdev)
 	return &padapter->stats;
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 /*
  * AC to queue mapping
  *
@@ -1708,15 +1707,13 @@ unsigned int rtw_classify8021d(struct sk_buff *skb)
 
 
 static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 13, 0)
-	#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 	, struct net_device *sb_dev
-	#else
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 13, 0)
 	, void *accel_priv
-	#endif
-	#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(5, 2, 0)))
+#endif
+#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(5, 2, 0)))
 	, select_queue_fallback_t fallback
-	#endif
 #endif
 )
 {
@@ -1730,11 +1727,9 @@ static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb
 
 	return rtw_1d_to_queue[skb->priority];
 }
-#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35)) */
 
 u16 rtw_os_recv_select_queue(u8 *msdu, enum rtw_rx_llc_hdl llc_hdl)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	u32 priority = 0;
 
 	if (llc_hdl == RTW_RX_LLC_REMOVE) {
@@ -1749,21 +1744,13 @@ u16 rtw_os_recv_select_queue(u8 *msdu, enum rtw_rx_llc_hdl llc_hdl)
 	}
 
 	return rtw_1d_to_queue[priority];
-#else
-	return 0;
-#endif
 }
 
 static u8 is_rtw_ndev(struct net_device *ndev)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 	return ndev->netdev_ops
 		&& ndev->netdev_ops->ndo_do_ioctl
 		&& ndev->netdev_ops->ndo_do_ioctl == rtw_ioctl;
-#else
-	return ndev->do_ioctl
-		&& ndev->do_ioctl == rtw_ioctl;
-#endif
 }
 
 static int rtw_ndev_notifier_call(struct notifier_block *nb, unsigned long state, void *ptr)

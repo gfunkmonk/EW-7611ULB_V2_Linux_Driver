@@ -1352,13 +1352,7 @@ inline void _rtw_wait_for_comp(_completion *comp)
 void	_rtw_mutex_init(_mutex *pmutex)
 {
 #ifdef PLATFORM_LINUX
-
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37))
 	mutex_init(pmutex);
-#else
-	init_MUTEX(pmutex);
-#endif
-
 #endif
 #ifdef PLATFORM_FREEBSD
 	mtx_init(pmutex, "", NULL, MTX_DEF | MTX_RECURSE);
