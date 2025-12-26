@@ -1671,7 +1671,6 @@ static struct net_device_stats *rtw_net_get_stats(struct net_device *pnetdev)
 	return &padapter->stats;
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 /*
  * AC to queue mapping
  *
@@ -1708,15 +1707,16 @@ unsigned int rtw_classify8021d(struct sk_buff *skb)
 
 
 static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 13, 0)
-	#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
+	/* Kernel 4.19+ uses struct net_device *sb_dev */
 	, struct net_device *sb_dev
-	#else
+#else
+	/* Kernel 4.0-4.18 uses void *accel_priv */
 	, void *accel_priv
-	#endif
-	#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(5, 2, 0)))
+#endif
+#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(5, 2, 0)))
+	/* Kernel 4.x-5.1 has fallback parameter */
 	, select_queue_fallback_t fallback
-	#endif
 #endif
 )
 {
@@ -1730,11 +1730,9 @@ static u16 rtw_select_queue(struct net_device *dev, struct sk_buff *skb
 
 	return rtw_1d_to_queue[skb->priority];
 }
-#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35)) */
 
 u16 rtw_os_recv_select_queue(u8 *msdu, enum rtw_rx_llc_hdl llc_hdl)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	u32 priority = 0;
 
 	if (llc_hdl == RTW_RX_LLC_REMOVE) {
@@ -1749,21 +1747,13 @@ u16 rtw_os_recv_select_queue(u8 *msdu, enum rtw_rx_llc_hdl llc_hdl)
 	}
 
 	return rtw_1d_to_queue[priority];
-#else
-	return 0;
-#endif
 }
 
 static u8 is_rtw_ndev(struct net_device *ndev)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 	return ndev->netdev_ops
 		&& ndev->netdev_ops->ndo_do_ioctl
 		&& ndev->netdev_ops->ndo_do_ioctl == rtw_ioctl;
-#else
-	return ndev->do_ioctl
-		&& ndev->do_ioctl == rtw_ioctl;
-#endif
 }
 
 static int rtw_ndev_notifier_call(struct notifier_block *nb, unsigned long state, void *ptr)
@@ -1841,21 +1831,17 @@ void rtw_ndev_uninit(struct net_device *dev)
 	rtw_adapter_proc_deinit(dev);
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 static const struct net_device_ops rtw_netdev_ops = {
 	.ndo_init = rtw_ndev_init,
 	.ndo_uninit = rtw_ndev_uninit,
 	.ndo_open = netdev_open,
 	.ndo_stop = netdev_close,
 	.ndo_start_xmit = rtw_xmit_entry,
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	.ndo_select_queue	= rtw_select_queue,
-#endif
 	.ndo_set_mac_address = rtw_net_set_mac_address,
 	.ndo_get_stats = rtw_net_get_stats,
 	.ndo_do_ioctl = rtw_ioctl,
 };
-#endif
 
 int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname)
 {
@@ -1894,18 +1880,7 @@ int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname)
 
 void rtw_hook_if_ops(struct net_device *ndev)
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29))
 	ndev->netdev_ops = &rtw_netdev_ops;
-#else
-	ndev->init = rtw_ndev_init;
-	ndev->uninit = rtw_ndev_uninit;
-	ndev->open = netdev_open;
-	ndev->stop = netdev_close;
-	ndev->hard_start_xmit = rtw_xmit_entry;
-	ndev->set_mac_address = rtw_net_set_mac_address;
-	ndev->get_stats = rtw_net_get_stats;
-	ndev->do_ioctl = rtw_ioctl;
-#endif
 }
 
 #ifdef CONFIG_CONCURRENT_MODE
@@ -1927,10 +1902,6 @@ struct net_device *rtw_init_netdev(_adapter *old_padapter)
 
 	padapter = rtw_netdev_priv(pnetdev);
 	padapter->pnetdev = pnetdev;
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24)
-	SET_MODULE_OWNER(pnetdev);
-#endif
 
 	rtw_hook_if_ops(pnetdev);
 #ifdef CONFIG_CONCURRENT_MODE
@@ -1955,9 +1926,7 @@ struct net_device *rtw_init_netdev(_adapter *old_padapter)
 
 	if ((pnetdev->features & NETIF_F_SG) && (pnetdev->features & NETIF_F_IP_CSUM)) {
 		pnetdev->features |= (NETIF_F_TSO | NETIF_F_GSO);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 39)
 		pnetdev->hw_features |= (NETIF_F_TSO | NETIF_F_GSO);
-#endif
 	}
 	/* pnetdev->tx_timeout = NULL; */
 	pnetdev->watchdog_timeo = HZ * 3; /* 3 second timeout */
@@ -2030,13 +1999,13 @@ static void rtw_ethtool_get_drvinfo(struct net_device *dev, struct ethtool_drvin
 
 	wdev = dev->ieee80211_ptr;
 	if (wdev) {
-		strlcpy(info->driver, wiphy_dev(wdev->wiphy)->driver->name,
+		strscpy(info->driver, wiphy_dev(wdev->wiphy)->driver->name,
 			sizeof(info->driver));
 	} else {
-		strlcpy(info->driver, "N/A", sizeof(info->driver));
+		strscpy(info->driver, "N/A", sizeof(info->driver));
 	}
 
-	strlcpy(info->version, DRIVERVERSION, sizeof(info->version));
+	strscpy(info->version, DRIVERVERSION, sizeof(info->version));
 
 	padapter = (_adapter *)rtw_netdev_priv(dev);
 	if (padapter) {
@@ -2047,10 +2016,10 @@ static void rtw_ethtool_get_drvinfo(struct net_device *dev, struct ethtool_drvin
 		scnprintf(info->fw_version, sizeof(info->fw_version), "%d.%d",
 			  hal_data->firmware_version, hal_data->firmware_sub_version);
 	} else {
-		strlcpy(info->fw_version, "N/A", sizeof(info->fw_version));
+		strscpy(info->fw_version, "N/A", sizeof(info->fw_version));
 	}
 
-	strlcpy(info->bus_info, dev_name(wiphy_dev(wdev->wiphy)),
+	strscpy(info->bus_info, dev_name(wiphy_dev(wdev->wiphy)),
 		sizeof(info->bus_info));
 }
 
@@ -2161,7 +2130,7 @@ int rtw_os_ndev_register(_adapter *adapter, const char *name)
 	/* alloc netdev name */
 	rtw_init_netdev_name(ndev, name);
 
-	_rtw_memcpy(ndev->dev_addr, adapter_mac_addr(adapter), ETH_ALEN);
+	eth_hw_addr_set(ndev, adapter_mac_addr(adapter));
 
 	/* Tell the network stack we exist */
 
