@@ -54,7 +54,7 @@ DEFINE_SEMAPHORE(switch_sem);
 #endif
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(3, 7, 1)
-static bool reset = 0;
+static bool reset = false;
 #endif
 
 static struct usb_driver btusb_driver;

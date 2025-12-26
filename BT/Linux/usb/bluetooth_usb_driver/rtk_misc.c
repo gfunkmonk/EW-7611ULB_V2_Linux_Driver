@@ -40,18 +40,9 @@
 #endif
 
 #include <linux/interrupt.h>
-#include <linux/module.h>
-#include <linux/slab.h>
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/skbuff.h>
-#include <linux/errno.h>
-#include <linux/usb.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/poll.h>
-
-#include <linux/version.h>
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32)
 #include <linux/pm_runtime.h>
