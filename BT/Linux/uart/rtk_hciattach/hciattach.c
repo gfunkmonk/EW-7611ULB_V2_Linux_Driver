@@ -432,8 +432,9 @@ int main(int argc, char *argv[])
 		case 0:
 			dev[0] = 0;
 			if (!strchr(opt, '/'))
-				strcpy(dev, "/dev/");
-			strcat(dev, opt);
+				snprintf(dev, sizeof(dev), "/dev/%s", opt);
+			else
+				snprintf(dev, sizeof(dev), "%s", opt);
 			break;
 
 		case 1:

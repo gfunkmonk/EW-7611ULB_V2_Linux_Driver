@@ -870,7 +870,7 @@ read_cfg:
 		case 0x0044:
 			if (is_mac(chip_type, n->offset) && n->len == 6) {
 				char s[18];
-				sprintf(s, "%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X",
+				snprintf(s, sizeof(s), "%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X",
 					n->data[5], n->data[4],
 					n->data[3], n->data[2],
 					n->data[1], n->data[0]);
