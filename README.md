@@ -65,6 +65,39 @@ The driver is currently undergoing modernization. Some minor compatibility issue
 
 These will be addressed in future updates.
 
+## Troubleshooting
+
+### Build Error: "generated/autoconf.h: No such file or directory"
+
+If you encounter this error during build:
+```
+fatal error: generated/autoconf.h: No such file or directory
+```
+
+This means your kernel headers are not properly prepared. The Makefile will detect this and provide detailed instructions, but here's a quick fix:
+
+**For distribution kernels (recommended):**
+```bash
+# Install kernel headers for your current kernel
+sudo apt-get install linux-headers-$(uname -r)  # Ubuntu/Debian
+sudo dnf install kernel-devel-$(uname -r)       # Fedora/RHEL
+sudo pacman -S linux-headers                    # Arch Linux
+```
+
+**For custom kernels:**
+If you've compiled a custom kernel, you need to prepare the headers:
+```bash
+cd /usr/src/linux-<your-kernel-version>
+make oldconfig && make prepare && make modules_prepare
+```
+
+**Alternative:**
+Point to a properly prepared kernel source directory:
+```bash
+cd WIFI
+make KSRC=/path/to/prepared/kernel/source
+```
+
 ## Platform Configuration
 
 Edit `WIFI/Makefile` to set your platform:
