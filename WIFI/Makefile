@@ -2499,8 +2499,25 @@ export CONFIG_RTL8723DU = m
 
 all: modules
 
-modules:
+modules: check_kernel_headers
 	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
+
+check_kernel_headers:
+	@echo "Checking kernel headers..."
+	@if [ ! -f "$(KSRC)/include/generated/autoconf.h" ]; then \
+		echo "Warning: generated/autoconf.h not found in $(KSRC)"; \
+		echo "Attempting to prepare kernel headers..."; \
+		if [ -f "$(KSRC)/Makefile" ]; then \
+			$(MAKE) -C $(KSRC) modules_prepare || echo "Note: modules_prepare failed, attempting to continue anyway"; \
+		else \
+			echo "Error: Kernel source Makefile not found. Your kernel headers may be incomplete."; \
+			echo "Please ensure kernel headers are properly installed for kernel $(KVER)"; \
+			echo "You may need to: sudo apt-get install linux-headers-$(KVER) (Debian/Ubuntu)"; \
+			echo "             or: sudo dnf install kernel-devel-$(KVER) (Fedora/RHEL)"; \
+			echo "             or: sudo pacman -S linux-headers (Arch Linux)"; \
+			exit 1; \
+		fi; \
+	fi
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
@@ -2552,7 +2569,7 @@ config_r:
 	/bin/bash script/Configure script/config.in
 
 
-.PHONY: modules clean
+.PHONY: modules clean check_kernel_headers
 
 clean:
 	#$(MAKE) -C $(KSRC) M=$(shell pwd) clean
