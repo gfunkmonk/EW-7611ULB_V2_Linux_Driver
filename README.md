@@ -7,6 +7,25 @@ This driver package includes:
 - **Bluetooth USB**: Realtek Bluetooth USB driver (rtk_btusb)
 - **Bluetooth UART**: Realtek Bluetooth UART driver (hci_uart)
 
+## Quick Start with DKMS
+
+```bash
+# Install prerequisites
+sudo apt-get install dkms build-essential git  # Ubuntu/Debian
+
+# Clone and install
+git clone https://github.com/gfunkmonk/EW-7611ULB_V2_Linux_Driver.git
+cd EW-7611ULB_V2_Linux_Driver
+sudo ./dkms-install.sh
+
+# Load modules
+sudo modprobe 8723du
+sudo modprobe rtk_btusb
+
+# Check status
+./dkms-status.sh
+```
+
 ## Installation Methods
 
 ### Method 1: DKMS Installation (Recommended)
@@ -52,6 +71,21 @@ After installation, you may need to load the modules:
 sudo modprobe 8723du
 sudo modprobe rtk_btusb
 ```
+
+#### Check Installation Status
+
+To verify the installation and check driver status:
+
+```bash
+./dkms-status.sh
+```
+
+This script will show you:
+- Whether DKMS is installed
+- Status of all driver modules in DKMS
+- Which kernel modules are currently loaded
+- Firmware file locations
+- Installed utilities
 
 #### Uninstall Drivers
 
