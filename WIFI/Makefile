@@ -2490,8 +2490,55 @@ export CONFIG_RTL8723DU = m
 
 all: modules
 
-modules:
+modules: check_kernel_headers
 	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
+
+check_kernel_headers:
+	@if [ ! -d "$(KSRC)" ]; then \
+		echo ""; \
+		echo "Error: Kernel source directory not found: $(KSRC)"; \
+		echo "Please install kernel headers for your kernel version: $(KVER)"; \
+		echo ""; \
+		echo "For Ubuntu/Debian:"; \
+		echo "  sudo apt-get install linux-headers-\$$(uname -r)"; \
+		echo ""; \
+		echo "For Fedora/RHEL:"; \
+		echo "  sudo dnf install kernel-devel-\$$(uname -r)"; \
+		echo ""; \
+		echo "For Arch Linux:"; \
+		echo "  sudo pacman -S linux-headers"; \
+		echo ""; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(KSRC)/include/generated/autoconf.h" ] && [ ! -f "$(KSRC)/include/linux/autoconf.h" ]; then \
+		echo ""; \
+		echo "Error: Kernel headers are not properly configured!"; \
+		echo "The file 'generated/autoconf.h' is missing from: $(KSRC)"; \
+		echo ""; \
+		echo "This usually happens when kernel headers are installed but not prepared."; \
+		echo ""; \
+		echo "To fix this issue, you need to prepare the kernel headers:"; \
+		echo ""; \
+		echo "Option 1 - Use distribution kernel (recommended):"; \
+		echo "  1. Install kernel headers for your running kernel:"; \
+		echo "     sudo apt-get install linux-headers-\$$(uname -r)  # Ubuntu/Debian"; \
+		echo "     sudo dnf install kernel-devel-\$$(uname -r)       # Fedora/RHEL"; \
+		echo "     sudo pacman -S linux-headers                     # Arch Linux"; \
+		echo "  2. Then run 'make' again"; \
+		echo ""; \
+		echo "Option 2 - Prepare custom kernel headers:"; \
+		echo "  If you are using a custom kernel (like $(KVER)), you need to:"; \
+		echo "  1. Go to your kernel source directory: cd $(KSRC)"; \
+		echo "  2. Prepare the kernel for module building:"; \
+		echo "     make oldconfig && make prepare && make modules_prepare"; \
+		echo "  3. Return to this directory and run 'make' again"; \
+		echo ""; \
+		echo "Option 3 - Point to correct kernel source:"; \
+		echo "  Set KSRC to your prepared kernel source directory:"; \
+		echo "     make KSRC=/path/to/prepared/kernel/source"; \
+		echo ""; \
+		exit 1; \
+	fi
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
