@@ -1,0 +1,37 @@
+From fd214fcb6595419e7e15ac485406aaaed7eea6ab Mon Sep 17 00:00:00 2001
+From: lamparten_shi <lamparten_shi@realsil.com.cn>
+Date: Mon, 4 Jul 2016 11:23:22 +0800
+Subject: [PATCH] Add_Bit_Pool_IN_Coex
+
+Signed-off-by: lamparten_shi <lamparten_shi@realsil.com.cn>
+---
+ btif/src/btif_media_task.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/btif/src/btif_media_task.c b/btif/src/btif_media_task.c
+index ae2b0c7..7b5279e 100755
+--- a/btif/src/btif_media_task.c
++++ b/btif/src/btif_media_task.c
+@@ -72,6 +72,9 @@
+ #endif
+ #include "stdio.h"
+ #include <dlfcn.h>
++#ifdef BLUETOOTH_RTK_COEX
++#include "rtk_parse.h"
++#endif
+ 
+ //#define DEBUG_MEDIA_AV_FLOW TRUE
+ 
+@@ -1866,6 +1869,9 @@ static void btif_media_task_enc_init(BT_HDR *p_msg)
+ 
+     /* Reset entirely the SBC encoder */
+     SBC_Encoder_Init(&(btif_media_cb.encoder));
++#ifdef BLUETOOTH_RTK_COEX
++    rtk_add_bitpool_to_fw(btif_media_cb.encoder.s16BitPool);
++#endif
+     APPL_TRACE_DEBUG("btif_media_task_enc_init bit pool %d", btif_media_cb.encoder.s16BitPool);
+ }
+ 
+-- 
+1.9.1
+

@@ -1,0 +1,111 @@
+From 3fdfcbf49a2bc7f98dffa86138220a7eef5cbcc1 Mon Sep 17 00:00:00 2001
+From: mike_ming <mike_ming@realsil.com.cn>
+Date: Wed, 10 Dec 2014 16:44:43 +0800
+Subject: [PATCH] 0012-Realtek-BT-Add-protection-to-gki-module
+
+Signed-off-by: mike_ming <mike_ming@realsil.com.cn>
+---
+ bta/sys/ptim.c        |  7 +++++++
+ gki/common/gki_time.c | 25 +++++++++++++++----------
+ 2 files changed, 22 insertions(+), 10 deletions(-)
+
+diff --git a/bta/sys/ptim.c b/bta/sys/ptim.c
+index cc69349..dc1bed2 100755
+--- a/bta/sys/ptim.c
++++ b/bta/sys/ptim.c
+@@ -27,6 +27,11 @@
+ #include "ptim.h"
+ #include "bta_sys.h"
+ 
++//REALTEK ADD START
++#include <cutils/log.h>
++static pthread_mutex_t pt_time_mutex = PTHREAD_MUTEX_INITIALIZER;
++//REALTEK ADD END
++
+ /*******************************************************************************
+ **
+ ** Function         ptim_init
+@@ -126,6 +131,7 @@ void ptim_timer_update(tPTIM_CB *p_cb)
+ *******************************************************************************/
+ void ptim_start_timer(tPTIM_CB *p_cb, TIMER_LIST_ENT *p_tle, UINT16 type, INT32 timeout)
+ {
++	pthread_mutex_lock(&pt_time_mutex); //RealTek added
+     /* if timer list is currently empty, start periodic GKI timer */
+     if (p_cb->timer_queue.p_first == NULL)
+     {
+@@ -140,6 +146,7 @@ void ptim_start_timer(tPTIM_CB *p_cb, TIMER_LIST_ENT *p_tle, UINT16 type, INT32
+     p_tle->ticks_initial = timeout;
+ 
+     GKI_add_to_timer_list(&p_cb->timer_queue, p_tle);
++	pthread_mutex_unlock(&pt_time_mutex); //RealTek added
+ }
+ 
+ /*******************************************************************************
+diff --git a/gki/common/gki_time.c b/gki/common/gki_time.c
+index aa95195..bb7318f 100755
+--- a/gki/common/gki_time.c
++++ b/gki/common/gki_time.c
+@@ -538,7 +538,7 @@ UINT16 GKI_update_timer_list (TIMER_LIST_Q *p_timer_listq, INT32 num_units_since
+     UINT16           num_time_out = 0;
+     INT32            rem_ticks;
+     INT32            temp_ticks;
+-
++	GKI_disable();//RealTek added
+     p_tle = p_timer_listq->p_first;
+ 
+     /* First, get the guys who have previously timed out */
+@@ -571,7 +571,7 @@ UINT16 GKI_update_timer_list (TIMER_LIST_Q *p_timer_listq, INT32 num_units_since
+         rem_ticks -= temp_ticks;  /* Decrement the remaining ticks to process */
+         p_tle = p_tle->p_next;
+     }
+-
++	GKI_enable();//RealTek added
+     return (num_time_out);
+ }
+ 
+@@ -699,11 +699,12 @@ void GKI_add_to_timer_list (TIMER_LIST_Q *p_timer_listq, TIMER_LIST_ENT  *p_tle)
+ BOOLEAN GKI_remove_from_timer_list (TIMER_LIST_Q *p_timer_listq, TIMER_LIST_ENT  *p_tle)
+ {
+     UINT8 tt;
+-
++	GKI_disable();//RealTek added
+     /* Verify that the entry is valid */
+-    if (p_tle == NULL || p_timer_listq->p_first == NULL)
+-        return FALSE;
+-
++    if (p_tle == NULL || p_timer_listq->p_first == NULL){
++		GKI_enable();//RealTek added
++		return FALSE;
++	}
+     /* Add the ticks remaining in this timer (if any) to the next guy in the list.
+     ** Note: Expired timers have a tick value of '0'.
+     */
+@@ -740,17 +741,21 @@ BOOLEAN GKI_remove_from_timer_list (TIMER_LIST_Q *p_timer_listq, TIMER_LIST_ENT
+         {
+             if (p_tle->p_next != NULL && p_tle->p_next->p_prev == p_tle)
+                 p_tle->p_next->p_prev = p_tle->p_prev;
+-            else
++            else {
++				GKI_enable();//RealTek added
+                 return FALSE; // Timer list broken?!
+-
++			}
+             if (p_tle->p_prev != NULL && p_tle->p_prev->p_next == p_tle)
+                 p_tle->p_prev->p_next = p_tle->p_next;
+-            else
++            else {
++				GKI_enable();//RealTek added
+                 return FALSE; // Timer list broken?!
+-        }
++			}
++		}
+     }
+ 
+     p_tle->p_next = p_tle->p_prev = NULL;
++	GKI_enable();//RealTek added
+     return TRUE;
+ }
+ 
+-- 
+1.9.1
+

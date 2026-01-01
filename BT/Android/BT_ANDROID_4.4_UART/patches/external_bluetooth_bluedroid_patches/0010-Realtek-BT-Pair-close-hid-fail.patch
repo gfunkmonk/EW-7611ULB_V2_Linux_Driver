@@ -1,0 +1,110 @@
+From 8f1eb38013c6cd3b0cc3352cb4c12406beadd88c Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Thu, 12 Dec 2013 16:16:55 +0800
+Subject: [PATCH 10/13] Realtek BT: Pair close hid fail
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ btif/include/btif_common.h |  1 +
+ btif/include/btif_dm.h     |  1 +
+ btif/src/btif_dm.c         | 26 ++++++++++++++++++++++++++
+ btif/src/btif_hh.c         |  4 ++++
+ 4 files changed, 32 insertions(+)
+
+diff --git a/btif/include/btif_common.h b/btif/include/btif_common.h
+index f11b629..0807d68 100644
+--- a/btif/include/btif_common.h
++++ b/btif/include/btif_common.h
+@@ -110,6 +110,7 @@ enum
+     BTIF_DM_CB_LE_TX_TEST,    /* BLE Tx Test command complete callback */
+     BTIF_DM_CB_LE_RX_TEST,    /* BLE Rx Test command complete callback */
+     BTIF_DM_CB_LE_TEST_END,   /* BLE Test mode end callback */
++    BTIF_DM_CB_BOND_FAIL,
+ 
+     BTIF_HFP_CB_START  = BTIF_SIG_CB_START(BTIF_HFP),
+     BTIF_HFP_CB_AUDIO_CONNECTING, /* HF AUDIO connect has been sent to BTA successfully */
+diff --git a/btif/include/btif_dm.h b/btif/include/btif_dm.h
+index ed03e34..9656324 100644
+--- a/btif/include/btif_dm.h
++++ b/btif/include/btif_dm.h
+@@ -34,6 +34,7 @@ void bte_dm_evt(tBTA_DM_SEC_EVT event, tBTA_DM_SEC *p_data);
+  * pending commands, like pairing
+  */
+ void btif_dm_on_disable(void);
++void btif_dm_hid_connect_fail(BD_ADDR bd_addr);
+ 
+ /**
+  * Out-of-band functions
+diff --git a/btif/src/btif_dm.c b/btif/src/btif_dm.c
+index 319eeae..2cbf3fa 100644
+--- a/btif/src/btif_dm.c
++++ b/btif/src/btif_dm.c
+@@ -528,6 +528,7 @@ static void btif_dm_cb_create_bond(bt_bdaddr_t *bd_addr)
+ 
+ }
+ 
++
+ /*******************************************************************************
+ **
+ ** Function         btif_dm_cb_remove_bond
+@@ -1656,6 +1657,22 @@ static void btif_dm_generic_evt(UINT16 event, char* p_param)
+                       (status == 0) ? BT_STATUS_SUCCESS : BT_STATUS_FAIL, count);
+             }
+             break;
++
++//RTK add start
++        case BTIF_DM_CB_BOND_FAIL:
++            {
++		    if (pairing_cb.state == BT_BOND_STATE_NONE ) {
++				BTIF_TRACE_ERROR0("already bond none");
++				return;
++		    } else if ((bdcmp(((bt_bdaddr_t *)p_param)->address, pairing_cb.bd_addr) != 0)) {
++				BTIF_TRACE_ERROR0("pairing device error");
++				return;
++		    }
++
++                bond_state_changed(BT_STATUS_RMT_DEV_DOWN, (bt_bdaddr_t *)p_param, BT_BOND_STATE_NONE);
++            }
++            break;
++//RTK add end
+         default:
+         {
+             BTIF_TRACE_WARNING2("%s : Unknown event 0x%x", __FUNCTION__, event);
+@@ -2633,3 +2650,12 @@ static char* btif_get_default_local_name() {
+     }
+     return btif_default_local_name;
+ }
++
++void btif_dm_hid_connect_fail(BD_ADDR bd_addr)
++{
++     BTIF_TRACE_ERROR0("btif_dm_hid_connect_fail");
++     bt_bdaddr_t bdaddr;
++     bdcpy(bdaddr.address, bd_addr);
++     btif_transfer_context(btif_dm_generic_evt, BTIF_DM_CB_BOND_FAIL,
++                         (char *)&bdaddr, sizeof(bt_bdaddr_t), NULL);
++}
+diff --git a/btif/src/btif_hh.c b/btif/src/btif_hh.c
+index 1c64e3e..741b4b1 100644
+--- a/btif/src/btif_hh.c
++++ b/btif/src/btif_hh.c
+@@ -43,6 +43,7 @@
+ #include "btif_hh.h"
+ #include "gki.h"
+ #include "l2c_api.h"
++#include "btif_dm.h"
+ 
+ 
+ #define BTIF_HH_APP_ID_MI       0x01
+@@ -844,6 +845,9 @@ static void btif_hh_upstreams_evt(UINT16 event, char* p_param)
+                 bt_bdaddr_t *bdaddr = (bt_bdaddr_t*)p_data->conn.bda;
+                 HAL_CBACK(bt_hh_callbacks, connection_state_cb, (bt_bdaddr_t*) &p_data->conn.bda,BTHH_CONN_STATE_DISCONNECTED);
+                 btif_hh_cb.status = BTIF_HH_DEV_DISCONNECTED;
++
++		  BTIF_TRACE_ERROR0("BTA_HH_OPEN_EVT: Error, to tell btif_dm_hid_connect_fail...");
++		  btif_dm_hid_connect_fail(bdaddr->address);
+             }
+             break;
+         case BTA_HH_CLOSE_EVT:
+-- 
+1.8.5.rc2
+

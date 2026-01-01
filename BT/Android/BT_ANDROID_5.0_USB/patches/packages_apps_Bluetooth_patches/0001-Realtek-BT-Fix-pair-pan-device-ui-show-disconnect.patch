@@ -1,0 +1,34 @@
+From b3dcbbf27d7a42aad7f8c96f96232b3244496487 Mon Sep 17 00:00:00 2001
+From: ranhui_xia <ranhui_xia@realsil.com.cn>
+Date: Fri, 13 Dec 2013 12:25:15 +0800
+Subject: [PATCH 2/3] Realtek BT: Fix pair pan device ui show disconnect
+
+if connection state is connecting or connected, return false
+
+Signed-off-by: ranhui_xia <ranhui_xia@realsil.com.cn>
+---
+ src/com/android/bluetooth/pan/PanService.java | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/com/android/bluetooth/pan/PanService.java b/src/com/android/bluetooth/pan/PanService.java
+index 36add63..ade6dc4 100755
+--- a/src/com/android/bluetooth/pan/PanService.java
++++ b/src/com/android/bluetooth/pan/PanService.java
+@@ -297,6 +297,14 @@ public class PanService extends ProfileService {
+ 
+     boolean disconnect(BluetoothDevice device) {
+         enforceCallingOrSelfPermission(BLUETOOTH_PERM, "Need BLUETOOTH permission");
++        //REALTEK ADD START
++        int connectionState = getConnectionState(device);
++        if (connectionState != BluetoothProfile.STATE_CONNECTED &&
++            connectionState != BluetoothProfile.STATE_CONNECTING)
++        {
++            return false;
++        }
++        //REALTEK ADD END
+         Message msg = mHandler.obtainMessage(MESSAGE_DISCONNECT,device);
+         mHandler.sendMessage(msg);
+         return true;
+-- 
+1.8.5.rc2
+
