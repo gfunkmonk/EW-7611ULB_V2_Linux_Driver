@@ -206,6 +206,8 @@ If the automatic preparation fails, you may need to:
    
    # Fedora/RHEL/CentOS
    sudo dnf reinstall kernel-devel-$(uname -r)
+   # Or if the exact version is not available:
+   # sudo dnf install kernel-devel
    
    # Arch Linux
    sudo pacman -S linux-headers
