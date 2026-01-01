@@ -1,0 +1,27 @@
+# Build artifacts
+*.o
+*.ko
+*.mod
+*.mod.c
+*.mod.o
+*.a
+*.cmd
+.tmp_versions/
+Module.symvers
+Module.markers
+modules.order
+.*.cmd
+
+# Editor and IDE files
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Compiled binaries
+rtk_hciattach
