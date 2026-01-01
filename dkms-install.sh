@@ -69,13 +69,22 @@ FIRMWARE_DEST="/lib/firmware"
 # Install firmware for USB
 if [ -d "${FIRMWARE_SRC}" ]; then
     mkdir -p "${FIRMWARE_DEST}"
-    cp -f ${FIRMWARE_SRC}/rtl*_fw ${FIRMWARE_DEST}/ 2>/dev/null || true
-    cp -f ${FIRMWARE_SRC}/rtl*_config ${FIRMWARE_DEST}/ 2>/dev/null || true
+    # Copy firmware files with explicit check
+    for fw_file in "${FIRMWARE_SRC}"/rtl*_fw; do
+        [ -e "$fw_file" ] && cp -f "$fw_file" "${FIRMWARE_DEST}/"
+    done
+    for cfg_file in "${FIRMWARE_SRC}"/rtl*_config; do
+        [ -e "$cfg_file" ] && cp -f "$cfg_file" "${FIRMWARE_DEST}/"
+    done
     
     # Install firmware for UART
     mkdir -p "${FIRMWARE_DEST}/rtlbt"
-    cp -f ${FIRMWARE_SRC}/rtlbt/rtl*_fw ${FIRMWARE_DEST}/rtlbt/ 2>/dev/null || true
-    cp -f ${FIRMWARE_SRC}/rtlbt/rtl*_config ${FIRMWARE_DEST}/rtlbt/ 2>/dev/null || true
+    for fw_file in "${FIRMWARE_SRC}"/rtlbt/rtl*_fw; do
+        [ -e "$fw_file" ] && cp -f "$fw_file" "${FIRMWARE_DEST}/rtlbt/"
+    done
+    for cfg_file in "${FIRMWARE_SRC}"/rtlbt/rtl*_config; do
+        [ -e "$cfg_file" ] && cp -f "$cfg_file" "${FIRMWARE_DEST}/rtlbt/"
+    done
 fi
 
 # Build and install hciattach utility for UART
