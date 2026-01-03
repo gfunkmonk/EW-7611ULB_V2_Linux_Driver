@@ -187,7 +187,7 @@ cat /var/lib/dkms/hci_uart/3.1/build/make.log
 
 ## Supported Kernels
 
-These drivers support Linux kernels 3.x through 6.x. The DKMS installation method ensures compatibility across kernel updates.
+These drivers support Linux kernels 3.x through 6.x (including 6.18+). The DKMS installation method ensures compatibility across kernel updates.
 
 ## License
 
