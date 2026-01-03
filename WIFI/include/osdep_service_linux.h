@@ -57,6 +57,14 @@
 #include <linux/vmalloc.h>
 #include <linux/timer.h>
 
+/* Compatibility for from_timer macro */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+#ifndef from_timer
+#define from_timer(var, callback_timer, timer_fieldname) \
+	container_of(callback_timer, typeof(*var), timer_fieldname)
+#endif
+#endif
+
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0))
 	#include <uapi/linux/sched/types.h>
 #endif
