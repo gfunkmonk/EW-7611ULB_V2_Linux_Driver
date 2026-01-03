@@ -959,7 +959,7 @@ exit:
 	return res;
 }
 
-inline u8 rtw_create_ibss_cmd(_adapter *adapter, int flags)
+u8 rtw_create_ibss_cmd(_adapter *adapter, int flags)
 {
 	return rtw_createbss_cmd(adapter, flags
 		, 1
@@ -968,7 +968,7 @@ inline u8 rtw_create_ibss_cmd(_adapter *adapter, int flags)
 	);
 }
 
-inline u8 rtw_startbss_cmd(_adapter *adapter, int flags)
+u8 rtw_startbss_cmd(_adapter *adapter, int flags)
 {
 	return rtw_createbss_cmd(adapter, flags
 		, 0
@@ -977,7 +977,7 @@ inline u8 rtw_startbss_cmd(_adapter *adapter, int flags)
 	);
 }
 
-inline u8 rtw_change_bss_chbw_cmd(_adapter *adapter, int flags
+u8 rtw_change_bss_chbw_cmd(_adapter *adapter, int flags
 	, u8 ifbmp, u8 excl_ifbmp, s16 req_ch, s8 req_bw, s8 req_offset)
 {
 	return rtw_createbss_cmd(adapter, flags
@@ -1925,12 +1925,12 @@ exit:
 	return res;
 }
 
-inline u8 rtw_set_chplan_cmd(_adapter *adapter, int flags, u8 chplan, u8 swconfig)
+u8 rtw_set_chplan_cmd(_adapter *adapter, int flags, u8 chplan, u8 swconfig)
 {
 	return _rtw_set_chplan_cmd(adapter, flags, chplan, NULL, REGD_SRC_RTK_PRIV, swconfig);
 }
 
-inline u8 rtw_set_country_cmd(_adapter *adapter, int flags, const char *country_code, u8 swconfig)
+u8 rtw_set_country_cmd(_adapter *adapter, int flags, const char *country_code, u8 swconfig)
 {
 	const struct country_chplan *ent;
 
@@ -1954,7 +1954,7 @@ inline u8 rtw_set_country_cmd(_adapter *adapter, int flags, const char *country_
 }
 
 #ifdef CONFIG_REGD_SRC_FROM_OS
-inline u8 rtw_sync_os_regd_cmd(_adapter *adapter, int flags, const char *country_code, u8 dfs_region)
+u8 rtw_sync_os_regd_cmd(_adapter *adapter, int flags, const char *country_code, u8 dfs_region)
 {
 	struct country_chplan *ent;
 	const struct country_chplan *rtk_ent;
@@ -3568,7 +3568,7 @@ static struct rtw_roch_parm *rtw_alloc_roch_parm(_adapter *adapter
 	return roch_parm;
 }
 
-inline u8 rtw_roch_cmd(_adapter *adapter
+u8 rtw_roch_cmd(_adapter *adapter
 	, u64 cookie, struct wireless_dev *wdev
 	, struct ieee80211_channel *ch, enum nl80211_channel_type ch_type
 	, unsigned int duration
@@ -3584,7 +3584,7 @@ inline u8 rtw_roch_cmd(_adapter *adapter
 	return rtw_roch_wk_cmd(adapter, ROCH_RO_CH_WK, roch_parm, flags);
 }
 
-inline u8 rtw_cancel_roch_cmd(_adapter *adapter, u64 cookie, struct wireless_dev *wdev, u8 flags)
+u8 rtw_cancel_roch_cmd(_adapter *adapter, u64 cookie, struct wireless_dev *wdev, u8 flags)
 {
 	struct rtw_roch_parm *roch_parm;
 
@@ -3595,7 +3595,7 @@ inline u8 rtw_cancel_roch_cmd(_adapter *adapter, u64 cookie, struct wireless_dev
 	return rtw_roch_wk_cmd(adapter, ROCH_CANCEL_RO_CH_WK, roch_parm, flags);
 }
 
-inline u8 rtw_mgnt_tx_cmd(_adapter *adapter, u8 tx_ch, u8 no_cck, const u8 *buf, size_t len, int wait_ack, u8 flags)
+u8 rtw_mgnt_tx_cmd(_adapter *adapter, u8 tx_ch, u8 no_cck, const u8 *buf, size_t len, int wait_ack, u8 flags)
 {
 	struct cmd_obj *cmdobj;
 	struct drvextra_cmd_parm *parm;
@@ -4768,12 +4768,12 @@ exit:
 	return res;
 }
 
-inline u8 rtw_customer_str_req_cmd(_adapter *adapter)
+u8 rtw_customer_str_req_cmd(_adapter *adapter)
 {
 	return rtw_customer_str_cmd(adapter, 0, NULL);
 }
 
-inline u8 rtw_customer_str_write_cmd(_adapter *adapter, const u8 *cstr)
+u8 rtw_customer_str_write_cmd(_adapter *adapter, const u8 *cstr)
 {
 	return rtw_customer_str_cmd(adapter, 1, cstr);
 }
@@ -4823,14 +4823,14 @@ exit:
 }
 
 #ifdef CONFIG_FW_C2H_REG
-inline u8 rtw_c2h_reg_wk_cmd(_adapter *adapter, u8 *c2h_evt)
+u8 rtw_c2h_reg_wk_cmd(_adapter *adapter, u8 *c2h_evt)
 {
 	return rtw_c2h_wk_cmd(adapter, c2h_evt, c2h_evt ? C2H_REG_LEN : 0, C2H_TYPE_REG);
 }
 #endif
 
 #ifdef CONFIG_FW_C2H_PKT
-inline u8 rtw_c2h_packet_wk_cmd(_adapter *adapter, u8 *c2h_evt, u16 length)
+u8 rtw_c2h_packet_wk_cmd(_adapter *adapter, u8 *c2h_evt, u16 length)
 {
 	return rtw_c2h_wk_cmd(adapter, c2h_evt, length, C2H_TYPE_PKT);
 }

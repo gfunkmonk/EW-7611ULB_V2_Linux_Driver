@@ -4,10 +4,8 @@ OBJECT_FILES_NON_STANDARD := y
 export OBJECT_FILES_NON_STANDARD
 
 ccflags-y += $(USER_EXTRA_CFLAGS)
-# Use -O1 for kernel 6.18+ to avoid objtool "unannotated intra-function call" errors
-# that occur with -O2 optimization and inline functions
-ccflags-y += -O1
-#ccflags-y += -O2
+#ccflags-y += -O1
+ccflags-y += -O2
 #ccflags-y += -Wall
 #ccflags-y += -Wextra
 #ccflags-y += -Werror
