@@ -780,12 +780,22 @@ done:
 #if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
 static int btusb_setup(struct hci_dev *hdev)
 {
+        struct btusb_data *data = GET_DRV_DATA(hdev);
+        int err;
+
         RTKBT_DBG("%s", __func__);
         
-        /* Set device as configured - required for modern kernels
-         * The actual firmware download happens in btusb_open
-         * Set the manufacturer - Realtek Semiconductor Corporation */
+        /* Set the manufacturer - Realtek Semiconductor Corporation */
         hdev->manufacturer = 0x005D;
+        
+        /* Download firmware during setup for modern kernels (4.1+)
+         * This ensures the device gets properly configured with MAC address
+         * before being opened by userspace */
+        err = download_patch(data->intf);
+        if (err < 0) {
+                RTKBT_ERR("%s: Failed to download patch", __func__);
+                return err;
+        }
         
         return 0;
 }
@@ -810,9 +820,13 @@ static int btusb_open(struct hci_dev *hdev)
                 //goto failed;
         }
 
+#if HCI_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
+        /* For kernels < 4.1, download firmware here in btusb_open
+         * For kernels >= 4.1, firmware is downloaded in btusb_setup */
         err = download_patch(data->intf);
         if (err < 0)
                 goto failed;
+#endif
         /*******************************/
 
         RTKBT_INFO("%s set HCI_RUNNING", __func__);
