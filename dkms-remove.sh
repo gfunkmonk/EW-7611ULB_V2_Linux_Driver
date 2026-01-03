@@ -2,7 +2,7 @@
 set -e
 
 # DKMS removal script for EW-7611ULB V2 Linux drivers
-# Removes both WiFi (rt8723du) and Bluetooth USB (rtk_btusb) drivers
+# Removes both WiFi (rt8723du) and Bluetooth USB (edimax_btusb) drivers
 
 if [ "$EUID" -ne 0 ]; then
     echo "ERROR: This script must be run as root (use sudo)"
@@ -43,18 +43,18 @@ fi
 
 # Remove Bluetooth USB driver
 echo ""
-echo "Removing Bluetooth USB driver (rtk_btusb)..."
-if dkms status rtk_btusb/3.1 &> /dev/null; then
-    dkms remove rtk_btusb/3.1 --all
-    echo "  ✓ Removed rtk_btusb from DKMS"
+echo "Removing Bluetooth USB driver (edimax_btusb)..."
+if dkms status edimax_btusb/3.1 &> /dev/null; then
+    dkms remove edimax_btusb/3.1 --all
+    echo "  ✓ Removed edimax_btusb from DKMS"
 else
-    echo "  - rtk_btusb not found in DKMS"
+    echo "  - edimax_btusb not found in DKMS"
 fi
 
 # Remove source directory
-if [ -d "/usr/src/rtk_btusb-3.1" ]; then
-    rm -rf "/usr/src/rtk_btusb-3.1"
-    echo "  ✓ Removed rtk_btusb source directory"
+if [ -d "/usr/src/edimax_btusb-3.1" ]; then
+    rm -rf "/usr/src/edimax_btusb-3.1"
+    echo "  ✓ Removed edimax_btusb source directory"
 fi
 
 echo ""

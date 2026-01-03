@@ -39,10 +39,10 @@ fi
 echo ""
 
 # Bluetooth driver status
-echo "Bluetooth USB Driver (rtk_btusb 3.1):"
-if dkms status rtk_btusb/3.1 2>/dev/null | grep -q "installed"; then
+echo "Bluetooth USB Driver (edimax_btusb 3.1):"
+if dkms status edimax_btusb/3.1 2>/dev/null | grep -q "installed"; then
     echo "  ✓ Installed in DKMS"
-    dkms status rtk_btusb/3.1 | sed 's/^/    /'
+    dkms status edimax_btusb/3.1 | sed 's/^/    /'
 else
     echo "  ✗ Not installed in DKMS"
 fi
