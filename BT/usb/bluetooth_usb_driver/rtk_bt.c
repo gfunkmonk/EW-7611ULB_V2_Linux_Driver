@@ -1356,7 +1356,7 @@ static int rtkbt_lookup_le_device_poweron_whitelist(struct hci_dev *hdev,
 }
 #endif
 
-int rtkbt_pm_notify(struct notifier_block *notifier,
+static int rtkbt_pm_notify(struct notifier_block *notifier,
                     ulong pm_event, void *unused)
 {
         struct btusb_data *data;
@@ -1631,8 +1631,14 @@ static int btusb_probe(struct usb_interface *intf,
 #endif
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(3, 7, 1)
-        if (!reset)
+        if (!reset) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+                /* In kernel 6.12+, quirks field was removed, use hci_dev_set_flag instead */
+                hci_dev_set_flag(hdev, HCI_QUIRK_RESET_ON_CLOSE);
+#else
                 set_bit(HCI_QUIRK_RESET_ON_CLOSE, &hdev->quirks);
+#endif
+        }
         RTKBT_DBG("set_bit(HCI_QUIRK_RESET_ON_CLOSE, &hdev->quirks);");
 #endif
 
@@ -1650,7 +1656,12 @@ static int btusb_probe(struct usb_interface *intf,
         }
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+        /* In kernel 6.12+, quirks field was removed, use hci_dev_set_flag instead */
+        hci_dev_set_flag(hdev, HCI_QUIRK_SIMULTANEOUS_DISCOVERY);
+#else
         set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+#endif
 #endif
 
         err = hci_register_dev(hdev);

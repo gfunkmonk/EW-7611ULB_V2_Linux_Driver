@@ -77,6 +77,9 @@ extern void print_event(struct sk_buff *skb);
 extern void print_command(struct sk_buff *skb);
 extern void print_acl(struct sk_buff *skb, int dataOut);
 
+int download_lps_patch(struct usb_interface *intf);
+int set_scan(struct usb_interface *intf);
+
 #if defined RTKBT_SWITCH_PATCH || defined RTKBT_TV_POWERON_WHITELIST
 int __rtk_send_hci_cmd(struct usb_device *udev, u8 *buf, u16 size);
 int __rtk_recv_hci_evt(struct usb_device *udev, u8 *buf, u8 len, u16 opcode);
@@ -89,8 +92,5 @@ struct api_context {
 	struct completion	done;
 	int			status;
 };
-
-int download_lps_patch(struct usb_interface *intf);
-int set_scan(struct usb_interface *intf);
 
 #endif
