@@ -64,6 +64,7 @@ ldflags-y += --strip-all -O3
 
 ccflags-y += -fno-pic
 ccflags-y += -fno-pie
+ccflags-y += -fno-optimize-sibling-calls
 
 CONFIG_AUTOCFG_CP = n
 
@@ -2531,7 +2532,7 @@ export CONFIG_RTL8723DU = m
 all: modules
 
 modules:
-	OBJTOOL= $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules
+	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
