@@ -30,36 +30,21 @@ else
     echo "❌ Bluetooth USB driver (rtk_btusb) is NOT installed via DKMS"
 fi
 
-# Check Bluetooth UART driver
-if dkms status hci_uart 2>/dev/null | grep -q "installed"; then
-    echo "✓ Bluetooth UART driver (hci_uart) is installed via DKMS"
-    dkms status hci_uart 2>/dev/null | sed 's/^/  /'
-else
-    echo "❌ Bluetooth UART driver (hci_uart) is NOT installed via DKMS"
-fi
-
 echo ""
 echo "=== Loaded Kernel Modules ==="
 
 # Check if WiFi module is loaded
-if lsmod | grep -q "8723du"; then
-    echo "✓ WiFi module (8723du) is loaded"
+if lsmod | grep -q "rt8723du"; then
+    echo "✓ WiFi module (rt8723du) is loaded"
 else
-    echo "  WiFi module (8723du) is not loaded (run: sudo modprobe 8723du)"
+    echo "  WiFi module (rt8723du) is not loaded (run: sudo modprobe rt8723du)"
 fi
 
 # Check if Bluetooth USB module is loaded
-if lsmod | grep -q "rtk_btusb"; then
-    echo "✓ Bluetooth USB module (rtk_btusb) is loaded"
+if lsmod | grep -q "bt_edimax"; then
+    echo "✓ Bluetooth USB module (bt_edimax) is loaded"
 else
-    echo "  Bluetooth USB module (rtk_btusb) is not loaded (run: sudo modprobe rtk_btusb)"
-fi
-
-# Check if Bluetooth UART module is loaded
-if lsmod | grep -q "hci_uart"; then
-    echo "✓ Bluetooth UART module (hci_uart) is loaded"
-else
-    echo "  Bluetooth UART module (hci_uart) is not loaded (run: sudo modprobe hci_uart)"
+    echo "  Bluetooth USB module (bt_edimax) is not loaded (run: sudo modprobe bt_edimax)"
 fi
 
 echo ""
@@ -74,21 +59,11 @@ else
 fi
 
 # Check Bluetooth firmware
-if ls /lib/firmware/rtlbt/rtl*_fw 2>/dev/null | grep -q .; then
+if ls /lib/firmware/rtl*_fw 2>/dev/null | grep -q .; then
     echo "✓ Bluetooth firmware files found:"
-    ls -1 /lib/firmware/rtlbt/rtl*_fw 2>/dev/null | sed 's/^/  /'
+    ls -1 /lib/firmware/rtl*_fw 2>/dev/null | sed 's/^/  /'
 else
-    echo "  Bluetooth firmware files not found in /lib/firmware/rtlbt/"
-fi
-
-echo ""
-echo "=== Utilities ==="
-
-# Check rtk_hciattach
-if [ -f /usr/sbin/rtk_hciattach ]; then
-    echo "✓ rtk_hciattach utility is installed"
-else
-    echo "  rtk_hciattach utility is not installed (needed for UART Bluetooth)"
+    echo "  Bluetooth firmware files not found in /lib/firmware/"
 fi
 
 echo ""

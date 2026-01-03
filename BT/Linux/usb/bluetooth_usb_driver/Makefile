@@ -1,6 +1,6 @@
 ifneq ($(KERNELRELEASE),)
-	obj-m := edimax_bt.o
-	edimax_bt-y = rtk_coex.o rtk_misc.o rtk_bt.o
+	obj-m := bt_edimax.o
+	bt_edimax-y = rtk_coex.o rtk_misc.o rtk_bt.o
 else
 	PWD := $(shell pwd)
 	KVER := $(shell uname -r)

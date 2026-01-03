@@ -4,8 +4,7 @@ Linux drivers for the EW-7611ULB V2 WiFi/Bluetooth USB adapter.
 
 This driver package includes:
 - **WiFi**: Realtek RTL8723DU wireless network driver
-- **Bluetooth USB**: Realtek Bluetooth USB driver (rtk_btusb)
-- **Bluetooth UART**: Realtek Bluetooth UART driver (hci_uart)
+- **Bluetooth USB**: Realtek Bluetooth USB driver (bt_edimax)
 
 ## Quick Start with DKMS
 
@@ -19,8 +18,8 @@ cd EW-7611ULB_V2_Linux_Driver
 sudo ./dkms-install.sh
 
 # Load modules
-sudo modprobe 8723du
-sudo modprobe rtk_btusb
+sudo modprobe rt8723du
+sudo modprobe bt_edimax
 
 # Check status
 ./dkms-status.sh
@@ -61,15 +60,13 @@ sudo ./dkms-install.sh
 The script will:
 1. Install the WiFi driver (rtl8723du)
 2. Install the Bluetooth USB driver (rtk_btusb)
-3. Install the Bluetooth UART driver (hci_uart)
-4. Copy firmware files to `/lib/firmware`
-5. Build and install the `rtk_hciattach` utility
+3. Copy firmware files to `/lib/firmware`
 
 After installation, you may need to load the modules:
 
 ```bash
-sudo modprobe 8723du
-sudo modprobe rtk_btusb
+sudo modprobe rt8723du
+sudo modprobe bt_edimax
 ```
 
 #### Check Installation Status
@@ -105,67 +102,48 @@ If you prefer not to use DKMS, you can still manually build and install the driv
 cd WIFI
 make
 sudo make install
-sudo modprobe 8723du
+sudo modprobe rt8723du
 ```
 
 #### Bluetooth USB Driver
 
 ```bash
 cd BT/Linux
-sudo make install INTERFACE=usb
-```
-
-#### Bluetooth UART Driver
-
-```bash
-cd BT/Linux
-sudo make install INTERFACE=uart
-```
-
-#### Install Both Bluetooth Drivers
-
-```bash
-cd BT/Linux
-sudo make install INTERFACE=all
+sudo make install
 ```
 
 ## Module Information
 
-### WiFi Module (8723du)
+### WiFi Module (rt8723du)
 - **Chip**: Realtek RTL8723DU
-- **Module name**: 8723du.ko
+- **Module name**: rt8723du.ko
 - **Interface**: USB
 - **Features**: 802.11n, AP mode, P2P, Monitor mode
 
-### Bluetooth USB Module (rtk_btusb)
-- **Module name**: rtk_btusb.ko
+### Bluetooth USB Module (bt_edimax)
+- **Module name**: bt_edimax.ko
 - **Interface**: USB
 - **Replaces**: Standard btusb module for Realtek devices
-
-### Bluetooth UART Module (hci_uart)
-- **Module name**: hci_uart.ko
-- **Interface**: UART/Serial
-- **Utility**: rtk_hciattach (for UART initialization)
 
 ## Troubleshooting
 
 ### WiFi not working
 ```bash
 # Check if module is loaded
-lsmod | grep 8723du
+lsmod | grep rt8723du
 
 # Check kernel messages
 dmesg | grep -i rtl
 
 # Reload the module
-sudo modprobe -r 8723du
-sudo modprobe 8723du
+sudo modprobe -r rt8723du
+sudo modprobe rt8723du
 ```
 
 ### Bluetooth not working
 ```bash
 # Check if module is loaded
-lsmod | grep -E "(rtk_btusb|hci_uart)"
+lsmod | grep bt_edimax
 
 # Check Bluetooth service
 sudo systemctl status bluetooth
@@ -182,18 +160,17 @@ dkms status
 # View build logs
 cat /var/lib/dkms/rtl8723du/5.6.1/build/make.log
 cat /var/lib/dkms/rtk_btusb/3.1/build/make.log
-cat /var/lib/dkms/hci_uart/3.1/build/make.log
 ```
 
 ### Module load errors (Exec format error or version magic mismatch)
 
 If you see errors like:
 ```
-modprobe: ERROR: could not insert '8723du': Exec format error
+modprobe: ERROR: could not insert 'rt8723du': Exec format error
 ```
 or
 ```
-8723du: version magic '6.18.2-rt3 SMP preempt_rt mod_unload' should be '6.18.2-rt3-tkg-bore SMP preempt_rt mod_unload'
+rt8723du: version magic '6.18.2-rt3 SMP preempt_rt mod_unload' should be '6.18.2-rt3-tkg-bore SMP preempt_rt mod_unload'
 ```
 
 This means the module was compiled for a different kernel version than the one currently running. This commonly happens with:
@@ -233,7 +210,7 @@ This means the module was compiled for a different kernel version than the one c
    make clean
    make
    sudo make install
-   sudo modprobe 8723du
+   sudo modprobe rt8723du
    ```
 
 4. **Verify the module matches your kernel:**
@@ -242,7 +219,7 @@ This means the module was compiled for a different kernel version than the one c
    uname -r
    
    # Check module version
-   modinfo 8723du | grep vermagic
+   modinfo rt8723du | grep vermagic
    ```
    
    The `vermagic` should exactly match your kernel version from `uname -r`.

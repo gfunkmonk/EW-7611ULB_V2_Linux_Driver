@@ -29,22 +29,10 @@ echo "=== Removing Bluetooth USB driver ==="
 dkms remove -m rtk_btusb -v 3.1 --all || echo "Bluetooth USB driver not found in DKMS"
 rm -rf "/usr/src/rtk_btusb-3.1"
 
-# Remove Bluetooth UART driver
-echo ""
-echo "=== Removing Bluetooth UART driver ==="
-dkms remove -m hci_uart -v 3.1 --all || echo "Bluetooth UART driver not found in DKMS"
-rm -rf "/usr/src/hci_uart-3.1"
-
-# Remove rtk_hciattach utility
-echo ""
-echo "=== Removing rtk_hciattach utility ==="
-rm -f /usr/sbin/rtk_hciattach
-
 echo ""
 echo "=== Removal complete ==="
 echo ""
 echo "Note: Firmware files in /lib/firmware were not removed."
 echo "To remove them manually:"
 echo "  sudo rm -f /lib/firmware/rtl*_fw /lib/firmware/rtl*_config"
-echo "  sudo rm -rf /lib/firmware/rtlbt"
 echo ""
