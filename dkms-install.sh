@@ -2,7 +2,7 @@
 set -e
 
 # DKMS installation script for EW-7611ULB V2 Linux drivers
-# Installs both WiFi (rt8723du) and Bluetooth USB (edimax_btusb) drivers
+# Installs both WiFi (rt8723du) and Bluetooth USB (edimax_bt) drivers
 
 if [ "$EUID" -ne 0 ]; then
     echo "ERROR: This script must be run as root (use sudo)"
@@ -58,14 +58,14 @@ echo "  ✓ WiFi driver installed successfully"
 
 # Bluetooth USB driver installation
 echo ""
-echo "Installing Bluetooth USB driver (edimax_btusb)..."
+echo "Installing Bluetooth USB driver (edimax_bt)..."
 BT_SRC="$REPO_DIR/BT/usb"
-BT_DEST="/usr/src/edimax_btusb-3.1"
+BT_DEST="/usr/src/edimax_bt-3.1"
 
 # Remove old version if it exists
-if dkms status edimax_btusb/3.1 &> /dev/null; then
-    echo "  Removing old edimax_btusb driver..."
-    dkms remove edimax_btusb/3.1 --all 2>/dev/null || true
+if dkms status edimax_bt/3.1 &> /dev/null; then
+    echo "  Removing old edimax_bt driver..."
+    dkms remove edimax_bt/3.1 --all 2>/dev/null || true
 fi
 
 # Copy source to /usr/src
@@ -76,13 +76,13 @@ cp -r "$BT_SRC" "$BT_DEST"
 
 # Add, build, and install with DKMS
 echo "  Adding to DKMS..."
-dkms add -m edimax_btusb -v 3.1
+dkms add -m edimax_bt -v 3.1
 
 echo "  Building module..."
-dkms build -m edimax_btusb -v 3.1
+dkms build -m edimax_bt -v 3.1
 
 echo "  Installing module..."
-dkms install -m edimax_btusb -v 3.1
+dkms install -m edimax_bt -v 3.1
 
 echo "  ✓ Bluetooth USB driver installed successfully"
 
@@ -105,7 +105,7 @@ echo "========================================="
 echo ""
 echo "You can now load the modules:"
 echo "  sudo modprobe rt8723du"
-echo "  sudo modprobe bt_edimax"
+echo "  sudo modprobe edimax_bt"
 echo ""
 echo "Check installation status with:"
 echo "  ./dkms-status.sh"

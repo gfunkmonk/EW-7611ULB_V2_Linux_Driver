@@ -2,7 +2,7 @@
 set -e
 
 # DKMS removal script for EW-7611ULB V2 Linux drivers
-# Removes both WiFi (rt8723du) and Bluetooth USB (edimax_btusb) drivers
+# Removes both WiFi (rt8723du) and Bluetooth USB (edimax_bt) drivers
 
 if [ "$EUID" -ne 0 ]; then
     echo "ERROR: This script must be run as root (use sudo)"
@@ -23,7 +23,7 @@ echo "========================================="
 echo ""
 echo "Unloading kernel modules..."
 rmmod rt8723du 2>/dev/null && echo "  ✓ Unloaded rt8723du" || echo "  - rt8723du not loaded"
-rmmod bt_edimax 2>/dev/null && echo "  ✓ Unloaded bt_edimax" || echo "  - bt_edimax not loaded"
+rmmod edimax_bt 2>/dev/null && echo "  ✓ Unloaded edimax_bt" || echo "  - edimax_bt not loaded"
 
 # Remove WiFi driver
 echo ""
@@ -43,18 +43,18 @@ fi
 
 # Remove Bluetooth USB driver
 echo ""
-echo "Removing Bluetooth USB driver (edimax_btusb)..."
-if dkms status edimax_btusb/3.1 &> /dev/null; then
-    dkms remove edimax_btusb/3.1 --all
-    echo "  ✓ Removed edimax_btusb from DKMS"
+echo "Removing Bluetooth USB driver (edimax_bt)..."
+if dkms status edimax_bt/3.1 &> /dev/null; then
+    dkms remove edimax_bt/3.1 --all
+    echo "  ✓ Removed edimax_bt from DKMS"
 else
-    echo "  - edimax_btusb not found in DKMS"
+    echo "  - edimax_bt not found in DKMS"
 fi
 
 # Remove source directory
-if [ -d "/usr/src/edimax_btusb-3.1" ]; then
-    rm -rf "/usr/src/edimax_btusb-3.1"
-    echo "  ✓ Removed edimax_btusb source directory"
+if [ -d "/usr/src/edimax_bt-3.1" ]; then
+    rm -rf "/usr/src/edimax_bt-3.1"
+    echo "  ✓ Removed edimax_bt source directory"
 fi
 
 echo ""

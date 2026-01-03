@@ -39,10 +39,10 @@ fi
 echo ""
 
 # Bluetooth driver status
-echo "Bluetooth USB Driver (edimax_btusb 3.1):"
-if dkms status edimax_btusb/3.1 2>/dev/null | grep -q "installed"; then
+echo "Bluetooth USB Driver (edimax_bt 3.1):"
+if dkms status edimax_bt/3.1 2>/dev/null | grep -q "installed"; then
     echo "  ✓ Installed in DKMS"
-    dkms status edimax_btusb/3.1 | sed 's/^/    /'
+    dkms status edimax_bt/3.1 | sed 's/^/    /'
 else
     echo "  ✗ Not installed in DKMS"
 fi
@@ -63,13 +63,13 @@ fi
 
 echo ""
 
-echo "Bluetooth module (bt_edimax):"
-if lsmod | grep -q "^bt_edimax"; then
+echo "Bluetooth module (edimax_bt):"
+if lsmod | grep -q "^edimax_bt"; then
     echo "  ✓ Loaded"
-    lsmod | grep "^bt_edimax" | sed 's/^/    /'
+    lsmod | grep "^edimax_bt" | sed 's/^/    /'
 else
     echo "  ✗ Not loaded"
-    echo "    Load with: sudo modprobe bt_edimax"
+    echo "    Load with: sudo modprobe edimax_bt"
 fi
 
 # Check for module files
@@ -86,11 +86,11 @@ else
 fi
 
 # Find Bluetooth module
-BT_MODULE=$(find /lib/modules/$(uname -r) -name "bt_edimax.ko*" 2>/dev/null | head -1)
+BT_MODULE=$(find /lib/modules/$(uname -r) -name "edimax_bt.ko*" 2>/dev/null | head -1)
 if [ -n "$BT_MODULE" ]; then
-    echo "  ✓ bt_edimax.ko found at: $BT_MODULE"
+    echo "  ✓ edimax_bt.ko found at: $BT_MODULE"
 else
-    echo "  ✗ bt_edimax.ko not found"
+    echo "  ✗ edimax_bt.ko not found"
 fi
 
 # Check firmware
