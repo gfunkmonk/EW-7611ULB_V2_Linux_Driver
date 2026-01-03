@@ -158,7 +158,7 @@ bluetoothctl list
 dmesg | grep -i bluetooth
 ```
 
-**Note for Kernel 4.1+**: The Bluetooth driver includes an HCI setup callback required for modern kernels. If you're upgrading from an older version of this driver and experiencing issues with Bluetooth controllers not being detected, ensure you're using the latest version with this fix.
+**Note for Kernel 4.1+**: The Bluetooth driver includes an HCI setup callback that properly initializes the device for modern kernels. The setup callback downloads firmware during device initialization, which is required for Bluetooth controllers to be detected by `bluetoothctl` and other userspace tools. If you're upgrading from an older version of this driver and experiencing issues with Bluetooth controllers not being detected, ensure you're using the latest version with this fix.
 
 ### DKMS build failures
 ```bash
