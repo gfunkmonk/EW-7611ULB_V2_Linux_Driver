@@ -28,10 +28,10 @@ echo "DKMS Driver Status:"
 echo ""
 
 # WiFi driver status
-echo "WiFi Driver (rt8723du 5.6.1):"
-if dkms status rt8723du/5.6.1 2>/dev/null | grep -q "installed"; then
+echo "WiFi Driver (edimax_wifi 5.6.1):"
+if dkms status edimax_wifi/5.6.1 2>/dev/null | grep -q "installed"; then
     echo "  ✓ Installed in DKMS"
-    dkms status rt8723du/5.6.1 | sed 's/^/    /'
+    dkms status edimax_wifi/5.6.1 | sed 's/^/    /'
 else
     echo "  ✗ Not installed in DKMS"
 fi
@@ -52,13 +52,13 @@ echo ""
 echo "Loaded Kernel Modules:"
 echo ""
 
-echo "WiFi module (rt8723du):"
-if lsmod | grep -q "^rt8723du"; then
+echo "WiFi module (edimax_wifi):"
+if lsmod | grep -q "^edimax_wifi"; then
     echo "  ✓ Loaded"
-    lsmod | grep "^rt8723du" | sed 's/^/    /'
+    lsmod | grep "^edimax_wifi" | sed 's/^/    /'
 else
     echo "  ✗ Not loaded"
-    echo "    Load with: sudo modprobe rt8723du"
+    echo "    Load with: sudo modprobe edimax_wifi"
 fi
 
 echo ""
@@ -78,11 +78,11 @@ echo "Module Files:"
 echo ""
 
 # Find WiFi module
-WIFI_MODULE=$(find /lib/modules/$(uname -r) -name "rt8723du.ko*" 2>/dev/null | head -1)
+WIFI_MODULE=$(find /lib/modules/$(uname -r) -name "edimax_wifi.ko*" 2>/dev/null | head -1)
 if [ -n "$WIFI_MODULE" ]; then
-    echo "  ✓ rt8723du.ko found at: $WIFI_MODULE"
+    echo "  ✓ edimax_wifi.ko found at: $WIFI_MODULE"
 else
-    echo "  ✗ rt8723du.ko not found"
+    echo "  ✗ edimax_wifi.ko not found"
 fi
 
 # Find Bluetooth module
