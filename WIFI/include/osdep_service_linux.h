@@ -57,7 +57,7 @@
 #include <linux/vmalloc.h>
 #include <linux/timer.h>
 
-/* Compatibility for from_timer macro */
+/* Compatibility for from_timer macro (introduced in kernel 4.14) */
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
 #ifndef from_timer
 #define from_timer(var, callback_timer, timer_fieldname) \
