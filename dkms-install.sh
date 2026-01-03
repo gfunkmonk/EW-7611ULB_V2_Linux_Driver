@@ -2,7 +2,7 @@
 set -e
 
 # DKMS installation script for EW-7611ULB V2 Linux drivers
-# Installs both WiFi (rtl8723du) and Bluetooth USB (rtk_btusb) drivers
+# Installs both WiFi (rt8723du) and Bluetooth USB (rtk_btusb) drivers
 
 if [ "$EUID" -ne 0 ]; then
     echo "ERROR: This script must be run as root (use sudo)"
@@ -28,14 +28,14 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # WiFi driver installation
 echo ""
-echo "Installing WiFi driver (rtl8723du)..."
+echo "Installing WiFi driver (rt8723du)..."
 WIFI_SRC="$REPO_DIR/WIFI"
-WIFI_DEST="/usr/src/rtl8723du-5.6.1"
+WIFI_DEST="/usr/src/rt8723du-5.6.1"
 
 # Remove old version if it exists
-if dkms status rtl8723du/5.6.1 &> /dev/null; then
-    echo "  Removing old rtl8723du driver..."
-    dkms remove rtl8723du/5.6.1 --all 2>/dev/null || true
+if dkms status rt8723du/5.6.1 &> /dev/null; then
+    echo "  Removing old rt8723du driver..."
+    dkms remove rt8723du/5.6.1 --all 2>/dev/null || true
 fi
 
 # Copy source to /usr/src
@@ -46,13 +46,13 @@ cp -r "$WIFI_SRC" "$WIFI_DEST"
 
 # Add, build, and install with DKMS
 echo "  Adding to DKMS..."
-dkms add -m rtl8723du -v 5.6.1
+dkms add -m rt8723du -v 5.6.1
 
 echo "  Building module..."
-dkms build -m rtl8723du -v 5.6.1
+dkms build -m rt8723du -v 5.6.1
 
 echo "  Installing module..."
-dkms install -m rtl8723du -v 5.6.1
+dkms install -m rt8723du -v 5.6.1
 
 echo "  ✓ WiFi driver installed successfully"
 

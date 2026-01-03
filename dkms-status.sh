@@ -28,10 +28,10 @@ echo "DKMS Driver Status:"
 echo ""
 
 # WiFi driver status
-echo "WiFi Driver (rtl8723du 5.6.1):"
-if dkms status rtl8723du/5.6.1 2>/dev/null | grep -q "installed"; then
+echo "WiFi Driver (rt8723du 5.6.1):"
+if dkms status rt8723du/5.6.1 2>/dev/null | grep -q "installed"; then
     echo "  ✓ Installed in DKMS"
-    dkms status rtl8723du/5.6.1 | sed 's/^/    /'
+    dkms status rt8723du/5.6.1 | sed 's/^/    /'
 else
     echo "  ✗ Not installed in DKMS"
 fi
