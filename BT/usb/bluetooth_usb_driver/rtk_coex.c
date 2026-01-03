@@ -36,7 +36,7 @@
 
 #include "rtk_coex.h"
 
-/* Compatibility for del_timer functions (may be removed in kernel 6.18+) */
+/* Compatibility for del_timer functions (renamed in kernel 6.18+) */
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0))
 #ifndef del_timer_sync
 #define del_timer_sync(timer) timer_delete_sync(timer)
