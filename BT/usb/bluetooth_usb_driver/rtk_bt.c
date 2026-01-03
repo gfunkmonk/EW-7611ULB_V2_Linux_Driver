@@ -1897,7 +1897,7 @@ static struct usb_driver btusb_driver = {
 
 static int __init btusb_init(void)
 {
-        RTKBT_DBG("Realtek Bluetooth USB driver ver %s", VERSION);
+        RTKBT_DBG("Edimax USB BT driver ver %s", VERSION);
 #ifdef BTCOEX
         rtk_btcoex_init();
 #endif
@@ -1918,6 +1918,6 @@ module_init(btusb_init);
 module_exit(btusb_exit);
 
 MODULE_AUTHOR("");
-MODULE_DESCRIPTION("Realtek Bluetooth USB driver ver " VERSION);
+MODULE_DESCRIPTION("Edimax USB BT driver ver " VERSION);
 MODULE_VERSION(VERSION);
 MODULE_LICENSE("GPL");

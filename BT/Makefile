@@ -3,6 +3,7 @@ RTKBT_FIRMWARE_DIR := rtkbt-firmware/lib/firmware
 MDL_DIR	:= /lib/modules/$(shell uname -r)
 DRV_DIR	:= $(MDL_DIR)/extras
 
+ccflags-y += Wno-missing-prototypes
 
 install:
 	@echo "Start Realtek Bluetooth USB driver installation"

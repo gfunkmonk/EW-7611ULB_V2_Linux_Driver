@@ -1,35 +1,39 @@
-ccflags-y += $(USER_EXTRA_CFLAGS)
-#ccflags-y += -O1
 ccflags-y += -O2
+ccflags-y += $(USER_EXTRA_CFLAGS)
+
 #ccflags-y += -Wall
 #ccflags-y += -Wextra
 #ccflags-y += -Werror
 #ccflags-y += -pedantic
 #ccflags-y += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
-ccflags-y += -Wno-unused-variable
-ccflags-y += -Wno-unused-value
+ccflags-y += -Wno-address
+ccflags-y += -Wno-attributes
+ccflags-y += -Wno-cast-function-type
+ccflags-y += -Wno-date-time
+ccflags-y += -Wno-discarded-qualifiers
+ccflags-y += -Wno-empty-body
+ccflags-y += -Wno-enum-conversion
+#ccflags-y += -Wno-incompatible-pointer-types
+#ccflags-y += -Wno-ignored-attributes
+ccflags-y += -Wno-implicit-fallthrough
+ccflags-y += -Wno-misleading-indentation
+ccflags-y += -Wno-missing-declarations
+ccflags-y += -Wno-missing-prototypes
+#ccflags-y += -Wno-parentheses-equality
+#ccflags-y += -Wno-pointer-bool-conversion
+#ccflags-y += -Wno-sometimes-uninitialized
+ccflags-y += -Wno-stringop-overread
+ccflags-y += -Wno-undef
+ccflags-y += -Wno-uninitialized
+ccflags-y += -Wno-unknown-pragmas
+#ccflags-y += -Wno-unused
+ccflags-y += -Wno-unused-function
 ccflags-y += -Wno-unused-label
 ccflags-y += -Wno-unused-parameter
-ccflags-y += -Wno-unused-function
-ccflags-y += -Wno-unused
-ccflags-y += -Wno-uninitialized
-ccflags-y += -Wno-missing-prototypes
-ccflags-y += -Wno-missing-declarations
-ccflags-y += -Wno-address
-ccflags-y += -Wno-cast-function-type
-ccflags-y += -Wno-discarded-qualifiers
-#ccflags-y += -Wno-sometimes-uninitialized
-ccflags-y += -Wno-enum-conversion
+ccflags-y += -Wno-unused-value
+ccflags-y += -Wno-unused-variable
 ccflags-y += -Wno-vla
-ccflags-y += -Wno-date-time
-ccflags-y += -Wno-implicit-fallthrough
-ccflags-y += -Wno-attributes
-#ccflags-y += -Wno-ignored-attributes
-ccflags-y += -Wno-empty-body
-ccflags-y += -Wno-misleading-indentation
-ccflags-y += -Wno-undef
-ccflags-y += -Wno-stringop-overread
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
@@ -141,7 +145,7 @@ endif
 CONFIG_RTW_DEBUG = n
 # default log level is _DRV_INFO_ = 4,
 # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
-CONFIG_RTW_LOG_LEVEL = 3
+CONFIG_RTW_LOG_LEVEL = 2
 
 # enable /proc/net/rtlxxxx/ debug interfaces
 CONFIG_PROC_DEBUG = y
@@ -243,7 +247,7 @@ CONFIG_CUSTOMER_HUAWEI_GENERAL = n
 
 CONFIG_DRVEXT_MODULE = n
 
-export TopDIR ?= $(shell pwd)
+export TopDIR ?= $(src)
 
 ########### COMMON  #################################
 ifeq ($(CONFIG_GSPI_HCI), y)
@@ -723,7 +727,7 @@ ifeq ($(CONFIG_RTL8723D), y)
 RTL871X = rtl8723d
 ifeq ($(CONFIG_USB_HCI), y)
 MODULE_NAME = edimax_wifi
-MODULE_SUB_NAME = edimax_wifi
+MODULE_SUB_NAME = 8723du
 endif
 ifeq ($(CONFIG_PCI_HCI), y)
 MODULE_NAME = 8723de
