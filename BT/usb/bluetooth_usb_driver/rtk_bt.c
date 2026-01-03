@@ -784,6 +784,10 @@ static int btusb_setup(struct hci_dev *hdev)
         
         /* Set device as configured - required for modern kernels */
         /* The actual firmware download happens in btusb_open */
+        
+        /* Set the manufacturer - Realtek (0x005D) */
+        hdev->manufacturer = 93; /* 0x005D - Realtek Semiconductor Corporation */
+        
         return 0;
 }
 #endif
