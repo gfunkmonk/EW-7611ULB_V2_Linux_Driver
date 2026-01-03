@@ -26,6 +26,7 @@
 		     ".long 999b\n\t" \
 		     ".popsection\n\t")
 #else
+/* Empty when objtool is not enabled */
 #define ANNOTATE_INTRA_FUNCTION_CALL
 #endif
 #endif
