@@ -57,6 +57,7 @@ ldflags-y += --strip-all -O3
 
 ccflags-y += -fno-pic
 ccflags-y += -fno-pie
+ccflags-y += -fno-optimize-sibling-calls
 
 CONFIG_AUTOCFG_CP = n
 
