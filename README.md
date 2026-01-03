@@ -5,7 +5,6 @@ Linux drivers for the EW-7611ULB V2 WiFi/Bluetooth USB adapter.
 This driver package includes:
 - **WiFi**: Realtek RTL8723DU wireless network driver
 - **Bluetooth USB**: Realtek Bluetooth USB driver (rtk_btusb)
-- **Bluetooth UART**: Realtek Bluetooth UART driver (hci_uart)
 
 ## Quick Start with DKMS
 
@@ -61,9 +60,7 @@ sudo ./dkms-install.sh
 The script will:
 1. Install the WiFi driver (rtl8723du)
 2. Install the Bluetooth USB driver (rtk_btusb)
-3. Install the Bluetooth UART driver (hci_uart)
-4. Copy firmware files to `/lib/firmware`
-5. Build and install the `rtk_hciattach` utility
+3. Copy firmware files to `/lib/firmware`
 
 After installation, you may need to load the modules:
 
@@ -112,21 +109,7 @@ sudo modprobe 8723du
 
 ```bash
 cd BT/Linux
-sudo make install INTERFACE=usb
-```
-
-#### Bluetooth UART Driver
-
-```bash
-cd BT/Linux
-sudo make install INTERFACE=uart
-```
-
-#### Install Both Bluetooth Drivers
-
-```bash
-cd BT/Linux
-sudo make install INTERFACE=all
+sudo make install
 ```
 
 ## Module Information
@@ -141,11 +124,6 @@ sudo make install INTERFACE=all
 - **Module name**: rtk_btusb.ko
 - **Interface**: USB
 - **Replaces**: Standard btusb module for Realtek devices
-
-### Bluetooth UART Module (hci_uart)
-- **Module name**: hci_uart.ko
-- **Interface**: UART/Serial
-- **Utility**: rtk_hciattach (for UART initialization)
 
 ## Troubleshooting
 
@@ -165,7 +143,7 @@ sudo modprobe 8723du
 ### Bluetooth not working
 ```bash
 # Check if module is loaded
-lsmod | grep -E "(rtk_btusb|hci_uart)"
+lsmod | grep rtk_btusb
 
 # Check Bluetooth service
 sudo systemctl status bluetooth
@@ -182,7 +160,6 @@ dkms status
 # View build logs
 cat /var/lib/dkms/rtl8723du/5.6.1/build/make.log
 cat /var/lib/dkms/rtk_btusb/3.1/build/make.log
-cat /var/lib/dkms/hci_uart/3.1/build/make.log
 ```
 
 ### Module load errors (Exec format error or version magic mismatch)

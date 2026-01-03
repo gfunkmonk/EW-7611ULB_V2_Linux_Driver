@@ -28,7 +28,6 @@ echo "Installing EW-7611ULB V2 drivers using DKMS..."
 DKMS_ROOT="/usr/src"
 WIFI_DIR="${DKMS_ROOT}/rtl8723du-5.6.1"
 BT_USB_DIR="${DKMS_ROOT}/rtk_btusb-3.1"
-BT_UART_DIR="${DKMS_ROOT}/hci_uart-3.1"
 
 # Install WiFi driver
 echo ""
@@ -50,16 +49,6 @@ dkms add -m rtk_btusb -v 3.1 || true
 dkms build -m rtk_btusb -v 3.1
 dkms install -m rtk_btusb -v 3.1
 
-# Install Bluetooth UART driver
-echo ""
-echo "=== Installing Bluetooth UART driver ==="
-rm -rf "${BT_UART_DIR}"
-mkdir -p "${BT_UART_DIR}"
-cp -r "${SCRIPT_DIR}/BT/Linux/uart"/* "${BT_UART_DIR}/"
-dkms add -m hci_uart -v 3.1 || true
-dkms build -m hci_uart -v 3.1
-dkms install -m hci_uart -v 3.1
-
 # Install firmware
 echo ""
 echo "=== Installing firmware files ==="
@@ -76,37 +65,15 @@ if [ -d "${FIRMWARE_SRC}" ]; then
     for cfg_file in "${FIRMWARE_SRC}"/rtl*_config; do
         [ -e "$cfg_file" ] && cp -f "$cfg_file" "${FIRMWARE_DEST}/"
     done
-    
-    # Install firmware for UART
-    mkdir -p "${FIRMWARE_DEST}/rtlbt"
-    for fw_file in "${FIRMWARE_SRC}"/rtlbt/rtl*_fw; do
-        [ -e "$fw_file" ] && cp -f "$fw_file" "${FIRMWARE_DEST}/rtlbt/"
-    done
-    for cfg_file in "${FIRMWARE_SRC}"/rtlbt/rtl*_config; do
-        [ -e "$cfg_file" ] && cp -f "$cfg_file" "${FIRMWARE_DEST}/rtlbt/"
-    done
-fi
-
-# Build and install hciattach utility for UART
-echo ""
-echo "=== Building and installing rtk_hciattach utility ==="
-HCIATTACH_DIR="${SCRIPT_DIR}/BT/Linux/uart/rtk_hciattach"
-if [ -d "${HCIATTACH_DIR}" ]; then
-    cd "${HCIATTACH_DIR}"
-    make clean || true
-    make
-    cp -f rtk_hciattach /usr/sbin/
-    make clean
 fi
 
 echo ""
 echo "=== Installation complete ==="
 echo ""
 echo "Installed modules:"
-dkms status | grep -E "(rtl8723du|rtk_btusb|hci_uart)" || true
+dkms status | grep -E "(rtl8723du|rtk_btusb)" || true
 echo ""
 echo "You may need to reboot or reload the modules:"
 echo "  sudo modprobe 8723du"
 echo "  sudo modprobe rtk_btusb"
-echo "  sudo modprobe hci_uart"
 echo ""
