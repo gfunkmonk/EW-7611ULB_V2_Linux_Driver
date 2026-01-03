@@ -2521,8 +2521,6 @@ $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
 endif
 
 obj-$(CONFIG_RTL8723DU) := $(MODULE_NAME).o
-OBJECT_FILES_NON_STANDARD_8723du.o := y
-export OBJECT_FILES_NON_STANDARD_8723du.o
 
 else
 

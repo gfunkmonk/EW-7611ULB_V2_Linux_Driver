@@ -185,6 +185,68 @@ cat /var/lib/dkms/rtk_btusb/3.1/build/make.log
 cat /var/lib/dkms/hci_uart/3.1/build/make.log
 ```
 
+### Module load errors (Exec format error or version magic mismatch)
+
+If you see errors like:
+```
+modprobe: ERROR: could not insert '8723du': Exec format error
+```
+or
+```
+8723du: version magic '6.18.2-rt3 SMP preempt_rt mod_unload' should be '6.18.2-rt3-tkg-bore SMP preempt_rt mod_unload'
+```
+
+This means the module was compiled for a different kernel version than the one currently running. This commonly happens with:
+- Custom kernels (like -tkg, -zen, -hardened, etc.)
+- Kernel updates after building the module
+- Using wrong kernel headers
+
+**Solution:**
+
+1. **Ensure correct kernel headers are installed:**
+   ```bash
+   # Check your running kernel version
+   uname -r
+   
+   # Install matching headers (Ubuntu/Debian)
+   sudo apt-get install linux-headers-$(uname -r)
+   
+   # Install matching headers (Arch Linux)
+   sudo pacman -S linux-headers  # or linux-zen-headers, linux-hardened-headers, etc.
+   
+   # Install matching headers (Fedora/RHEL)
+   sudo dnf install kernel-devel-$(uname -r)
+   ```
+
+2. **Rebuild the module with DKMS (recommended):**
+   ```bash
+   # Remove old build
+   sudo dkms remove -m rtl8723du -v 5.6.1 --all
+   
+   # Reinstall with correct headers
+   sudo ./dkms-install.sh
+   ```
+
+3. **Or rebuild manually:**
+   ```bash
+   cd WIFI
+   make clean
+   make
+   sudo make install
+   sudo modprobe 8723du
+   ```
+
+4. **Verify the module matches your kernel:**
+   ```bash
+   # Check running kernel version
+   uname -r
+   
+   # Check module version
+   modinfo 8723du | grep vermagic
+   ```
+   
+   The `vermagic` should exactly match your kernel version from `uname -r`.
+
 ## Supported Kernels
 
 These drivers support Linux kernels 3.x through 6.x (including 6.18+). The DKMS installation method ensures compatibility across kernel updates.
