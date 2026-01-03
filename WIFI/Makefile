@@ -2,10 +2,6 @@
 # Required for kernel 6.18+ but harmless on older kernels
 OBJECT_FILES_NON_STANDARD := y
 
-# Disable optimization for rtw_cmd.o to prevent objtool errors in kernel 6.18+
-CFLAGS_REMOVE_rtw_cmd.o := -O2
-CFLAGS_rtw_cmd.o := -O0
-
 ccflags-y += $(USER_EXTRA_CFLAGS)
 #ccflags-y += -O1
 ccflags-y += -O2
@@ -61,7 +57,6 @@ ldflags-y += --strip-all -O3
 
 ccflags-y += -fno-pic
 ccflags-y += -fno-pie
-ccflags-y += -fno-optimize-sibling-calls
 
 CONFIG_AUTOCFG_CP = n
 
