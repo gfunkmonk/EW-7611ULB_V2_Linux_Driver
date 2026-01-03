@@ -1541,12 +1541,14 @@ void dhcp_flag_bcast(_adapter *priv, struct sk_buff *skb)
 					if (dhcph->cookie == __constant_htonl(DHCP_MAGIC)) { /* match magic word */
 						if (!(dhcph->flags & htons(BROADCAST_FLAG))) { /* if not broadcast */
 							register int sum = 0;
+							unsigned short old_flags = dhcph->flags;
 
 							RTW_INFO("DHCP: change flag of DHCP request to broadcast.\n");
 							/* or BROADCAST flag */
 							dhcph->flags |= htons(BROADCAST_FLAG);
 							/* recalculate checksum */
 							sum = ~(udph->check) & 0xffff;
+							sum -= old_flags;
 							sum += dhcph->flags;
 							while (sum >> 16)
 								sum = (sum & 0xffff) + (sum >> 16);
