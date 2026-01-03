@@ -238,7 +238,12 @@ These drivers support Linux kernels 3.x through 6.x (including 6.18+). The DKMS 
 
 ### Recent Improvements
 
-**Bluetooth Controller Detection (Kernel 4.1+)**: The Bluetooth driver now includes an HCI setup callback required by modern Linux kernels. This fixes an issue where the Bluetooth module would load successfully but controllers would not be visible to `bluetoothctl` or other userspace tools. If you previously experienced this issue on newer kernels, updating to this version should resolve it.
+**Bluetooth MAC Address and Controller Detection (Kernel 4.1+)**: The Bluetooth driver now properly downloads firmware in the HCI setup callback required by modern Linux kernels. This fixes issues where:
+- The Bluetooth controller shows MAC address `00:00:00:00:00:00`
+- The Bluetooth module loads successfully but controllers are not properly configured
+- Controllers are not visible to `bluetoothctl` or other userspace tools
+
+The firmware is now loaded during device setup (before the device is opened) on kernels 4.1+, ensuring the device is properly configured with its MAC address and ready for use. If you previously experienced these issues on newer kernels, updating to this version should resolve them.
 
 ## License
 
