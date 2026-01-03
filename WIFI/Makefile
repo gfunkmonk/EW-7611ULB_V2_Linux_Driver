@@ -723,7 +723,7 @@ ifeq ($(CONFIG_RTL8723D), y)
 RTL871X = rtl8723d
 ifeq ($(CONFIG_USB_HCI), y)
 MODULE_NAME = edimax_wifi
-MODULE_SUB_NAME = edimax_wifi
+MODULE_SUB_NAME = 8723du
 endif
 ifeq ($(CONFIG_PCI_HCI), y)
 MODULE_NAME = 8723de

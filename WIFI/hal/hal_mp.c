@@ -2654,4 +2654,4 @@ void mpt_trigger_tssi_tracking(PADAPTER pAdapter, u8 rf_path)
 #endif
 }
 
-#endif /* CONFIG_MP_INCLUDE*/
+#endif /* CONFIG_MP_INCLUDED*/
