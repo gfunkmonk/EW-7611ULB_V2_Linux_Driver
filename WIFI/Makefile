@@ -1,3 +1,6 @@
+# Disable objtool validation for this out-of-tree module (kernel 6.18+)
+OBJECT_FILES_NON_STANDARD := y
+
 ccflags-y += $(USER_EXTRA_CFLAGS)
 #ccflags-y += -O1
 ccflags-y += -O2
