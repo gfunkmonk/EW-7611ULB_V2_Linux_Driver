@@ -7,25 +7,25 @@ TOOL_DIR := /usr/sbin
 
 install:
 	mkdir -p $(DRV_DIR)
-	- rmmod hci_uart
+	- rmmod edimax_btuart
 	make -C $(DRV_SRC_DIR)
-	#mv -n $(DRV_DIR)/hci_uart.ko $(FW_DIR)/hci_uart.bk
-	cp -f $(DRV_SRC_DIR)/hci_uart.ko $(DRV_DIR)/hci_uart.ko
+	#mv -n $(DRV_DIR)/edimax_btuart.ko $(FW_DIR)/edimax_btuart.bk
+	cp -f $(DRV_SRC_DIR)/edimax_btuart.ko $(DRV_DIR)/edimax_btuart.ko
 	depmod -a $(shell uname -r)
 	make -C $(DRV_SRC_DIR) clean
-	echo "make hci_uart_driver success!"
+	echo "make edimax_btuart_driver success!"
 	make -C $(TOOL_SRC_DIR)
 	cp -f $(TOOL_SRC_DIR)/rtk_hciattach $(TOOL_DIR)/rtk_hciattach
 	make -C $(TOOL_SRC_DIR) clean
 	echo "make rtk_hciattach success!"
 
 uninstall:
-	mv -f $(FW_DIR)/hci_uart.bk $(DRV_DIR)/hci_uart.ko
+	mv -f $(FW_DIR)/edimax_btuart.bk $(DRV_DIR)/edimax_btuart.ko
 	depmod -a $(shell uname -r)
-	- rm -f $(FW_DIR)/hci_uart.bk
+	- rm -f $(FW_DIR)/edimax_btuart.bk
 	rm -f $(FW_DIR)/rtlbt_fw
 	rm -f $(FW_DIR)/rtlbt_config
-	echo "uninstall hci_uart_driver success!"
+	echo "uninstall edimax_btuart_driver success!"
 	rm -f $(TOOL_DIR)/rtk_hciattach
 	echo "uninstall rtk_hciattach success!"
 

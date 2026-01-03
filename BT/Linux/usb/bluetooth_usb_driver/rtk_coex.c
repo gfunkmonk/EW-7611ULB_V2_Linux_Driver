@@ -27,6 +27,7 @@
 #include <linux/errno.h>
 #include <linux/skbuff.h>
 #include <linux/dcache.h>
+#include <linux/timer.h>
 #include <linux/version.h>
 #include <net/sock.h>
 #include <net/bluetooth/bluetooth.h>
