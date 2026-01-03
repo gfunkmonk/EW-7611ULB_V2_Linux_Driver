@@ -777,6 +777,20 @@ done:
         kfree_skb(skb);
 }
 
+#if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
+static int btusb_setup(struct hci_dev *hdev)
+{
+        RTKBT_DBG("%s", __func__);
+        
+        /* Set device as configured - required for modern kernels
+         * The actual firmware download happens in btusb_open
+         * Set the manufacturer - Realtek Semiconductor Corporation */
+        hdev->manufacturer = 0x005D;
+        
+        return 0;
+}
+#endif
+
 static int btusb_open(struct hci_dev *hdev)
 {
         struct btusb_data *data = GET_DRV_DATA(hdev);
@@ -1621,6 +1635,10 @@ static int btusb_probe(struct usb_interface *intf,
         hdev->flush = btusb_flush;
         hdev->send = btusb_send_frame;
         hdev->notify = btusb_notify;
+
+#if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
+        hdev->setup = btusb_setup;
+#endif
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(3, 4, 0)
         hci_set_drvdata(hdev, data);

@@ -150,7 +150,15 @@ sudo systemctl status bluetooth
 
 # Restart Bluetooth
 sudo systemctl restart bluetooth
+
+# Check for Bluetooth controllers
+bluetoothctl list
+
+# If bluetoothctl shows no controllers, check dmesg
+dmesg | grep -i bluetooth
 ```
+
+**Note for Kernel 4.1+**: The Bluetooth driver includes an HCI setup callback required for modern kernels. If you're upgrading from an older version of this driver and experiencing issues with Bluetooth controllers not being detected, ensure you're using the latest version with this fix.
 
 ### DKMS build failures
 ```bash
@@ -227,6 +235,10 @@ This means the module was compiled for a different kernel version than the one c
 ## Supported Kernels
 
 These drivers support Linux kernels 3.x through 6.x (including 6.18+). The DKMS installation method ensures compatibility across kernel updates.
+
+### Recent Improvements
+
+**Bluetooth Controller Detection (Kernel 4.1+)**: The Bluetooth driver now includes an HCI setup callback required by modern Linux kernels. This fixes an issue where the Bluetooth module would load successfully but controllers would not be visible to `bluetoothctl` or other userspace tools. If you previously experienced this issue on newer kernels, updating to this version should resolve it.
 
 ## License
 
