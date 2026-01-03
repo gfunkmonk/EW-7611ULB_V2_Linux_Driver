@@ -89,6 +89,10 @@ void rtw_set_tx_chksum_offload(_pkt *pkt, struct pkt_attrib *pattrib)
 		return;
 	}
 
+	/*	Only offload checksum to HW if kernel requested it via CHECKSUM_PARTIAL */
+	if (skb->ip_summed != CHECKSUM_PARTIAL)
+		return;
+
 	/*	For HW rule, clear ipv4_csum & UDP/TCP_csum if it is UDP/TCP packet	*/
 	switch (protocol) {
 	case IPPROTO_UDP:
