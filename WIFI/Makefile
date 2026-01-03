@@ -1,3 +1,7 @@
+# Disable objtool validation for this out-of-tree module
+# Required for kernel 6.18+ but harmless on older kernels
+OBJECT_FILES_NON_STANDARD := y
+
 ccflags-y += $(USER_EXTRA_CFLAGS)
 #ccflags-y += -O1
 ccflags-y += -O2
@@ -2510,6 +2514,7 @@ $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
 endif
 
 obj-$(CONFIG_RTL8723DU) := $(MODULE_NAME).o
+OBJECT_FILES_NON_STANDARD_8723du.o := y
 
 else
 
@@ -2518,7 +2523,7 @@ export CONFIG_RTL8723DU = m
 all: modules
 
 modules:
-	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
+	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) OBJTOOL= -C $(KSRC) M=$(shell pwd) modules
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
