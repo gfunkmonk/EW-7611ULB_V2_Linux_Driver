@@ -1395,7 +1395,7 @@ KVER  := $(shell uname -r)
 KSRC := /lib/modules/$(KVER)/build
 MODDESTDIR := /lib/modules/$(KVER)/extras/
 INSTALL_PREFIX :=
-STAGINGMODDIR := /lib/modules/$(KVER)/drivers/staging
+STAGINGMODDIR := /lib/modules/$(KVER)/extras/staging
 endif
 
 ifeq ($(CONFIG_PLATFORM_ARM_RPI), y)

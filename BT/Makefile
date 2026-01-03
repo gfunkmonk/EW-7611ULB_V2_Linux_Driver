@@ -1,7 +1,7 @@
 FW_USB_DIR := /lib/firmware
 RTKBT_FIRMWARE_DIR := rtkbt-firmware/lib/firmware
 MDL_DIR	:= /lib/modules/$(shell uname -r)
-DRV_DIR	:= $(MDL_DIR)/kernel/drivers/bluetooth
+DRV_DIR	:= $(MDL_DIR)/extras
 
 
 install:

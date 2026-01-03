@@ -1,6 +1,6 @@
 SRC_DIR	:= ./bluetooth_usb_driver
 MDL_DIR	:= /lib/modules/$(shell uname -r)
-DRV_DIR	:= $(MDL_DIR)/kernel/drivers/bluetooth
+DRV_DIR	:= $(MDL_DIR)/extras
 
 ##########################################
 install:
