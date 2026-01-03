@@ -2516,6 +2516,7 @@ endif
 
 obj-$(CONFIG_RTL8723DU) := $(MODULE_NAME).o
 OBJECT_FILES_NON_STANDARD_8723du.o := y
+CFLAGS_rtw_cmd.o := -O0
 
 else
 
