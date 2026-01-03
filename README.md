@@ -4,7 +4,7 @@ Linux drivers for the EW-7611ULB V2 WiFi/Bluetooth USB adapter.
 
 This driver package includes:
 - **WiFi**: Realtek RTL8723DU wireless network driver
-- **Bluetooth USB**: Realtek Bluetooth USB driver (rtk_btusb)
+- **Bluetooth USB**: Realtek Bluetooth USB driver (bt_edimax)
 
 ## Quick Start with DKMS
 
@@ -18,8 +18,8 @@ cd EW-7611ULB_V2_Linux_Driver
 sudo ./dkms-install.sh
 
 # Load modules
-sudo modprobe 8723du
-sudo modprobe rtk_btusb
+sudo modprobe rt8723du
+sudo modprobe bt_edimax
 
 # Check status
 ./dkms-status.sh
@@ -65,8 +65,8 @@ The script will:
 After installation, you may need to load the modules:
 
 ```bash
-sudo modprobe 8723du
-sudo modprobe rtk_btusb
+sudo modprobe rt8723du
+sudo modprobe bt_edimax
 ```
 
 #### Check Installation Status
@@ -102,7 +102,7 @@ If you prefer not to use DKMS, you can still manually build and install the driv
 cd WIFI
 make
 sudo make install
-sudo modprobe 8723du
+sudo modprobe rt8723du
 ```
 
 #### Bluetooth USB Driver
@@ -114,14 +114,14 @@ sudo make install
 
 ## Module Information
 
-### WiFi Module (8723du)
+### WiFi Module (rt8723du)
 - **Chip**: Realtek RTL8723DU
-- **Module name**: 8723du.ko
+- **Module name**: rt8723du.ko
 - **Interface**: USB
 - **Features**: 802.11n, AP mode, P2P, Monitor mode
 
-### Bluetooth USB Module (rtk_btusb)
-- **Module name**: rtk_btusb.ko
+### Bluetooth USB Module (bt_edimax)
+- **Module name**: bt_edimax.ko
 - **Interface**: USB
 - **Replaces**: Standard btusb module for Realtek devices
 
@@ -130,20 +130,20 @@ sudo make install
 ### WiFi not working
 ```bash
 # Check if module is loaded
-lsmod | grep 8723du
+lsmod | grep rt8723du
 
 # Check kernel messages
 dmesg | grep -i rtl
 
 # Reload the module
-sudo modprobe -r 8723du
-sudo modprobe 8723du
+sudo modprobe -r rt8723du
+sudo modprobe rt8723du
 ```
 
 ### Bluetooth not working
 ```bash
 # Check if module is loaded
-lsmod | grep rtk_btusb
+lsmod | grep bt_edimax
 
 # Check Bluetooth service
 sudo systemctl status bluetooth
@@ -166,11 +166,11 @@ cat /var/lib/dkms/rtk_btusb/3.1/build/make.log
 
 If you see errors like:
 ```
-modprobe: ERROR: could not insert '8723du': Exec format error
+modprobe: ERROR: could not insert 'rt8723du': Exec format error
 ```
 or
 ```
-8723du: version magic '6.18.2-rt3 SMP preempt_rt mod_unload' should be '6.18.2-rt3-tkg-bore SMP preempt_rt mod_unload'
+rt8723du: version magic '6.18.2-rt3 SMP preempt_rt mod_unload' should be '6.18.2-rt3-tkg-bore SMP preempt_rt mod_unload'
 ```
 
 This means the module was compiled for a different kernel version than the one currently running. This commonly happens with:
@@ -210,7 +210,7 @@ This means the module was compiled for a different kernel version than the one c
    make clean
    make
    sudo make install
-   sudo modprobe 8723du
+   sudo modprobe rt8723du
    ```
 
 4. **Verify the module matches your kernel:**
@@ -219,7 +219,7 @@ This means the module was compiled for a different kernel version than the one c
    uname -r
    
    # Check module version
-   modinfo 8723du | grep vermagic
+   modinfo rt8723du | grep vermagic
    ```
    
    The `vermagic` should exactly match your kernel version from `uname -r`.

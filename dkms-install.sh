@@ -74,6 +74,6 @@ echo "Installed modules:"
 dkms status | grep -E "(rtl8723du|rtk_btusb)" || true
 echo ""
 echo "You may need to reboot or reload the modules:"
-echo "  sudo modprobe 8723du"
-echo "  sudo modprobe rtk_btusb"
+echo "  sudo modprobe rt8723du"
+echo "  sudo modprobe bt_edimax"
 echo ""

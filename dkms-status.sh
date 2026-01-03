@@ -34,17 +34,17 @@ echo ""
 echo "=== Loaded Kernel Modules ==="
 
 # Check if WiFi module is loaded
-if lsmod | grep -q "8723du"; then
-    echo "✓ WiFi module (8723du) is loaded"
+if lsmod | grep -q "rt8723du"; then
+    echo "✓ WiFi module (rt8723du) is loaded"
 else
-    echo "  WiFi module (8723du) is not loaded (run: sudo modprobe 8723du)"
+    echo "  WiFi module (rt8723du) is not loaded (run: sudo modprobe rt8723du)"
 fi
 
 # Check if Bluetooth USB module is loaded
-if lsmod | grep -q "rtk_btusb"; then
-    echo "✓ Bluetooth USB module (rtk_btusb) is loaded"
+if lsmod | grep -q "bt_edimax"; then
+    echo "✓ Bluetooth USB module (bt_edimax) is loaded"
 else
-    echo "  Bluetooth USB module (rtk_btusb) is not loaded (run: sudo modprobe rtk_btusb)"
+    echo "  Bluetooth USB module (bt_edimax) is not loaded (run: sudo modprobe bt_edimax)"
 fi
 
 echo ""
