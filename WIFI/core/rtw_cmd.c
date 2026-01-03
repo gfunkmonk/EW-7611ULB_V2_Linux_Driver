@@ -17,20 +17,6 @@
 #include <drv_types.h>
 #include <hal_data.h>
 
-/* Define objtool annotation for kernel 6.18+ if not already defined */
-#ifndef ANNOTATE_INTRA_FUNCTION_CALL
-#ifdef CONFIG_OBJTOOL
-#define ANNOTATE_INTRA_FUNCTION_CALL \
-	asm volatile("999:\n\t" \
-		     ".pushsection .discard.intra_function_calls\n\t" \
-		     ".long 999b\n\t" \
-		     ".popsection\n\t")
-#else
-/* Empty when objtool is not enabled */
-#define ANNOTATE_INTRA_FUNCTION_CALL
-#endif
-#endif
-
 #ifndef DBG_CMD_EXECUTE
 	#define DBG_CMD_EXECUTE 0
 #endif
@@ -832,7 +818,7 @@ rtw_sitesurvey_cmd(~)
 	### NOTE:#### (!!!!)
 	MUST TAKE CARE THAT BEFORE CALLING THIS FUNC, YOU SHOULD HAVE LOCKED pmlmepriv->lock
 */
-u8 rtw_sitesurvey_cmd(_adapter *padapter, struct sitesurvey_parm *pparm)
+__attribute__((noinline)) u8 rtw_sitesurvey_cmd(_adapter *padapter, struct sitesurvey_parm *pparm)
 {
 	u8 res = _FAIL;
 	struct cmd_obj		*ph2c;
@@ -871,7 +857,6 @@ u8 rtw_sitesurvey_cmd(_adapter *padapter, struct sitesurvey_parm *pparm)
 
 	set_fwstate(pmlmepriv, WIFI_UNDER_SURVEY);
 
-	ANNOTATE_INTRA_FUNCTION_CALL;
 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
 
 	if (res == _SUCCESS) {
