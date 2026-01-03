@@ -17,8 +17,17 @@
 #include <drv_types.h>
 #include <hal_data.h>
 
-#ifdef __KERNEL__
-#include <linux/objtool.h>
+/* Define objtool annotation for kernel 6.18+ if not already defined */
+#ifndef ANNOTATE_INTRA_FUNCTION_CALL
+#ifdef CONFIG_OBJTOOL
+#define ANNOTATE_INTRA_FUNCTION_CALL \
+	asm volatile("999:\n\t" \
+		     ".pushsection .discard.intra_function_calls\n\t" \
+		     ".long 999b\n\t" \
+		     ".popsection\n\t")
+#else
+#define ANNOTATE_INTRA_FUNCTION_CALL
+#endif
 #endif
 
 #ifndef DBG_CMD_EXECUTE
@@ -861,9 +870,7 @@ u8 rtw_sitesurvey_cmd(_adapter *padapter, struct sitesurvey_parm *pparm)
 
 	set_fwstate(pmlmepriv, WIFI_UNDER_SURVEY);
 
-#ifdef ANNOTATE_INTRA_FUNCTION_CALL
 	ANNOTATE_INTRA_FUNCTION_CALL;
-#endif
 	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
 
 	if (res == _SUCCESS) {
