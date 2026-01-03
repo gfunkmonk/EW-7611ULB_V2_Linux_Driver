@@ -55,6 +55,25 @@
 #include <linux/kthread.h>
 #include <linux/list.h>
 #include <linux/vmalloc.h>
+#include <linux/timer.h>
+
+/* Compatibility for from_timer macro (introduced in kernel 4.14) */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+#ifndef from_timer
+#define from_timer(var, callback_timer, timer_fieldname) \
+	container_of(callback_timer, typeof(*var), timer_fieldname)
+#endif
+#endif
+
+/* Compatibility for del_timer functions (may be removed in kernel 6.18+) */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0))
+#ifndef del_timer_sync
+#define del_timer_sync(timer) timer_delete_sync(timer)
+#endif
+#ifndef del_timer
+#define del_timer(timer) timer_delete(timer)
+#endif
+#endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0))
 	#include <uapi/linux/sched/types.h>
