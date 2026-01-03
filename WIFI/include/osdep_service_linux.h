@@ -65,6 +65,16 @@
 #endif
 #endif
 
+/* Compatibility for del_timer functions (may be removed in kernel 6.18+) */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0))
+#ifndef del_timer_sync
+#define del_timer_sync(timer) timer_delete_sync(timer)
+#endif
+#ifndef del_timer
+#define del_timer(timer) timer_delete(timer)
+#endif
+#endif
+
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0))
 	#include <uapi/linux/sched/types.h>
 #endif
