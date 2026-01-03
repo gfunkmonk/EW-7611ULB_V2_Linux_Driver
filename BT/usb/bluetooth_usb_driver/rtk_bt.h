@@ -97,6 +97,7 @@ int btusb_send_frame(struct sk_buff *skb);
 #define BTUSB_ISOC_RUNNING		2
 #define BTUSB_SUSPENDING		3
 #define BTUSB_DID_ISO_RESUME	4
+#define BTUSB_FIRMWARE_LOADED	5
 
 struct btusb_data {
 	struct hci_dev *hdev;

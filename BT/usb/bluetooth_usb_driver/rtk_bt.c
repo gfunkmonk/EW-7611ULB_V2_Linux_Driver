@@ -780,12 +780,23 @@ done:
 #if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
 static int btusb_setup(struct hci_dev *hdev)
 {
+        struct btusb_data *data = GET_DRV_DATA(hdev);
+        int err;
+
         RTKBT_DBG("%s", __func__);
         
-        /* Set device as configured - required for modern kernels
-         * The actual firmware download happens in btusb_open
-         * Set the manufacturer - Realtek Semiconductor Corporation */
+        /* Set the manufacturer - Realtek Semiconductor Corporation */
         hdev->manufacturer = 0x005D;
+        
+        /* Download firmware - required for modern kernels to detect controller */
+        err = download_patch(data->intf);
+        if (err < 0) {
+                RTKBT_ERR("%s: Failed to download firmware, err %d", __func__, err);
+                return err;
+        }
+        
+        /* Mark firmware as loaded to avoid duplicate download in btusb_open */
+        set_bit(BTUSB_FIRMWARE_LOADED, &data->flags);
         
         return 0;
 }
@@ -810,9 +821,21 @@ static int btusb_open(struct hci_dev *hdev)
                 //goto failed;
         }
 
+#if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
+        /* For kernel 4.1+, firmware is already downloaded in btusb_setup */
+        if (!test_bit(BTUSB_FIRMWARE_LOADED, &data->flags)) {
+                RTKBT_DBG("%s: Firmware not loaded yet, downloading now", __func__);
+                err = download_patch(data->intf);
+                if (err < 0)
+                        goto failed;
+                set_bit(BTUSB_FIRMWARE_LOADED, &data->flags);
+        }
+#else
+        /* For older kernels, download firmware here */
         err = download_patch(data->intf);
         if (err < 0)
                 goto failed;
+#endif
         /*******************************/
 
         RTKBT_INFO("%s set HCI_RUNNING", __func__);
