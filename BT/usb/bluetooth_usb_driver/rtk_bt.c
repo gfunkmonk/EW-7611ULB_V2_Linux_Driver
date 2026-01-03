@@ -782,11 +782,10 @@ static int btusb_setup(struct hci_dev *hdev)
 {
         RTKBT_DBG("%s", __func__);
         
-        /* Set device as configured - required for modern kernels */
-        /* The actual firmware download happens in btusb_open */
-        
-        /* Set the manufacturer - Realtek (0x005D) */
-        hdev->manufacturer = 93; /* 0x005D - Realtek Semiconductor Corporation */
+        /* Set device as configured - required for modern kernels
+         * The actual firmware download happens in btusb_open
+         * Set the manufacturer - Realtek Semiconductor Corporation */
+        hdev->manufacturer = 0x005D;
         
         return 0;
 }
