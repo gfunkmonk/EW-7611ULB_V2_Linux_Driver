@@ -818,7 +818,7 @@ rtw_sitesurvey_cmd(~)
 	### NOTE:#### (!!!!)
 	MUST TAKE CARE THAT BEFORE CALLING THIS FUNC, YOU SHOULD HAVE LOCKED pmlmepriv->lock
 */
-__attribute__((noinline)) u8 rtw_sitesurvey_cmd(_adapter *padapter, struct sitesurvey_parm *pparm)
+noinline u8 rtw_sitesurvey_cmd(_adapter *padapter, struct sitesurvey_parm *pparm)
 {
 	u8 res = _FAIL;
 	struct cmd_obj		*ph2c;
