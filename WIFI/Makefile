@@ -2,6 +2,10 @@
 # Required for kernel 6.18+ but harmless on older kernels
 OBJECT_FILES_NON_STANDARD := y
 
+# Disable optimization for rtw_cmd.o to prevent objtool errors in kernel 6.18+
+CFLAGS_REMOVE_rtw_cmd.o := -O2
+CFLAGS_rtw_cmd.o := -O0
+
 ccflags-y += $(USER_EXTRA_CFLAGS)
 #ccflags-y += -O1
 ccflags-y += -O2
@@ -2516,7 +2520,6 @@ endif
 
 obj-$(CONFIG_RTL8723DU) := $(MODULE_NAME).o
 OBJECT_FILES_NON_STANDARD_8723du.o := y
-CFLAGS_rtw_cmd.o := -O0
 
 else
 
