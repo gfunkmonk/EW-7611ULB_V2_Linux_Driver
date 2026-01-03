@@ -1,6 +1,7 @@
 # Disable objtool validation for this out-of-tree module
 # Required for kernel 6.18+ but harmless on older kernels
 OBJECT_FILES_NON_STANDARD := y
+export OBJECT_FILES_NON_STANDARD
 
 ccflags-y += $(USER_EXTRA_CFLAGS)
 #ccflags-y += -O1
@@ -2521,6 +2522,7 @@ endif
 
 obj-$(CONFIG_RTL8723DU) := $(MODULE_NAME).o
 OBJECT_FILES_NON_STANDARD_8723du.o := y
+export OBJECT_FILES_NON_STANDARD_8723du.o
 
 else
 
