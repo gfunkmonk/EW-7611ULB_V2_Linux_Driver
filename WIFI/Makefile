@@ -28,6 +28,12 @@ ccflags-y += -Wno-enum-conversion
 ccflags-y += -Wno-vla
 ccflags-y += -Wno-date-time
 ccflags-y += -Wno-implicit-fallthrough
+ccflags-y += -Wno-attributes
+#ccflags-y += -Wno-ignored-attributes
+ccflags-y += -Wno-empty-body
+ccflags-y += -Wno-misleading-indentation
+ccflags-y += -Wno-undef
+ccflags-y += -Wno-stringop-overread
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
@@ -1391,9 +1397,9 @@ CROSS_COMPILE ?=
 KVER  := $(shell uname -r)
 #KVER  ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
 KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
+MODDESTDIR := /lib/modules/$(KVER)/extras/
 INSTALL_PREFIX :=
-STAGINGMODDIR := /lib/modules/$(KVER)/kernel/drivers/staging
+STAGINGMODDIR := /lib/modules/$(KVER)/drivers/staging
 endif
 
 ifeq ($(CONFIG_PLATFORM_ARM_RPI), y)
@@ -1403,7 +1409,7 @@ ARCH ?= arm
 CROSS_COMPILE ?=
 KVER ?= $(shell uname -r)
 KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
+MODDESTDIR := /lib/modules/$(KVER)/extras/
 INSTALL_PREFIX :=
 endif
 
@@ -1414,7 +1420,7 @@ ARCH ?= arm64
 CROSS_COMPILE ?=
 KVER ?= $(shell uname -r)
 KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
+MODDESTDIR := /lib/modules/$(KVER)/extras/
 INSTALL_PREFIX :=
 endif
 
@@ -2523,7 +2529,8 @@ export CONFIG_RTL8723DU = m
 all: modules
 
 modules:
-	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) OBJTOOL= -C $(KSRC) M=$(shell pwd) modules
+	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules
+	#$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) OBJTOOL= -C $(KSRC) M=$(shell pwd) modules
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
