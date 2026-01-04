@@ -4,7 +4,7 @@ Linux drivers for the EW-7611ULB V2 WiFi/Bluetooth USB adapter.
 
 This driver package includes:
 - **WiFi**: Realtek RTL8723DU wireless network driver
-- **Bluetooth USB**: Realtek Bluetooth USB driver (bt_edimax)
+- **Bluetooth USB**: Realtek Bluetooth USB driver (edimax_bt)
 
 ## Quick Start with DKMS
 
@@ -19,7 +19,7 @@ sudo ./dkms-install.sh
 
 # Load modules
 sudo modprobe rt8723du
-sudo modprobe bt_edimax
+sudo modprobe edimax_bt
 
 # Check status
 ./dkms-status.sh
@@ -59,14 +59,19 @@ sudo ./dkms-install.sh
 
 The script will:
 1. Install the WiFi driver (rtl8723du)
-2. Install the Bluetooth USB driver (rtk_btusb)
+2. Install the Bluetooth USB driver (edimax_bt)
 3. Copy firmware files to `/lib/firmware`
+4. Blacklist the built-in btusb driver
 
-After installation, you may need to load the modules:
+After installation, you must either reboot or unload btusb:
 
 ```bash
+# Either reboot, OR:
+sudo rmmod btusb
+
+# Then load the modules
 sudo modprobe rt8723du
-sudo modprobe bt_edimax
+sudo modprobe edimax_bt
 ```
 
 #### Check Installation Status
@@ -120,8 +125,8 @@ sudo make install
 - **Interface**: USB
 - **Features**: 802.11n, AP mode, P2P, Monitor mode
 
-### Bluetooth USB Module (bt_edimax)
-- **Module name**: bt_edimax.ko
+### Bluetooth USB Module (edimax_bt)
+- **Module name**: edimax_bt.ko
 - **Interface**: USB
 - **Replaces**: Standard btusb module for Realtek devices
 
@@ -141,9 +146,21 @@ sudo modprobe rt8723du
 ```
 
 ### Bluetooth not working
+
+**IMPORTANT**: The built-in kernel `btusb` driver must be blacklisted for the custom `edimax_bt` driver to work properly. The DKMS installation script handles this automatically, but you need to reboot or manually unload btusb.
+
 ```bash
+# After installation, check if btusb is loaded (it shouldn't be)
+lsmod | grep btusb
+
+# If btusb is loaded, unload it
+sudo rmmod btusb
+
+# Then load the edimax_bt driver
+sudo modprobe edimax_bt
+
 # Check if module is loaded
-lsmod | grep bt_edimax
+lsmod | grep edimax_bt
 
 # Check Bluetooth service
 sudo systemctl status bluetooth
@@ -158,7 +175,12 @@ bluetoothctl list
 dmesg | grep -i bluetooth
 ```
 
-**Note for Kernel 4.1+**: The Bluetooth driver includes an HCI setup callback required for modern kernels. If you're upgrading from an older version of this driver and experiencing issues with Bluetooth controllers not being detected, ensure you're using the latest version with this fix.
+**Bluetooth MAC address showing 00:00:00:00:00:00**: This indicates the built-in btusb driver is being used instead of edimax_bt. The built-in driver doesn't properly load firmware for these devices. Solution:
+1. Ensure btusb is blacklisted: `cat /etc/modprobe.d/btusb-blacklist.conf`
+2. Reboot your system, OR run `sudo rmmod btusb && sudo modprobe edimax_bt`
+3. Verify the correct driver is loaded: `inxi --bluetooth` should show `driver: edimax_bt`
+
+**Note for Kernel 4.1+**: The Bluetooth driver includes an HCI setup callback required for modern kernels. Firmware is downloaded during device initialization to ensure proper MAC address configuration.
 
 ### DKMS build failures
 ```bash
@@ -167,7 +189,7 @@ dkms status
 
 # View build logs
 cat /var/lib/dkms/rtl8723du/5.6.1/build/make.log
-cat /var/lib/dkms/rtk_btusb/3.1/build/make.log
+cat /var/lib/dkms/edimax_bt/3.1/build/make.log
 ```
 
 ### Module load errors (Exec format error or version magic mismatch)

@@ -98,12 +98,28 @@ if [ -d "$FIRMWARE_SRC" ]; then
     echo "  ✓ Firmware files installed to $FIRMWARE_DEST"
 fi
 
+# Blacklist built-in btusb driver to allow edimax_bt to load
+echo ""
+echo "Blacklisting built-in btusb driver..."
+BLACKLIST_SRC="$REPO_DIR/BT/usb/btusb-blacklist.conf"
+BLACKLIST_DEST="/etc/modprobe.d/btusb-blacklist.conf"
+
+if [ -f "$BLACKLIST_SRC" ]; then
+    cp "$BLACKLIST_SRC" "$BLACKLIST_DEST"
+    echo "  ✓ Blacklist configuration installed to $BLACKLIST_DEST"
+    echo "  ⚠ You must reboot or run 'sudo rmmod btusb' for this to take effect"
+fi
+
 echo ""
 echo "========================================="
 echo "Installation completed successfully!"
 echo "========================================="
 echo ""
-echo "You can now load the modules:"
+echo "IMPORTANT: To use the Bluetooth driver, you must either:"
+echo "  1. Reboot your system, OR"
+echo "  2. Unload the built-in btusb driver: sudo rmmod btusb"
+echo ""
+echo "Then load the modules:"
 echo "  sudo modprobe edimax_wifi"
 echo "  sudo modprobe edimax_bt"
 echo ""

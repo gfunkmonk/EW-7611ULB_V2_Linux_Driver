@@ -57,6 +57,18 @@ if [ -d "/usr/src/edimax_bt-3.1" ]; then
     echo "  ✓ Removed edimax_bt source directory"
 fi
 
+# Remove btusb blacklist
+echo ""
+echo "Removing btusb blacklist configuration..."
+BLACKLIST_FILE="/etc/modprobe.d/btusb-blacklist.conf"
+if [ -f "$BLACKLIST_FILE" ]; then
+    rm "$BLACKLIST_FILE"
+    echo "  ✓ Removed $BLACKLIST_FILE"
+    echo "  ⚠ Reboot or run 'sudo modprobe btusb' to restore built-in driver"
+else
+    echo "  - Blacklist file not found"
+fi
+
 echo ""
 echo "========================================="
 echo "Removal completed successfully!"
