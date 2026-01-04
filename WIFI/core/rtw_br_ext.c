@@ -1546,13 +1546,16 @@ void dhcp_flag_bcast(_adapter *priv, struct sk_buff *skb)
 							RTW_INFO("DHCP: change flag of DHCP request to broadcast.\n");
 							/* or BROADCAST flag */
 							dhcph->flags |= htons(BROADCAST_FLAG);
-							/* recalculate checksum */
-							sum = ~(udph->check) & 0xffff;
-							sum -= old_flags;
-							sum += dhcph->flags;
-							while (sum >> 16)
-								sum = (sum & 0xffff) + (sum >> 16);
-							udph->check = ~sum;
+							/* recalculate checksum using RFC 1624: HC' = ~(~HC + ~m + m') */
+							/* UDP checksum is optional; 0 means no checksum (RFC 768) */
+							if (udph->check != 0) {
+								sum = ~(udph->check) & 0xffff;
+								sum += (~old_flags & 0xffff);
+								sum += dhcph->flags;
+								while (sum >> 16)
+									sum = (sum & 0xffff) + (sum >> 16);
+								udph->check = ~sum;
+							}
 						}
 					}
 				}
