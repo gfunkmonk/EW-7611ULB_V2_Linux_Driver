@@ -820,9 +820,16 @@ static int btusb_open(struct hci_dev *hdev)
                 //goto failed;
         }
 
-#if HCI_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
-        /* For kernels < 4.1, download firmware here in btusb_open
-         * For kernels >= 4.1, firmware is downloaded in btusb_setup */
+#if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
+        /* For kernel 4.1+, firmware is already downloaded in btusb_setup */
+        if (!test_bit(BTUSB_FIRMWARE_LOADED, &data->flags)) {
+                RTKBT_DBG("%s: Firmware not loaded yet, downloading now", __func__);
+                err = download_patch(data->intf);
+                if (err < 0)
+                        goto failed;
+                set_bit(BTUSB_FIRMWARE_LOADED, &data->flags);
+        }
+#else
         err = download_patch(data->intf);
         if (err < 0)
                 goto failed;
