@@ -788,15 +788,14 @@ static int btusb_setup(struct hci_dev *hdev)
         /* Set the manufacturer - Realtek Semiconductor Corporation */
         hdev->manufacturer = 0x005D;
         
-        /* Download firmware - required for modern kernels to detect controller */
+        /* Download firmware during setup for modern kernels (4.1+)
+         * This ensures the device gets properly configured with MAC address
+         * before being opened by userspace */
         err = download_patch(data->intf);
         if (err < 0) {
-                RTKBT_ERR("%s: Failed to download firmware, err %d", __func__, err);
+                RTKBT_ERR("%s: Failed to download patch", __func__);
                 return err;
         }
-        
-        /* Mark firmware as loaded to avoid duplicate download in btusb_open */
-        set_bit(BTUSB_FIRMWARE_LOADED, &data->flags);
         
         return 0;
 }
@@ -831,7 +830,6 @@ static int btusb_open(struct hci_dev *hdev)
                 set_bit(BTUSB_FIRMWARE_LOADED, &data->flags);
         }
 #else
-        /* For older kernels, download firmware here */
         err = download_patch(data->intf);
         if (err < 0)
                 goto failed;
