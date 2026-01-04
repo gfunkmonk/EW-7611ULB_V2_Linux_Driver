@@ -62,9 +62,15 @@ echo ""
 echo "Removing btusb blacklist configuration..."
 BLACKLIST_FILE="/etc/modprobe.d/btusb-blacklist.conf"
 if [ -f "$BLACKLIST_FILE" ]; then
-    rm "$BLACKLIST_FILE"
-    echo "  ✓ Removed $BLACKLIST_FILE"
-    echo "  ⚠ Reboot or run 'sudo modprobe btusb' to restore built-in driver"
+    # Verify it's our blacklist file before removing
+    if grep -q "edimax_bt" "$BLACKLIST_FILE" 2>/dev/null; then
+        rm "$BLACKLIST_FILE"
+        echo "  ✓ Removed $BLACKLIST_FILE"
+        echo "  ⚠ Reboot or run 'sudo modprobe btusb' to restore built-in driver"
+    else
+        echo "  ⚠ WARNING: $BLACKLIST_FILE exists but doesn't appear to be ours"
+        echo "  Skipping removal to prevent accidental deletion"
+    fi
 else
     echo "  - Blacklist file not found"
 fi

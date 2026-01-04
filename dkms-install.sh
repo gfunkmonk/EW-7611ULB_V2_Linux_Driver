@@ -108,6 +108,9 @@ if [ -f "$BLACKLIST_SRC" ]; then
     cp "$BLACKLIST_SRC" "$BLACKLIST_DEST"
     echo "  ✓ Blacklist configuration installed to $BLACKLIST_DEST"
     echo "  ⚠ You must reboot or run 'sudo rmmod btusb' for this to take effect"
+else
+    echo "  ✗ ERROR: Blacklist source file not found at $BLACKLIST_SRC"
+    echo "  ⚠ WARNING: Bluetooth may not work properly without blacklisting btusb"
 fi
 
 echo ""
