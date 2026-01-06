@@ -8,60 +8,28 @@ ccflags-y += -O2
 #ccflags-y += -pedantic
 #ccflags-y += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
-ccflags-y += -Wno-unused-variable
-ccflags-y += -Wno-unused-value
-ccflags-y += -Wno-unused-label
-ccflags-y += -Wno-unused-parameter
-ccflags-y += -Wno-unused-function
-ccflags-y += -Wno-unused
-ccflags-y += -Wno-uninitialized
-ccflags-y += -Wno-missing-prototypes
-ccflags-y += -Wno-missing-declarations
-ccflags-y += -Wno-address
-ccflags-y += -Wno-cast-function-type
-ccflags-y += -Wno-discarded-qualifiers
-#ccflags-y += -Wno-sometimes-uninitialized
-ccflags-y += -Wno-enum-conversion
-ccflags-y += -Wno-vla
-ccflags-y += -Wno-date-time
-ccflags-y += -Wno-implicit-fallthrough
-ccflags-y += -Wno-attributes
-#ccflags-y += -Wno-ignored-attributes
-ccflags-y += -Wno-empty-body
-ccflags-y += -Wno-misleading-indentation
-ccflags-y += -Wno-undef
-ccflags-y += -Wno-stringop-overread
-
-ccflags-y += -Wno-old-style-declaration
-ccflags-y += -Wno-header-guard
+# Consolidated warning suppressions for GCC
+ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label
+ccflags-y += -Wno-unused-parameter -Wno-unused-function -Wno-unused
+ccflags-y += -Wno-uninitialized -Wno-missing-prototypes -Wno-missing-declarations
+ccflags-y += -Wno-address -Wno-cast-function-type -Wno-discarded-qualifiers
+ccflags-y += -Wno-enum-conversion -Wno-vla -Wno-date-time
+ccflags-y += -Wno-implicit-fallthrough -Wno-attributes -Wno-empty-body
+ccflags-y += -Wno-misleading-indentation -Wno-undef -Wno-stringop-overread
+ccflags-y += -Wno-old-style-declaration -Wno-header-guard
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
-ccflags-y += -Wno-uninitialized
-ccflags-y += -Wno-enum-conversion
-ccflags-y += -Wno-fortify-source
-ccflags-y += -Wno-invalid-source-encoding
-ccflags-y += -Wno-tautological-pointer-compare
-ccflags-y += -Wno-tautological-overlap-compare
-ccflags-y += -Wno-pointer-bool-conversion
-ccflags-y += -Wno-misleading-indentation
-ccflags-y += -Wno-self-assign
-ccflags-y += -Wno-header-guard
-endif
-
-GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
-ifeq ($(GCC_VER_49),1)
-ccflags-y += -Wno-date-time     # Fix compile error && warning on gcc 4.9 and later
+ccflags-y += -Wno-fortify-source -Wno-invalid-source-encoding
+ccflags-y += -Wno-tautological-pointer-compare -Wno-tautological-overlap-compare
+ccflags-y += -Wno-pointer-bool-conversion -Wno-self-assign
 endif
 
 src := $(PWD)
-ccflags-y += -I$(src)/hal/phydm
-ccflags-y += -I$(src)/hal
-ccflags-y += -I$(src)/platform
-ccflags-y += -I$(src)/include
+ccflags-y += -I$(src)/hal/phydm -I$(src)/hal -I$(src)/platform -I$(src)/include
 
-#ldflags-y += --strip-debug
-ldflags-y += --strip-all -O3
+# Strip symbols to reduce module size
+ldflags-y += --strip-debug
 
 #ccflags-y += -fno-pic
 #ccflags-y += -fno-pie
@@ -2529,10 +2497,15 @@ else
 
 export CONFIG_RTL8723DU = m
 
+# Enable parallel builds if MAKEFLAGS doesn't already contain -j
+ifeq (,$(findstring -j,$(MAKEFLAGS)))
+  MAKEFLAGS += -j$(shell nproc 2>/dev/null || echo 1)
+endif
+
 all: modules
 
 modules:
-	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
+	$(MAKE) $(MAKEFLAGS) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
@@ -2588,17 +2561,7 @@ config_r:
 
 clean:
 	#$(MAKE) -C $(KSRC) M=$(shell pwd) clean
-	cd hal ; rm -fr */*/*/*.mod.c */*/*/*.mod */*/*/*.o */*/*/.*.cmd */*/*/*.ko
-	cd hal ; rm -fr */*/*.mod.c */*/*.mod */*/*.o */*/.*.cmd */*/*.ko
-	cd hal ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-	cd hal ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd core ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-	cd core ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd os_dep/linux ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd os_dep ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd platform ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	rm -fr Module.symvers ; rm -fr Module.markers ; rm -fr modules.order
-	rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
-	rm -fr .tmp_versions
+	@find . -type f \( -name '*.o' -o -name '*.ko' -o -name '*.mod' -o -name '*.mod.c' -o -name '.*.cmd' -o -name '*~' \) -delete
+	@rm -rf .tmp_versions Module.symvers Module.markers modules.order
 endif
 
