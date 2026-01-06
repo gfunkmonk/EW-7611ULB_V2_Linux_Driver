@@ -37,7 +37,7 @@
 
 #define IS_FW_HEADER_EXIST_8723B(_pFwHdr)	((le16_to_cpu(_pFwHdr->Signature) & 0xFFF0) == 0x5300)
 
-typedef struct _RT_FIRMWARE {
+typedef struct _RT_FIRMWARE_8723B {
 	FIRMWARE_SOURCE	eFWSource;
 #ifdef CONFIG_EMBEDDED_FWIMG
 	u8			*szFwBuffer;
@@ -153,7 +153,9 @@ typedef struct _RT_8723B_FIRMWARE_HDR {
 #include "HalVerDef.h"
 #include "hal_com.h"
 
+#ifndef CONFIG_RTL8723D
 #define EFUSE_OOB_PROTECT_BYTES		15
+#endif
 
 #define HAL_EFUSE_MEMORY
 
@@ -163,7 +165,9 @@ typedef struct _RT_8723B_FIRMWARE_HDR {
 #define EFUSE_MAX_SECTION_8723B			64
 
 #define EFUSE_IC_ID_OFFSET			506	/* For some inferiority IC purpose. added by Roger, 2009.09.02. */
+#ifndef CONFIG_RTL8723D
 #define AVAILABLE_EFUSE_ADDR(addr)	(addr < EFUSE_REAL_CONTENT_LEN_8723B)
+#endif
 
 #define EFUSE_ACCESS_ON			0x69	/* For RTL8723 only. */
 #define EFUSE_ACCESS_OFF			0x00	/* For RTL8723 only. */
@@ -171,13 +175,16 @@ typedef struct _RT_8723B_FIRMWARE_HDR {
 /* ********************************************************
  *			EFUSE for BT definition
  * ******************************************************** */
+#ifndef CONFIG_RTL8723D
 #define EFUSE_BT_REAL_BANK_CONTENT_LEN	512
 #define EFUSE_BT_REAL_CONTENT_LEN		1536	/* 512*3 */
-#define EFUSE_BT_MAP_LEN				1024	/* 1k bytes */
 #define EFUSE_BT_MAX_SECTION			128		/* 1024/8 */
+#endif
 
 #define EFUSE_PROTECT_BYTES_BANK		16
 
+#ifndef PACKAGE_TYPE_E_DEFINED
+#define PACKAGE_TYPE_E_DEFINED
 typedef enum tag_Package_Definition {
 	PACKAGE_DEFAULT,
 	PACKAGE_QFN68,
@@ -185,6 +192,7 @@ typedef enum tag_Package_Definition {
 	PACKAGE_TFBGA80,
 	PACKAGE_TFBGA79
 } PACKAGE_TYPE_E;
+#endif
 
 #define INCLUDE_MULTI_FUNC_BT(_Adapter)		(GET_HAL_DATA(_Adapter)->MultiFunc & RT_MULTI_FUNC_BT)
 #define INCLUDE_MULTI_FUNC_GPS(_Adapter)	(GET_HAL_DATA(_Adapter)->MultiFunc & RT_MULTI_FUNC_GPS)
