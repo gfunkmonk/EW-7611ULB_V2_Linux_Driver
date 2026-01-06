@@ -1,7 +1,7 @@
 ccflags-y += $(USER_EXTRA_CFLAGS)
 #ccflags-y += -O1
-ccflags-y += -O3
-ccflags-y += -mcpu=native -mtune=native -march=native
+ccflags-y += -O2
+#ccflags-y += -mcpu=native -mtune=native -march=native
 #ccflags-y += -Wall
 #ccflags-y += -Wextra
 #ccflags-y += -Werror
@@ -64,12 +64,12 @@ ccflags-y += -fno-pie
 CONFIG_AUTOCFG_CP = n
 
 ########################## WIFI IC ############################
-CONFIG_MULTIDRV = n
+CONFIG_MULTIDRV = y
 CONFIG_RTL8188E = n
 CONFIG_RTL8812A = n
 CONFIG_RTL8821A = n
 CONFIG_RTL8192E = n
-CONFIG_RTL8723B = n
+CONFIG_RTL8723B = y
 CONFIG_RTL8814A = n
 CONFIG_RTL8723C = n
 CONFIG_RTL8188F = n
@@ -124,6 +124,7 @@ CONFIG_RTW_GRO = y
 CONFIG_RTW_NETIF_SG = y
 CONFIG_RTW_IPCAM_APPLICATION = n
 CONFIG_RTW_REPEATER_SON = n
+CONFIG_RTW_WIFI_HAL = y
 CONFIG_ICMP_VOQ = n
 CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
 # user priority mapping rule : tos, dscp
@@ -176,8 +177,8 @@ CONFIG_LAYER2_ROAMING = y
 #bit0: ROAM_ON_EXPIRED, #bit1: ROAM_ON_RESUME, #bit2: ROAM_ACTIVE
 CONFIG_ROAMING_FLAG = 0x3
 ###################### Platform Related #######################
-CONFIG_PLATFORM_I386_PC = n
-CONFIG_PLATFORM_ARM_RPI = y
+CONFIG_PLATFORM_I386_PC = y
+CONFIG_PLATFORM_ARM_RPI = n
 CONFIG_PLATFORM_ARM64_RPI = n
 CONFIG_PLATFORM_ANDROID_X86 = n
 CONFIG_PLATFORM_ANDROID_INTEL_X86 = n
