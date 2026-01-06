@@ -1,20 +1,30 @@
 #!/bin/bash
+# Script to run wpa_supplicant for wlan0
 
-if [ "`which iwconfig`" = "" ] ; then 
-	echo "WARNING:Wireless tool not exist!"
-	echo "        Please install it!"
-	exit
-else
-	if [ `uname -r | cut -d. -f2` -eq 4 ]; then
-		wpa_supplicant -D ipw -c wpa1.conf -i wlan0	
-	else
-	if [ `iwconfig -v |awk '{print $4}' | head -n 1` -lt  18 ] ; then
-		wpa_supplicant -D ipw -c wpa1.conf -i wlan0  
-	else	  
-		wpa_supplicant -D wext -c wpa1.conf -i wlan0 
-	fi
+set -e
 
-	fi
+# Check if wireless tools exist
+if ! command -v iwconfig &> /dev/null; then 
+    echo "ERROR: Wireless tools not found!"
+    echo "Please install wireless-tools package"
+    exit 1
 fi
 
+# Determine the appropriate driver
+KERNEL_VERSION=$(uname -r | cut -d. -f1-2)
+MAJOR_VERSION=$(echo "$KERNEL_VERSION" | cut -d. -f1)
+MINOR_VERSION=$(echo "$KERNEL_VERSION" | cut -d. -f2)
 
+if [ "$MINOR_VERSION" -eq 4 ]; then
+    DRIVER="ipw"
+else
+    IWCONFIG_VERSION=$(iwconfig -v 2>&1 | awk '{print $4}' | head -n 1)
+    if [ "$IWCONFIG_VERSION" -lt 18 ]; then
+        DRIVER="ipw"
+    else
+        DRIVER="wext"
+    fi
+fi
+
+echo "Starting wpa_supplicant with driver: $DRIVER"
+wpa_supplicant -D "$DRIVER" -c wpa1.conf -i wlan0
