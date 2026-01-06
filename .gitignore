@@ -1,0 +1,24 @@
+# Build artifacts
+*.o
+*.ko
+*.mod
+*.mod.c
+*.cmd
+.*.cmd
+*.order
+*.symvers
+*.markers
+.tmp_versions/
+Module.symvers
+Module.markers
+modules.order
+
+# Editor backups
+*~
+*.swp
+*.swo
+.*.sw?
+
+# IDE files
+.vscode/
+.idea/

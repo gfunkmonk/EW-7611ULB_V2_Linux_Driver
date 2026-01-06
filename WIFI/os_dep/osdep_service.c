@@ -17,6 +17,7 @@
 #define _OSDEP_SERVICE_C_
 
 #include <drv_types.h>
+#include <linux/kthread.h>
 
 #define RT_TAG	'1178'
 
@@ -2213,18 +2214,19 @@ static int isFileReadable(const char *path, u32 *sz)
 {
 	struct file *fp;
 	int ret = 0;
-	mm_segment_t oldfs;
 	char buf;
 
 	fp = filp_open(path, O_RDONLY, 0);
 	if (IS_ERR(fp))
 		ret = PTR_ERR(fp);
 	else {
-		oldfs = get_fs();
-		set_fs(get_ds());
-
+		/* Modern kernels don't support set_fs/get_fs - use kernel_read instead */
+		#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+		if (1 != kernel_read(fp, &buf, 1, &fp->f_pos))
+		#else
 		if (1 != readFile(fp, &buf, 1))
-			ret = PTR_ERR(fp);
+		#endif
+			ret = -EIO;
 
 		if (ret == 0 && sz) {
 			#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0))
@@ -2234,7 +2236,6 @@ static int isFileReadable(const char *path, u32 *sz)
 			#endif
 		}
 
-		set_fs(oldfs);
 		filp_close(fp, NULL);
 	}
 	return ret;
@@ -2250,7 +2251,6 @@ static int isFileReadable(const char *path, u32 *sz)
 static int retriveFromFile(const char *path, u8 *buf, u32 sz)
 {
 	int ret = -1;
-	mm_segment_t oldfs;
 	struct file *fp;
 
 	if (path && buf) {
@@ -2258,10 +2258,12 @@ static int retriveFromFile(const char *path, u8 *buf, u32 sz)
 		if (0 == ret) {
 			RTW_INFO("%s openFile path:%s fp=%p\n", __FUNCTION__, path , fp);
 
-			oldfs = get_fs();
-			set_fs(get_ds());
+			/* Modern kernels use kernel_read instead of set_fs/get_fs */
+			#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+			ret = kernel_read(fp, buf, sz, &fp->f_pos);
+			#else
 			ret = readFile(fp, buf, sz);
-			set_fs(oldfs);
+			#endif
 			closeFile(fp);
 
 			RTW_INFO("%s readFile, ret:%d\n", __FUNCTION__, ret);
@@ -2285,7 +2287,6 @@ static int retriveFromFile(const char *path, u8 *buf, u32 sz)
 static int storeToFile(const char *path, u8 *buf, u32 sz)
 {
 	int ret = 0;
-	mm_segment_t oldfs;
 	struct file *fp;
 
 	if (path && buf) {
@@ -2293,10 +2294,12 @@ static int storeToFile(const char *path, u8 *buf, u32 sz)
 		if (0 == ret) {
 			RTW_INFO("%s openFile path:%s fp=%p\n", __FUNCTION__, path , fp);
 
-			oldfs = get_fs();
-			set_fs(get_ds());
+			/* Modern kernels use kernel_write instead of set_fs/get_fs */
+			#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+			ret = kernel_write(fp, buf, sz, &fp->f_pos);
+			#else
 			ret = writeFile(fp, buf, sz);
-			set_fs(oldfs);
+			#endif
 			closeFile(fp);
 
 			RTW_INFO("%s writeFile, ret:%d\n", __FUNCTION__, ret);
@@ -2652,7 +2655,9 @@ u64 rtw_division64(u64 x, u64 y)
 inline u32 rtw_random32(void)
 {
 #ifdef PLATFORM_LINUX
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
+	return get_random_u32();
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
 	return prandom_u32();
 #elif (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 18))
 	u32 random_int;
