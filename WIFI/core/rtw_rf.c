@@ -1961,13 +1961,17 @@ void dump_txpwr_lmt(void *sel, _adapter *adapter)
 						ent = LIST_CONTAINOR(cur, struct txpwr_lmt_ent, list);
 						cur = get_next(cur);
 
-						sprintf(fmt, "%%%zus%%s ", strlen(ent->name) >= 6 ? 1 : 6 - strlen(ent->name));
+						size_t name_len = strlen(ent->name);
+						sprintf(fmt, "%%%zus%%s ", name_len >= 6 ? 1 : 6 - name_len);
 						snprintf(tmp_str, TMP_STR_LEN, fmt
 							, strcmp(ent->name, rfctl->txpwr_lmt_name) == 0 ? "*" : ""
 							, ent->name);
 						_RTW_PRINT_SEL(sel, "%s", tmp_str);
 					}
-					sprintf(fmt, "%%%zus%%s ", strlen(txpwr_lmt_str(TXPWR_LMT_WW)) >= 6 ? 1 : 6 - strlen(txpwr_lmt_str(TXPWR_LMT_WW)));
+					{
+						size_t ww_len = strlen(txpwr_lmt_str(TXPWR_LMT_WW));
+						sprintf(fmt, "%%%zus%%s ", ww_len >= 6 ? 1 : 6 - ww_len);
+					}
 					snprintf(tmp_str, TMP_STR_LEN, fmt
 						, strcmp(rfctl->txpwr_lmt_name, txpwr_lmt_str(TXPWR_LMT_WW)) == 0 ? "*" : ""
 						, txpwr_lmt_str(TXPWR_LMT_WW));

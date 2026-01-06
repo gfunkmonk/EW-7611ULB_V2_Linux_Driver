@@ -1938,8 +1938,9 @@ ssize_t proc_set_war_offload_mdns_txt_rsp(struct file *file, const char __user *
 			/* set ==> */
 			int num = sscanf(tmp, "%d %6s %256c", &idx, op, txt_str);
 			u16 sscanf_parameter_length = 0, txt_len = 0;
+			u16 txt_str_len = strlen(txt_str);
 
-			txt_len = (strlen(txt_str)>MAX_MDNS_TXT_SINGLE_LEN)?MAX_MDNS_TXT_SINGLE_LEN:(strlen(txt_str)-1);
+			txt_len = (txt_str_len > MAX_MDNS_TXT_SINGLE_LEN) ? MAX_MDNS_TXT_SINGLE_LEN : (txt_str_len - 1);
 			txt_str[txt_len]='\0';
 			sscanf_parameter_length = 1 + strlen(op) + txt_len + num;
 
