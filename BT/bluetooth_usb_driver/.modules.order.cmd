@@ -1,1 +1,0 @@
-savedcmd_/root/EW-7611ULB_V2_Linux_Driver_2/BT/bluetooth_usb_driver/modules.order := {   echo /root/EW-7611ULB_V2_Linux_Driver_2/BT/bluetooth_usb_driver/rtk_btusbew7611ulbv2.o; :; } > /root/EW-7611ULB_V2_Linux_Driver_2/BT/bluetooth_usb_driver/modules.order

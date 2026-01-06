@@ -1,1 +1,0 @@
-savedcmd_/root/EW-7611ULB_V2_Linux_Driver_2/BT/bluetooth_usb_driver/rtk_usbew7611ulbv2.mod := printf '%s\n'   rtk_coex.o rtk_misc.o rtk_bt.o | awk '!x[$$0]++ { print("/root/EW-7611ULB_V2_Linux_Driver_2/BT/bluetooth_usb_driver/"$$0) }' > /root/EW-7611ULB_V2_Linux_Driver_2/BT/bluetooth_usb_driver/rtk_usbew7611ulbv2.mod

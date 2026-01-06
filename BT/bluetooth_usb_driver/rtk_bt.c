@@ -1867,7 +1867,7 @@ failed:
 #endif
 
 static struct usb_driver btusb_driver = {
-        .name = "rtk_btusbew7611ulbv2",
+        .name = "rtk_btusbv2",
         .probe = btusb_probe,
         .disconnect = btusb_disconnect,
 #ifdef CONFIG_PM
@@ -1895,7 +1895,7 @@ static int __init btusb_init(void)
 
 static void __exit btusb_exit(void)
 {
-        RTKBT_DBG("rtk_btusbew7611ulbv2: btusb_exit");
+        RTKBT_DBG("rtk_btusbv2: btusb_exit");
         usb_deregister(&btusb_driver);
 
 #ifdef BTCOEX
