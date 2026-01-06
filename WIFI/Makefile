@@ -32,8 +32,8 @@ ccflags-y += -Wno-misleading-indentation
 ccflags-y += -Wno-undef
 ccflags-y += -Wno-stringop-overread
 
-EXTRA_CFLAGS += -Wno-old-style-declaration
-EXTRA_CFLAGS += -Wno-header-guard
+ccflags-y += -Wno-old-style-declaration
+ccflags-y += -Wno-header-guard
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
@@ -124,7 +124,6 @@ CONFIG_WIFI_MONITOR = n
 CONFIG_MCC_MODE = n
 CONFIG_APPEND_VENDOR_IE_ENABLE = n
 CONFIG_RTW_NAPI = y
-CONFIG_RTW_HAL = y
 CONFIG_RTW_GRO = y
 CONFIG_RTW_NETIF_SG = y
 CONFIG_RTW_IPCAM_APPLICATION = n
@@ -134,7 +133,6 @@ CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
 # user priority mapping rule : tos, dscp
 CONFIG_RTW_UP_MAPPING_RULE = tos
 CONFIG_RTW_MBO = n
-CONFIG_RTW_WIFI_HAL = n
 # AMSDU in security network
 CONFIG_SEC_AMSDU_MODE = non-spp
 ########################## Android ###########################
@@ -1317,10 +1315,6 @@ endif
 
 ifeq ($(CONFIG_RTW_NAPI), y)
 ccflags-y += -DCONFIG_RTW_NAPI
-endif
-
-ifeq ($(CONFIG_RTW_WIFI_HAL), y)
-ccflags-y += -DCONFIG_RTW_WIFI_HAL
 endif
 
 ifeq ($(CONFIG_RTW_GRO), y)
