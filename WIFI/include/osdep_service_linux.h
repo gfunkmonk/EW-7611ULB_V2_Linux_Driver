@@ -32,7 +32,11 @@
 #include <linux/inetdevice.h>
 #include <linux/skbuff.h>
 #include <linux/circ_buf.h>
-#include <asm/uaccess.h>
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 12, 0))
+	#include <linux/uaccess.h>
+#else
+	#include <asm/uaccess.h>
+#endif
 #include <asm/byteorder.h>
 #include <asm/atomic.h>
 #include <asm/io.h>

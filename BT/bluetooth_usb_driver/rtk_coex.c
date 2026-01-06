@@ -2928,7 +2928,7 @@ void rtk_btcoex_open(struct hci_dev *hdev)
 #endif /* RTB_SOFTWARE_MAILBOX */
         INIT_DELAYED_WORK(&btrtl_coex.l2_work, (void *)rtl_l2_work);
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(4, 14, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
 #ifdef RTB_SOFTWARE_MAILBOX
         timer_setup(&btrtl_coex.polling_timer, polling_bt_info, 0);
 #endif
