@@ -1319,7 +1319,7 @@ int rtw_mp_psd(struct net_device *dev,
 		return -EFAULT;
 
 	input[wrqu->length] = '\0';
-	strcpy(extra, input);
+	_rtw_memcpy(extra, input, wrqu->length + 1);
 
 	wrqu->length = mp_query_psd(padapter, extra);
 
@@ -2074,26 +2074,26 @@ int rtw_mp_pretx_proc(PADAPTER padapter, u8 bStartTest, char *extra)
 		return 0;
 	case MP_SINGLE_TONE_TX:
 		if (bStartTest != 0)
-			strcat(extra, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+			sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
 		SetSingleToneTx(padapter, (u8)bStartTest);
 		break;
 	case MP_CONTINUOUS_TX:
 		if (bStartTest != 0)
-			strcat(extra, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+			sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
 		SetContinuousTx(padapter, (u8)bStartTest);
 		break;
 	case MP_CARRIER_SUPPRISSION_TX:
 		if (bStartTest != 0) {
 			if (HwRateToMPTRate(pmp_priv->rateidx) <= MPT_RATE_11M)
-				strcat(extra, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+				sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
 			else
-				strcat(extra, "\nSpecify carrier suppression but not CCK rate");
+				sprintf(extra + strlen(extra), "\nSpecify carrier suppression but not CCK rate");
 		}
 		SetCarrierSuppressionTx(padapter, (u8)bStartTest);
 		break;
 	case MP_SINGLE_CARRIER_TX:
 		if (bStartTest != 0)
-			strcat(extra, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+			sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
 		SetSingleCarrierTx(padapter, (u8)bStartTest);
 		break;
 
@@ -2571,7 +2571,7 @@ int rtw_mp_rx(struct net_device *dev,
 		pHalData->antenna_tx_path = antenna;
 		SetAntenna(padapter);
 
-		strcat(extra, "\nstart Rx");
+		sprintf(extra + strlen(extra), "\nstart Rx");
 		SetPacketRx(padapter, bStartRx, _FALSE);
 	}
 	wrqu->data.length = strlen(extra);
