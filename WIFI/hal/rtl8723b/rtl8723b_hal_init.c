@@ -3726,7 +3726,6 @@ Hal_EfuseParseChnlPlan_8723B(
 		, hwinfo ? hwinfo[EEPROM_ChannelPlan_8723B] : 0xFF
 		, padapter->registrypriv.alpha2
 		, padapter->registrypriv.channel_plan
-		, RTW_CHPLAN_WORLD_NULL
 		, AutoLoadFail
 	);
 }
@@ -4266,6 +4265,7 @@ static void hw_var_set_monitor(PADAPTER Adapter, u8 variable, u8 *val)
 	u16	value_rxfltmap2;
 	HAL_DATA_TYPE *pHalData = GET_HAL_DATA(Adapter);
 	struct mlme_priv *pmlmepriv = &(Adapter->mlmepriv);
+	static u32 rcr_backup = 0;
 
 	if (*((u8 *)val) == _HW_STATE_MONITOR_) {
 
@@ -4286,7 +4286,7 @@ static void hw_var_set_monitor(PADAPTER Adapter, u8 variable, u8 *val)
 		rcr_bits |= (RCR_ACRC32 | RCR_AICV);
 #endif
 
-		rtw_hal_get_hwreg(Adapter, HW_VAR_RCR, (u8 *)&pHalData->rcr_backup);
+		rtw_hal_get_hwreg(Adapter, HW_VAR_RCR, (u8 *)&rcr_backup);
 		rtw_hal_set_hwreg(Adapter, HW_VAR_RCR, (u8 *)&rcr_bits);
 
 		/* Receive all data frames */
@@ -4308,12 +4308,13 @@ static void hw_var_set_opmode(PADAPTER padapter, u8 variable, u8 *val)
 	u8 val8;
 	u8 mode = *((u8 *)val);
 	static u8 isMonitor = _FALSE;
+	static u32 rcr_backup = 0;
 
 	HAL_DATA_TYPE			*pHalData = GET_HAL_DATA(padapter);
 
 	if (isMonitor == _TRUE) {
 		/* reset RCR from backup */
-		rtw_hal_set_hwreg(padapter, HW_VAR_RCR, (u8 *)&pHalData->rcr_backup);
+		rtw_hal_set_hwreg(padapter, HW_VAR_RCR, (u8 *)&rcr_backup);
 		rtw_hal_rcr_set_chk_bssid(padapter, MLME_ACTION_NONE);
 		isMonitor = _FALSE;
 	}
@@ -5520,7 +5521,8 @@ void rtl8723b_set_hal_ops(struct hal_ops *pHalFunc)
 
 	pHalFunc->set_tx_power_level_handler = &PHY_SetTxPowerLevel8723B;
 	pHalFunc->set_tx_power_index_handler = PHY_SetTxPowerIndex_8723B;
-	pHalFunc->get_tx_power_index_handler = &PHY_GetTxPowerIndex_8723B;
+	/* TODO: PHY_GetTxPowerIndex_8723B has incompatible signature with current API */
+	/* pHalFunc->get_tx_power_index_handler = &PHY_GetTxPowerIndex_8723B; */
 
 	pHalFunc->hal_dm_watchdog = &rtl8723b_HalDmWatchDog;
 

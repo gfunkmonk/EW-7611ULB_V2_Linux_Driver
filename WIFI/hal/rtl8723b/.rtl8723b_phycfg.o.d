@@ -1,5 +1,5 @@
-rtl8723b_hal_init.o: \
- /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/hal/rtl8723b/rtl8723b_hal_init.c \
+rtl8723b_phycfg.o: \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/hal/rtl8723b/rtl8723b_phycfg.c \
  include/linux/compiler-version.h include/linux/kconfig.h \
  include/generated/autoconf.h include/linux/compiler_types.h \
  include/linux/compiler_attributes.h include/linux/compiler-gcc.h \
@@ -578,6 +578,4 @@ rtl8723b_hal_init.o: \
  /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_led.h \
  /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/Hal8723BPwrSeq.h \
  /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/Hal8723BPhyReg.h \
- /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/Hal8723BPhyCfg.h \
- /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtw_bt_mp.h \
- /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/hal/rtl8723b/hal8723b_fw.h
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/Hal8723BPhyCfg.h

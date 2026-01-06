@@ -47,8 +47,12 @@ typedef struct _RT_FIRMWARE {
 	u8			szFwBuffer[FW_8723B_SIZE];
 #endif
 	u32			ulFwLength;
-} RT_FIRMWARE_8723B, *PRT_FIRMWARE_8723B;
+} RT_FIRMWARE, *PRT_FIRMWARE;
 #endif /* _RT_FIRMWARE_DEFINED */
+
+/* Chip-specific typedef */
+typedef RT_FIRMWARE RT_FIRMWARE_8723B;
+typedef PRT_FIRMWARE PRT_FIRMWARE_8723B;
 
 /*
  * This structure must be cared byte-ordering
