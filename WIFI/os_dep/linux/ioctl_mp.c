@@ -1319,6 +1319,7 @@ int rtw_mp_psd(struct net_device *dev,
 		return -EFAULT;
 
 	input[wrqu->length] = '\0';
+	/* wrqu->length is already validated to be < RTW_IWD_MAX_LEN by rtw_do_mp_iwdata_len_chk */
 	_rtw_memcpy(extra, input, wrqu->length + 1);
 
 	wrqu->length = mp_query_psd(padapter, extra);
