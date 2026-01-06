@@ -17,15 +17,15 @@
  */
 #define AUTOCONF_INCLUDED
 
-#define RTL871X_MODULE_NAME "8723DU"
-#ifdef CONFIG_FOR_RTL8723DU_VQ0
-#define DRV_NAME "rtl8723du-vq0"
+#define RTL871X_MODULE_NAME "8723BU"
+#ifdef CONFIG_FOR_RTL8723BU_VQ0
+#define DRV_NAME "rtl8723bu-vq0"
 #else
-#define DRV_NAME "rtl8723du"
+#define DRV_NAME "rtl8723bu"
 #endif
 
-#ifndef CONFIG_RTL8723D
-#define CONFIG_RTL8723D
+#ifndef CONFIG_RTL8723B
+#define CONFIG_RTL8723B
 #endif
 #define CONFIG_USB_HCI
 

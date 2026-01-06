@@ -70,6 +70,8 @@
 		#include "../main.h"
 		#include "../hw.h"
 		#include "../fw.h"
+	#else
+		#include "../../include/hal_ic_cfg.h"
 	#endif
 	#define __PACK
 	#define __WLAN_ATTRIB_PACK__
@@ -172,6 +174,7 @@
 #ifndef RTL8723F_SUPPORT
 	#define	RTL8723F_SUPPORT	0
 #endif
+
 #if (DM_ODM_SUPPORT_TYPE & ODM_CE) && \
 	(!defined(DM_ODM_CE_MAC80211) && !defined(DM_ODM_CE_MAC80211_V2))
 
