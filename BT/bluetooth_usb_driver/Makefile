@@ -1,8 +1,8 @@
 ccflags-y += -Wno-missing-prototypes -Wno-missing-declarations
 
 ifneq ($(KERNELRELEASE),)
-	obj-m := rtk_btusbv2.o
-	rtk_btusbv2-y = rtk_coex.o rtk_misc.o rtk_bt.o
+	obj-m := rtk_btusb.o
+	rtk_btusb-y = rtk_coex.o rtk_misc.o rtk_bt.o
 else
 	PWD := $(shell pwd)
 	KVER := $(shell uname -r)
