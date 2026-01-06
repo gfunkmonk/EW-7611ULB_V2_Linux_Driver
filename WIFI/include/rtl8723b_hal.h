@@ -153,8 +153,10 @@ typedef struct _RT_8723B_FIRMWARE_HDR {
 #include "HalVerDef.h"
 #include "hal_com.h"
 
-#ifndef CONFIG_RTL8723D
+#ifdef CONFIG_RTL8723B
+#ifndef EFUSE_OOB_PROTECT_BYTES
 #define EFUSE_OOB_PROTECT_BYTES		15
+#endif
 #endif
 
 #define HAL_EFUSE_MEMORY
@@ -165,8 +167,10 @@ typedef struct _RT_8723B_FIRMWARE_HDR {
 #define EFUSE_MAX_SECTION_8723B			64
 
 #define EFUSE_IC_ID_OFFSET			506	/* For some inferiority IC purpose. added by Roger, 2009.09.02. */
-#ifndef CONFIG_RTL8723D
+#ifdef CONFIG_RTL8723B
+#ifndef AVAILABLE_EFUSE_ADDR
 #define AVAILABLE_EFUSE_ADDR(addr)	(addr < EFUSE_REAL_CONTENT_LEN_8723B)
+#endif
 #endif
 
 #define EFUSE_ACCESS_ON			0x69	/* For RTL8723 only. */
@@ -175,10 +179,19 @@ typedef struct _RT_8723B_FIRMWARE_HDR {
 /* ********************************************************
  *			EFUSE for BT definition
  * ******************************************************** */
-#ifndef CONFIG_RTL8723D
+#ifdef CONFIG_RTL8723B
+#ifndef EFUSE_BT_REAL_BANK_CONTENT_LEN
 #define EFUSE_BT_REAL_BANK_CONTENT_LEN	512
+#endif
+#ifndef EFUSE_BT_REAL_CONTENT_LEN
 #define EFUSE_BT_REAL_CONTENT_LEN		1536	/* 512*3 */
+#endif
+#ifndef EFUSE_BT_MAP_LEN
+#define EFUSE_BT_MAP_LEN				1024	/* 1k bytes */
+#endif
+#ifndef EFUSE_BT_MAX_SECTION
 #define EFUSE_BT_MAX_SECTION			128		/* 1024/8 */
+#endif
 #endif
 
 #define EFUSE_PROTECT_BYTES_BANK		16

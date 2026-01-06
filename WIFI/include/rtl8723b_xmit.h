@@ -300,15 +300,19 @@ void fill_txdesc_bmc_tx_rate(struct pkt_attrib *pattrib, u8 *ptxdesc);
 	s32	rtl8723bs_hal_xmitframe_enqueue(_adapter *padapter, struct xmit_frame *pxmitframe);
 	s32 rtl8723bs_xmit_buf_handler(PADAPTER padapter);
 	thread_return rtl8723bs_xmit_thread(thread_context context);
-	#ifndef CONFIG_RTL8723D
+	#ifdef CONFIG_RTL8723B
+	#ifndef hal_xmit_handler
 	#define hal_xmit_handler rtl8723bs_xmit_buf_handler
+	#endif
 	#endif
 #endif
 
 #ifdef CONFIG_USB_HCI
 	s32 rtl8723bu_xmit_buf_handler(PADAPTER padapter);
-	#ifndef CONFIG_RTL8723D
+	#ifdef CONFIG_RTL8723B
+	#ifndef hal_xmit_handler
 	#define hal_xmit_handler rtl8723bu_xmit_buf_handler
+	#endif
 	#endif
 
 
