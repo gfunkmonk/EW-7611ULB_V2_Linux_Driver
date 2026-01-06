@@ -11,15 +11,17 @@ if ! command -v iwconfig &> /dev/null; then
 fi
 
 # Determine the appropriate driver
-KERNEL_VERSION=$(uname -r | cut -d. -f1-2)
-MAJOR_VERSION=$(echo "$KERNEL_VERSION" | cut -d. -f1)
-MINOR_VERSION=$(echo "$KERNEL_VERSION" | cut -d. -f2)
+# For kernel 2.4.x, use ipw driver
+# For newer kernels with wireless-tools < v18, use ipw driver
+# Otherwise, use wext driver
+KERNEL_MAJOR=$(uname -r | cut -d. -f1)
+KERNEL_MINOR=$(uname -r | cut -d. -f2)
 
-if [ "$MINOR_VERSION" -eq 4 ]; then
+if [ "$KERNEL_MAJOR" -eq 2 ] && [ "$KERNEL_MINOR" -eq 4 ]; then
     DRIVER="ipw"
 else
     IWCONFIG_VERSION=$(iwconfig -v 2>&1 | awk '{print $4}' | head -n 1)
-    if [ "$IWCONFIG_VERSION" -lt 18 ]; then
+    if [ -n "$IWCONFIG_VERSION" ] && [ "$IWCONFIG_VERSION" -lt 18 ]; then
         DRIVER="ipw"
     else
         DRIVER="wext"
