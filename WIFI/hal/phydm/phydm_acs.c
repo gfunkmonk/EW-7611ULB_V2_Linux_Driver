@@ -886,7 +886,7 @@ choose_ch:
 #ifdef _DEBUG_RTL8192CD_
 	for (i = 0; i < priv->available_chnl_num; i++)
 		len += sprintf(tmpbuf + len, "ch%d:%u ", priv->available_chnl[i], score[i]);
-	strcat(tmpbuf, "\n");
+	len += sprintf(tmpbuf + len, "\n");
 	panic_printk("%s", tmpbuf);
 
 #endif
