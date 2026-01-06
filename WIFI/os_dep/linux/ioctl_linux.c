@@ -9888,7 +9888,8 @@ static int rtw_mp_efuse_set(struct net_device *dev,
 				RTW_INFO("Set efuse update with phy\n");
 			} else {
 				pmp_priv->efuse_update_file = _TRUE;
-				strcpy(pmp_priv->efuse_file_path , tmp[1]);
+				strncpy(pmp_priv->efuse_file_path, tmp[1], sizeof(pmp_priv->efuse_file_path) - 1);
+				pmp_priv->efuse_file_path[sizeof(pmp_priv->efuse_file_path) - 1] = '\0';
 				RTW_INFO("Got file path %s\n", pmp_priv->efuse_file_path);
 			}
 		}

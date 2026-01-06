@@ -5799,9 +5799,10 @@ s32 phydm_cmd(struct dm_struct *dm, char *input, u32 in_len, u8 flag,
 	do {
 		token = strsep(&input, ", ");
 		if (token) {
-			if (strlen(token) <= MAX_ARGV)
-				strcpy(argv[argc], token);
-
+			if (strlen(token) < MAX_ARGV) {
+				strncpy(argv[argc], token, MAX_ARGV - 1);
+				argv[argc][MAX_ARGV - 1] = '\0';
+			}
 			argc++;
 		} else {
 			break;
