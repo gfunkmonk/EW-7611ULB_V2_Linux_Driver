@@ -847,6 +847,9 @@ typedef struct hal_com_data {
 	u16 init_reg_0x63a;
 	u32 init_reg_0x63c;
 #endif
+
+	/* Monitor mode RCR backup */
+	u32 rcr_backup;
 } HAL_DATA_COMMON, *PHAL_DATA_COMMON;
 
 typedef struct hal_com_data HAL_DATA_TYPE, *PHAL_DATA_TYPE;
