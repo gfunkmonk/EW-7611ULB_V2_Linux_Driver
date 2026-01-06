@@ -32,6 +32,9 @@ ccflags-y += -Wno-misleading-indentation
 ccflags-y += -Wno-undef
 ccflags-y += -Wno-stringop-overread
 
+EXTRA_CFLAGS += -Wno-old-style-declaration
+EXTRA_CFLAGS += -Wno-header-guard
+
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
 ccflags-y += -Wno-uninitialized
@@ -42,6 +45,8 @@ ccflags-y += -Wno-tautological-pointer-compare
 ccflags-y += -Wno-tautological-overlap-compare
 ccflags-y += -Wno-pointer-bool-conversion
 ccflags-y += -Wno-misleading-indentation
+ccflags-y += -Wno-self-assign
+ccflags-y += -Wno-header-guard
 endif
 
 GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
@@ -58,8 +63,8 @@ ccflags-y += -I$(src)/include
 #ldflags-y += --strip-debug
 ldflags-y += --strip-all -O3
 
-ccflags-y += -fno-pic
-ccflags-y += -fno-pie
+#ccflags-y += -fno-pic
+#ccflags-y += -fno-pie
 
 CONFIG_AUTOCFG_CP = n
 
@@ -101,9 +106,7 @@ CONFIG_BT_COEXIST = y
 CONFIG_WAPI_SUPPORT = n
 CONFIG_EFUSE_CONFIG_FILE = y
 CONFIG_EXT_CLK = n
-CONFIG_TRAFFIC_PROTECT = y
-CONFIG_ANTENNA_DIVERSITY = y
-CONFIG_DEFAULT_PATTERNS_EN = n
+CONFIG_TRAFFIC_PROTECT = n
 CONFIG_LOAD_PHY_PARA_FROM_FILE = y
 CONFIG_TXPWR_BY_RATE = y
 CONFIG_TXPWR_BY_RATE_EN = y
@@ -126,12 +129,12 @@ CONFIG_RTW_GRO = y
 CONFIG_RTW_NETIF_SG = y
 CONFIG_RTW_IPCAM_APPLICATION = n
 CONFIG_RTW_REPEATER_SON = n
-CONFIG_RTW_WIFI_HAL = y
 CONFIG_ICMP_VOQ = n
 CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
 # user priority mapping rule : tos, dscp
 CONFIG_RTW_UP_MAPPING_RULE = tos
 CONFIG_RTW_MBO = n
+CONFIG_RTW_WIFI_HAL = n
 # AMSDU in security network
 CONFIG_SEC_AMSDU_MODE = non-spp
 ########################## Android ###########################
@@ -1238,14 +1241,8 @@ endif
 ifeq ($(CONFIG_SDIO_HCI), y)
 ccflags-y += -DCONFIG_RTW_SDIO_PM_KEEP_POWER
 endif
-ifeq ($(CONFIG_DEFAULT_PATTERNS_EN), y)
-ccflags-y += -DCONFIG_DEFAULT_PATTERNS_EN
-endif
 endif
 
-ifeq ($(CONFIG_ANTENNA_DIVERSITY), y)
-ccflags-y += -DCONFIG_ANTENNA_DIVERSITY
-endif
 ifeq ($(CONFIG_AP_WOWLAN), y)
 ccflags-y += -DCONFIG_AP_WOWLAN
 ifeq ($(CONFIG_AP_MODE), n)
