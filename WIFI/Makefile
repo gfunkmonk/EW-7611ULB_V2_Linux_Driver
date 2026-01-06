@@ -1,7 +1,7 @@
 ccflags-y += $(USER_EXTRA_CFLAGS)
 #ccflags-y += -O1
-ccflags-y += -O3
-ccflags-y += -mcpu=native -mtune=native -march=native
+#ccflags-y += -O3
+#ccflags-y += -mcpu=native -mtune=native -march=native
 #ccflags-y += -Wall
 #ccflags-y += -Wextra
 #ccflags-y += -Werror
@@ -56,10 +56,10 @@ ccflags-y += -I$(src)/platform
 ccflags-y += -I$(src)/include
 
 #ldflags-y += --strip-debug
-ldflags-y += --strip-all -O3
+#ldflags-y += --strip-all -O3
 
-ccflags-y += -fno-pic
-ccflags-y += -fno-pie
+#ccflags-y += -fno-pic
+#ccflags-y += -fno-pie
 
 CONFIG_AUTOCFG_CP = n
 
@@ -1806,7 +1806,7 @@ ccflags-y += -DCONFIG_IOCTL_CFG80211
 ifeq ($(CONFIG_SDIO_HCI), y)
 ccflags-y += -DRTW_SUPPORT_PLATFORM_SHUTDOWN
 endif
-ccflags-y += -fno-pic
+#ccflags-y += -fno-pic
 ARCH := arm
 CROSS_COMPILE := /home/android_sdk/Rockchip/rk3066_20130607/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.6/bin/arm-linux-androideabi-
 #CROSS_COMPILE := /home/android_sdk/Rockchip/Rk3066sdk/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.6/bin/arm-linux-androideabi-
@@ -2313,7 +2313,7 @@ endif
 
 ifeq ($(CONFIG_PLATFORM_AML_S905), y)
 ccflags-y += -DCONFIG_PLATFORM_AML_S905
-ccflags-y += -DCONFIG_LITTLE_ENDIAN -fno-pic
+ccflags-y += -DCONFIG_LITTLE_ENDIAN
 # default setting for Android
 #ccflags-y += -DCONFIG_CONCURRENT_MODE
 ccflags-y += -DCONFIG_IOCTL_CFG80211
