@@ -11,8 +11,8 @@ module:
 
 install:
 	$(MAKE) -C $(FIRMWARE_DIR)
-	-@rmmod btusb 2>/dev/null || true
-	-@rmmod rtk_btusb 2>/dev/null || true
+	-rmmod btusb 2>/dev/null
+	-rmmod rtk_btusb 2>/dev/null
 	$(MAKE) -C $(SRC_DIR)
 	@cp -f $(SRC_DIR)/rtk_btusbew7611ulbv2.ko $(DRV_DIR)/rtk_btusbew7611ulbv2.ko
 	@depmod -a $(shell uname -r)
@@ -23,8 +23,8 @@ install:
 
 uninstall:
 	$(MAKE) -C $(FIRMWARE_DIR) clean
-	-@mv -n $(DRV_DIR)/btusb_bak $(DRV_DIR)/btusb.ko 2>/dev/null || true
-	-@rmmod rtk_btusb 2>/dev/null || true
+	-mv -n $(DRV_DIR)/btusb_bak $(DRV_DIR)/btusb.ko 2>/dev/null
+	-rmmod rtk_btusb 2>/dev/null
 	@rm -f $(DRV_DIR)/rtk_btusb.ko
 	@depmod -a $(shell uname -r)
 	@echo "uninstall rtk_btusb success!"

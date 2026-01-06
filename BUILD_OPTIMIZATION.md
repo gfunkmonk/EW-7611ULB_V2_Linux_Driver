@@ -41,11 +41,9 @@ $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) mo
 
 **After:** Automatic parallel build detection
 ```makefile
-ifeq (,$(findstring -j,$(MAKEFLAGS)))
-  MAKEFLAGS += -j$(shell nproc 2>/dev/null || echo 1)
-endif
+PARALLEL_JOBS := $(shell nproc 2>/dev/null || echo 1)
 modules:
-	$(MAKE) $(MAKEFLAGS) ...
+	$(MAKE) -j$(PARALLEL_JOBS) ...
 ```
 
 **Impact:** Up to 4x faster compilation on multi-core systems (e.g., 4-core CPU)
@@ -76,12 +74,12 @@ cd hal ; rm -fr */*.mod.c */*.mod */*.o ...
 **Before:**
 - Used `make` instead of `$(MAKE)`
 - Commands echoed to console unnecessarily
-- Error handling relied on shell continuation (`-` prefix)
+- Redundant error handling (both `-` prefix and `|| true`)
 
 **After:**
 - Uses `$(MAKE)` for proper variable propagation
 - Silent operations with `@` prefix where appropriate
-- Proper error handling with `|| true` for optional operations
+- Clean error handling with `-` prefix and stderr redirect for optional operations
 
 **Impact:** More reliable builds, cleaner output, better portability
 

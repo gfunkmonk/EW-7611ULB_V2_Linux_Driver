@@ -2497,15 +2497,13 @@ else
 
 export CONFIG_RTL8723DU = m
 
-# Enable parallel builds if MAKEFLAGS doesn't already contain -j
-ifeq (,$(findstring -j,$(MAKEFLAGS)))
-  MAKEFLAGS += -j$(shell nproc 2>/dev/null || echo 1)
-endif
+# Detect optimal parallel build level
+PARALLEL_JOBS := $(shell nproc 2>/dev/null || echo 1)
 
 all: modules
 
 modules:
-	$(MAKE) $(MAKEFLAGS) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules
+	$(MAKE) -j$(PARALLEL_JOBS) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
