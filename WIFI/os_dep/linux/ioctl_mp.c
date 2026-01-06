@@ -2050,6 +2050,7 @@ int rtw_mp_pretx_proc(PADAPTER padapter, u8 bStartTest, char *extra)
 {
 	struct mp_priv *pmp_priv = &padapter->mppriv;
 	char *pextra = extra;
+	size_t extra_len;
 
 	switch (pmp_priv->mode) {
 
@@ -2073,27 +2074,34 @@ int rtw_mp_pretx_proc(PADAPTER padapter, u8 bStartTest, char *extra)
 			return -EFAULT;
 		return 0;
 	case MP_SINGLE_TONE_TX:
-		if (bStartTest != 0)
-			sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+		if (bStartTest != 0) {
+			extra_len = strlen(extra);
+			sprintf(extra + extra_len, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+		}
 		SetSingleToneTx(padapter, (u8)bStartTest);
 		break;
 	case MP_CONTINUOUS_TX:
-		if (bStartTest != 0)
-			sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+		if (bStartTest != 0) {
+			extra_len = strlen(extra);
+			sprintf(extra + extra_len, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+		}
 		SetContinuousTx(padapter, (u8)bStartTest);
 		break;
 	case MP_CARRIER_SUPPRISSION_TX:
 		if (bStartTest != 0) {
+			extra_len = strlen(extra);
 			if (HwRateToMPTRate(pmp_priv->rateidx) <= MPT_RATE_11M)
-				sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+				sprintf(extra + extra_len, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
 			else
-				sprintf(extra + strlen(extra), "\nSpecify carrier suppression but not CCK rate");
+				sprintf(extra + extra_len, "\nSpecify carrier suppression but not CCK rate");
 		}
 		SetCarrierSuppressionTx(padapter, (u8)bStartTest);
 		break;
 	case MP_SINGLE_CARRIER_TX:
-		if (bStartTest != 0)
-			sprintf(extra + strlen(extra), "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+		if (bStartTest != 0) {
+			extra_len = strlen(extra);
+			sprintf(extra + extra_len, "\nStart continuous DA=ffffffffffff len=1500\n infinite=yes.");
+		}
 		SetSingleCarrierTx(padapter, (u8)bStartTest);
 		break;
 
@@ -2571,7 +2579,7 @@ int rtw_mp_rx(struct net_device *dev,
 		pHalData->antenna_tx_path = antenna;
 		SetAntenna(padapter);
 
-		sprintf(extra + strlen(extra), "\nstart Rx");
+		pextra += sprintf(pextra, "\nstart Rx");
 		SetPacketRx(padapter, bStartRx, _FALSE);
 	}
 	wrqu->data.length = strlen(extra);

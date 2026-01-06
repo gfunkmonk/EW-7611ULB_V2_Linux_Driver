@@ -1968,10 +1968,8 @@ void dump_txpwr_lmt(void *sel, _adapter *adapter)
 							, ent->name);
 						_RTW_PRINT_SEL(sel, "%s", tmp_str);
 					}
-					{
-						size_t ww_len = strlen(txpwr_lmt_str(TXPWR_LMT_WW));
-						sprintf(fmt, "%%%zus%%s ", ww_len >= 6 ? 1 : 6 - ww_len);
-					}
+					size_t ww_len = strlen(txpwr_lmt_str(TXPWR_LMT_WW));
+					sprintf(fmt, "%%%zus%%s ", ww_len >= 6 ? 1 : 6 - ww_len);
 					snprintf(tmp_str, TMP_STR_LEN, fmt
 						, strcmp(rfctl->txpwr_lmt_name, txpwr_lmt_str(TXPWR_LMT_WW)) == 0 ? "*" : ""
 						, txpwr_lmt_str(TXPWR_LMT_WW));
