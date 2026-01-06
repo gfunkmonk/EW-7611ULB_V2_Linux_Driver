@@ -34,7 +34,7 @@
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
 #include <linux/unaligned.h>
-#elif
+#else
 #include <asm/unaligned.h>
 #endif
 
