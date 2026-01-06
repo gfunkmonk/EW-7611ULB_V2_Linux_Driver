@@ -41,6 +41,8 @@
 #define IS_FW_HEADER_EXIST_8723D(_pFwHdr)\
 	((le16_to_cpu(_pFwHdr->Signature) & 0xFFF0) == 0x23D0)
 
+#ifndef _RT_FIRMWARE_DEFINED
+#define _RT_FIRMWARE_DEFINED
 typedef struct _RT_FIRMWARE {
 	FIRMWARE_SOURCE	eFWSource;
 #ifdef CONFIG_EMBEDDED_FWIMG
@@ -50,6 +52,7 @@ typedef struct _RT_FIRMWARE {
 #endif
 	u32			ulFwLength;
 } RT_FIRMWARE_8723D, *PRT_FIRMWARE_8723D;
+#endif /* _RT_FIRMWARE_DEFINED */
 
 /*
  * This structure must be cared byte-ordering
@@ -160,7 +163,9 @@ typedef struct _RT_8723D_FIRMWARE_HDR {
 #include "HalVerDef.h"
 #include "hal_com.h"
 
+#ifndef EFUSE_OOB_PROTECT_BYTES
 #define EFUSE_OOB_PROTECT_BYTES (96 + 1)
+#endif
 
 #define HAL_EFUSE_MEMORY
 #define HWSET_MAX_SIZE_8723D                512
@@ -170,7 +175,9 @@ typedef struct _RT_8723D_FIRMWARE_HDR {
 
 /* For some inferiority IC purpose. added by Roger, 2009.09.02.*/
 #define EFUSE_IC_ID_OFFSET			506
+#ifndef AVAILABLE_EFUSE_ADDR
 #define AVAILABLE_EFUSE_ADDR(addr)	(addr < EFUSE_REAL_CONTENT_LEN_8723D)
+#endif
 
 #define EFUSE_ACCESS_ON		0x69
 #define EFUSE_ACCESS_OFF	0x00
@@ -179,13 +186,21 @@ typedef struct _RT_8723D_FIRMWARE_HDR {
  *			EFUSE for BT definition
  * ******************************************************** */
 #define BANK_NUM			1
+#ifndef EFUSE_BT_REAL_BANK_CONTENT_LEN
 #define EFUSE_BT_REAL_BANK_CONTENT_LEN	128
+#endif
+#ifndef EFUSE_BT_REAL_CONTENT_LEN
 #define EFUSE_BT_REAL_CONTENT_LEN	\
 	(EFUSE_BT_REAL_BANK_CONTENT_LEN * BANK_NUM)
+#endif
 #define EFUSE_BT_MAP_LEN		1024	/* 1k bytes */
+#ifndef EFUSE_BT_MAX_SECTION
 #define EFUSE_BT_MAX_SECTION		(EFUSE_BT_MAP_LEN / 8)
+#endif
 #define EFUSE_PROTECT_BYTES_BANK	16
 
+#ifndef _PACKAGE_TYPE_E_DEFINED
+#define _PACKAGE_TYPE_E_DEFINED
 typedef enum tag_Package_Definition {
 	PACKAGE_DEFAULT,
 	PACKAGE_QFN68,
@@ -193,6 +208,7 @@ typedef enum tag_Package_Definition {
 	PACKAGE_TFBGA80,
 	PACKAGE_TFBGA79
 } PACKAGE_TYPE_E;
+#endif /* _PACKAGE_TYPE_E_DEFINED */
 
 #define INCLUDE_MULTI_FUNC_BT(_Adapter) \
 	(GET_HAL_DATA(_Adapter)->MultiFunc & RT_MULTI_FUNC_BT)
