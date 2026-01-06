@@ -17,7 +17,7 @@
 #ifdef __KERNEL__
 	#include <linux/if_arp.h>
 	#include <net/ip.h>
-	#include <net/ipx.h>
+	/* #include <net/ipx.h> */ /* IPX removed from modern kernels */
 	#include <linux/atalk.h>
 	#include <linux/udp.h>
 	#include <linux/if_pppox.h>
@@ -892,6 +892,7 @@ int nat25_db_handle(_adapter *priv, struct sk_buff *skb, int method)
 	/*---------------------------------------------------*/
 	/*         Handle IPX and Apple Talk frame          */
 	/*---------------------------------------------------*/
+#if 0  /* IPX and AppleTalk protocols removed from modern kernels */
 	else if ((protocol == __constant_htons(ETH_P_IPX)) ||
 		 (protocol == __constant_htons(ETH_P_ATALK)) ||
 		 (protocol == __constant_htons(ETH_P_AARP))) {
@@ -1109,6 +1110,7 @@ int nat25_db_handle(_adapter *priv, struct sk_buff *skb, int method)
 
 		return -1;
 	}
+#endif /* IPX and AppleTalk protocols removed */
 
 	/*---------------------------------------------------*/
 	/*                Handle PPPoE frame                */
