@@ -59,6 +59,7 @@
 #include <linux/kthread.h>
 #include <linux/list.h>
 #include <linux/vmalloc.h>
+#include <linux/timer.h>
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0))
 	#include <uapi/linux/sched/types.h>

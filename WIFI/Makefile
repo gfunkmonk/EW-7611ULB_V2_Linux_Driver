@@ -20,21 +20,18 @@ ccflags-y += -Wno-missing-declarations
 ccflags-y += -Wno-address
 ccflags-y += -Wno-cast-function-type
 ccflags-y += -Wno-discarded-qualifiers
-#ccflags-y += -Wno-sometimes-uninitialized
 ccflags-y += -Wno-enum-conversion
 ccflags-y += -Wno-vla
 ccflags-y += -Wno-date-time
 ccflags-y += -Wno-implicit-fallthrough
 ccflags-y += -Wno-attributes
-#ccflags-y += -Wno-ignored-attributes
+ccflags-y += -Wno-ignored-attributes
 ccflags-y += -Wno-empty-body
 ccflags-y += -Wno-misleading-indentation
 ccflags-y += -Wno-undef
 ccflags-y += -Wno-stringop-overread
-
 ccflags-y += -Wno-old-style-declaration
-ccflags-y += -Wno-header-guard
-
+ccflags-y += -Wno-implicit-function-declaration
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
 ccflags-y += -Wno-uninitialized
@@ -728,7 +725,7 @@ ifeq ($(CONFIG_RTL8723D), y)
 
 RTL871X = rtl8723d
 ifeq ($(CONFIG_USB_HCI), y)
-MODULE_NAME = rtl8723du
+MODULE_NAME = 8723du
 MODULE_SUB_NAME = 8723du
 endif
 ifeq ($(CONFIG_PCI_HCI), y)
