@@ -1408,6 +1408,8 @@ endif
 
 ifneq ($(KERNELRELEASE),)
 
+CONFIG_RTL8723DU = m
+
 ########### this part for *.mk ############################
 include $(src)/hal/phydm/phydm.mk
 
