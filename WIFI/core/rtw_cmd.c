@@ -16,7 +16,9 @@
 
 #include <drv_types.h>
 #include <hal_data.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
 #include <linux/objtool.h>
+#endif
 
 #ifndef DBG_CMD_EXECUTE
 	#define DBG_CMD_EXECUTE 0
