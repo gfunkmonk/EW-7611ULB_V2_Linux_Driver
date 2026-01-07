@@ -54,6 +54,7 @@ ccflags-y += -Wno-date-time     # Fix compile error && warning on gcc 4.9 and la
 endif
 
 src := $(PWD)
+
 ccflags-y += -I$(src)/hal/phydm
 ccflags-y += -I$(src)/hal
 ccflags-y += -I$(src)/platform
@@ -62,8 +63,8 @@ ccflags-y += -I$(src)/include
 #ldflags-y += --strip-debug
 ldflags-y += --strip-all -O3
 
-#ccflags-y += -fno-pic
-#ccflags-y += -fno-pie
+ccflags-y += -fno-pic
+ccflags-y += -fno-pie
 
 CONFIG_AUTOCFG_CP = n
 
@@ -96,7 +97,7 @@ CONFIG_AP_MODE = y
 CONFIG_P2P = y
 CONFIG_MP_INCLUDED = y
 CONFIG_CONCURRENT_MODE = n
-CONFIG_POWER_SAVING = n
+CONFIG_POWER_SAVING = y
 CONFIG_IPS_MODE = default
 CONFIG_LPS_MODE = default
 CONFIG_USB_AUTOSUSPEND = n
@@ -2523,7 +2524,6 @@ $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
 endif
 
 obj-$(CONFIG_RTL8723DU) := $(MODULE_NAME).o
-OBJECT_FILES_NON_STANDARD := y
 
 else
 
