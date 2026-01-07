@@ -4,18 +4,14 @@ SKIP_STACK_VALIDATION := 1
 #KBUILD_ENABLE_EXTRA_GCC_CHECKS := 1
 
 ccflags-y += $(USER_EXTRA_CFLAGS)
-ccflags-y += -O2
-#ccflags-y += -Wall
-#ccflags-y += -Wextra
-#ccflags-y += -Werror
-#ccflags-y += -pedantic
+ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables
+#ccflags-y += -Wall -Wextra -Werror -pedantic
 #ccflags-y += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 ccflags-y += -Wno-missing-format-attribute -Wno-format-truncation
 ccflags-y += -Wno-missing-include-dirs -Wno-missing-prototypes -Wno-missing-declarations
 ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter
 ccflags-y += -Wno-unused -Wno-unused-function -Wno-unused-const-variable
 ccflags-y += -Wno-implicit-function-declaration -Wno-implicit-fallthrough
-
 ccflags-y += -Wno-incompatible-pointer-types
 ccflags-y += -Wno-misleading-indentation
 ccflags-y += -Wno-old-style-declaration
@@ -41,6 +37,9 @@ ccflags-y += -Wno-tautological-overlap-compare -Wno-pointer-bool-conversion
 ccflags-y += -Wno-misleading-indentation -Wno-self-assign -Wno-header-guard
 endif
 
+# gcc-12
+ccflags-y += -Wframe-larger-than=1648 -Wno-enum-conversion -Wno-int-in-bool-context
+
 GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
 ifeq ($(GCC_VER_49),1)
 ccflags-y += -Wno-date-time     # Fix compile error && warning on gcc 4.9 and later
@@ -51,8 +50,6 @@ ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform  -I$(src)/includ
 
 #ldflags-y += --strip-debug
 ldflags-y += --strip-all -O3
-
-ccflags-y += -fno-pic -fno-pie -fno-jump-tables
 
 CONFIG_AUTOCFG_CP = n
 
