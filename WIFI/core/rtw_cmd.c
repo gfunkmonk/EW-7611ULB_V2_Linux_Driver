@@ -16,6 +16,9 @@
 
 #include <drv_types.h>
 #include <hal_data.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
+#include <linux/objtool.h>
+#endif
 
 #ifndef DBG_CMD_EXECUTE
 	#define DBG_CMD_EXECUTE 0
@@ -229,6 +232,9 @@ void _rtw_free_cmd_priv(struct	cmd_priv *pcmdpriv)
 		_rtw_mutex_free(&pcmdpriv->sctx_mutex);
 	}
 }
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
+STACK_FRAME_NON_STANDARD(_rtw_free_cmd_priv);
+#endif
 
 /*
 Calling Context:
