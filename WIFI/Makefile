@@ -1,51 +1,44 @@
+CONFIG_STACK_VALIDATION := n
+SKIP_STACK_VALIDATION := 1
+#KBUILD_EXTRA_WARN := 1
+#KBUILD_ENABLE_EXTRA_GCC_CHECKS := 1
+
 ccflags-y += $(USER_EXTRA_CFLAGS)
-#ccflags-y += -O1
 ccflags-y += -O2
-#ccflags-y += -mcpu=native -mtune=native -march=native
 #ccflags-y += -Wall
 #ccflags-y += -Wextra
 #ccflags-y += -Werror
 #ccflags-y += -pedantic
 #ccflags-y += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
+ccflags-y += -Wno-missing-format-attribute -Wno-format-truncation
+ccflags-y += -Wno-missing-include-dirs -Wno-missing-prototypes -Wno-missing-declarations
+ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter
+ccflags-y += -Wno-unused -Wno-unused-function -Wno-unused-const-variable
+ccflags-y += -Wno-implicit-function-declaration -Wno-implicit-fallthrough
 
-ccflags-y += -Wno-unused-variable
-ccflags-y += -Wno-unused-value
-ccflags-y += -Wno-unused-label
-ccflags-y += -Wno-unused-parameter
-ccflags-y += -Wno-unused-function
-ccflags-y += -Wno-unused
-ccflags-y += -Wno-uninitialized
-ccflags-y += -Wno-missing-prototypes
-ccflags-y += -Wno-missing-declarations
-ccflags-y += -Wno-address
-ccflags-y += -Wno-cast-function-type
-ccflags-y += -Wno-discarded-qualifiers
-ccflags-y += -Wno-enum-conversion
-ccflags-y += -Wno-vla
-ccflags-y += -Wno-date-time
-ccflags-y += -Wno-implicit-fallthrough
-ccflags-y += -Wno-attributes
-ccflags-y += -Wno-ignored-attributes
-ccflags-y += -Wno-empty-body
-ccflags-y += -Wno-misleading-indentation
-ccflags-y += -Wno-undef
-ccflags-y += -Wno-stringop-overread
-ccflags-y += -Wno-old-style-declaration
-ccflags-y += -Wno-implicit-function-declaration
 ccflags-y += -Wno-incompatible-pointer-types
+ccflags-y += -Wno-misleading-indentation
+ccflags-y += -Wno-old-style-declaration
+ccflags-y += -Wno-discarded-qualifiers
+ccflags-y += -Wno-implicit-fallthrough
+ccflags-y += -Wno-cast-function-type
+ccflags-y += -Wno-ignored-attributes
+ccflags-y += -Wno-stringop-overread
+ccflags-y += -Wno-enum-conversion
+ccflags-y += -Wno-uninitialized
+ccflags-y += -Wno-empty-body
+ccflags-y += -Wno-attributes
+ccflags-y += -Wno-date-time
+ccflags-y += -Wno-address
+ccflags-y += -Wno-undef
+ccflags-y += -Wno-vla
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
-ccflags-y += -Wno-uninitialized
-ccflags-y += -Wno-enum-conversion
-ccflags-y += -Wno-fortify-source
-ccflags-y += -Wno-invalid-source-encoding
-ccflags-y += -Wno-tautological-pointer-compare
-ccflags-y += -Wno-tautological-overlap-compare
-ccflags-y += -Wno-pointer-bool-conversion
-ccflags-y += -Wno-misleading-indentation
-ccflags-y += -Wno-self-assign
-ccflags-y += -Wno-header-guard
+ccflags-y += -Wno-uninitialized -Wno-enum-conversion -Wno-fortify-source
+ccflags-y += -Wno-invalid-source-encoding -Wno-tautological-pointer-compare
+ccflags-y += -Wno-tautological-overlap-compare -Wno-pointer-bool-conversion
+ccflags-y += -Wno-misleading-indentation -Wno-self-assign -Wno-header-guard
 endif
 
 GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
@@ -54,17 +47,12 @@ ccflags-y += -Wno-date-time     # Fix compile error && warning on gcc 4.9 and la
 endif
 
 src := $(PWD)
-
-ccflags-y += -I$(src)/hal/phydm
-ccflags-y += -I$(src)/hal
-ccflags-y += -I$(src)/platform
-ccflags-y += -I$(src)/include
+ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform  -I$(src)/include
 
 #ldflags-y += --strip-debug
 ldflags-y += --strip-all -O3
 
-ccflags-y += -fno-pic
-ccflags-y += -fno-pie
+ccflags-y += -fno-pic -fno-pie -fno-jump-tables
 
 CONFIG_AUTOCFG_CP = n
 
