@@ -44,19 +44,19 @@ ccflags-y += -Wno-misleading-indentation -Wno-self-assign -Wno-header-guard
 endif
 
 ################# GCC ######################
-GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
-ifeq ($(GCC_VER_49),1)
+ifeq ($(CC), gcc)
 ccflags-y += -Wno-date-time     # Fix compile error && warning on gcc 4.9 and later
 ccflags-y += -Wno-address -Wframe-larger-than=1648 -Wno-cast-function-type
 ccflags-y += -Wno-enum-int-mismatch -Wno-stringop-overread -Wno-enum-conversion
 ccflags-y += -Wno-int-in-bool-context -Wno-missing-prototypes -Wno-missing-declarations
 endif
 
+############# SOURCE & HEADERS #############
 src := $(PWD)
 ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform  -I$(src)/include
 
-CONFIG_AUTOCFG_CP = n
 
+CONFIG_AUTOCFG_CP = n
 ########################## WIFI IC ############################
 CONFIG_MULTIDRV = n
 CONFIG_RTL8188E = n
