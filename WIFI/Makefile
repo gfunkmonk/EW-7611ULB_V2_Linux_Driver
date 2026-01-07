@@ -32,6 +32,8 @@ ccflags-y += -Wno-undef
 ccflags-y += -Wno-stringop-overread
 ccflags-y += -Wno-old-style-declaration
 ccflags-y += -Wno-implicit-function-declaration
+ccflags-y += -Wno-incompatible-pointer-types
+
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
 ccflags-y += -Wno-uninitialized
