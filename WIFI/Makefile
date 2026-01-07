@@ -65,9 +65,6 @@ ldflags-y += --strip-all -O3
 #ccflags-y += -fno-pic
 #ccflags-y += -fno-pie
 
-# Disable objtool validation to avoid false positives
-OBJECT_FILES_NON_STANDARD := y
-
 CONFIG_AUTOCFG_CP = n
 
 ########################## WIFI IC ############################

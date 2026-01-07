@@ -16,6 +16,7 @@
 
 #include <drv_types.h>
 #include <hal_data.h>
+#include <linux/objtool.h>
 
 #ifndef DBG_CMD_EXECUTE
 	#define DBG_CMD_EXECUTE 0
@@ -229,6 +230,7 @@ void _rtw_free_cmd_priv(struct	cmd_priv *pcmdpriv)
 		_rtw_mutex_free(&pcmdpriv->sctx_mutex);
 	}
 }
+STACK_FRAME_NON_STANDARD(_rtw_free_cmd_priv);
 
 /*
 Calling Context:
