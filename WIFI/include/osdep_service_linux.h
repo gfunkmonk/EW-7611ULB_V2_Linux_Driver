@@ -355,15 +355,25 @@ __inline static _list	*get_list_head(_queue	*queue)
 {
 	return &(queue->queue);
 }
+#include <linux/version.h>
+#include <linux/timer.h>
 
+/* --- Fix for kernel >=6.14: missing from_timer() helper --- */
+#ifndef from_timer
+#define from_timer(var, callback_timer, fieldname) \
+    ({ typeof(var) __tmp = (var); \
+       (_timer *)((char *)(callback_timer) - offsetof(_timer, fieldname)); })
+#endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
 static inline void timer_hdl(struct timer_list *in_timer)
 #else
 static inline void timer_hdl(unsigned long cntx)
 #endif
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
-	_timer *ptimer = container_of(in_timer, _timer, timer);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+	_timer *ptimer = timer_container_of(ptimer, in_timer, timer);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+	_timer *ptimer = from_timer(ptimer, in_timer, timer);
 #else
 	_timer *ptimer = (_timer *)cntx;
 #endif

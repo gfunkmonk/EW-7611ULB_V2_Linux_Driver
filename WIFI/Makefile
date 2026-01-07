@@ -1,17 +1,22 @@
-CONFIG_STACK_VALIDATION := n
 SKIP_STACK_VALIDATION := 1
-#KBUILD_EXTRA_WARN := 1
-#KBUILD_ENABLE_EXTRA_GCC_CHECKS := 1
 
+# Default architecture and cross-compile prefix (empty means native build)
+ARCH ?= $(shell uname -m)
+CROSS_COMPILE ?=
+
+##################### Optimization Flags ##########################
 ccflags-y += $(USER_EXTRA_CFLAGS)
 ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables
 #ccflags-y += -Wall -Wextra -Werror -pedantic
 #ccflags-y += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
-ccflags-y += -Wno-missing-format-attribute -Wno-format-truncation
+ldflags-y += --strip-all -O3
+
+##################### Compile-time Warnings #######################
 ccflags-y += -Wno-missing-include-dirs -Wno-missing-prototypes -Wno-missing-declarations
 ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter
 ccflags-y += -Wno-unused -Wno-unused-function -Wno-unused-const-variable
 ccflags-y += -Wno-implicit-function-declaration -Wno-implicit-fallthrough
+ccflags-y += -Wno-missing-format-attribute -Wno-format-truncation
 ccflags-y += -Wno-incompatible-pointer-types
 ccflags-y += -Wno-misleading-indentation
 ccflags-y += -Wno-old-style-declaration
@@ -20,6 +25,7 @@ ccflags-y += -Wno-implicit-fallthrough
 ccflags-y += -Wno-cast-function-type
 ccflags-y += -Wno-ignored-attributes
 ccflags-y += -Wno-stringop-overread
+ccflags-y += -Wno-sizeof-array-div
 ccflags-y += -Wno-enum-conversion
 ccflags-y += -Wno-uninitialized
 ccflags-y += -Wno-empty-body
@@ -37,19 +43,17 @@ ccflags-y += -Wno-tautological-overlap-compare -Wno-pointer-bool-conversion
 ccflags-y += -Wno-misleading-indentation -Wno-self-assign -Wno-header-guard
 endif
 
-# gcc-12
-ccflags-y += -Wframe-larger-than=1648 -Wno-enum-conversion -Wno-int-in-bool-context
-
+################# GCC ######################
 GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
 ifeq ($(GCC_VER_49),1)
 ccflags-y += -Wno-date-time     # Fix compile error && warning on gcc 4.9 and later
+ccflags-y += -Wno-address -Wframe-larger-than=1648 -Wno-cast-function-type
+ccflags-y += -Wno-enum-int-mismatch -Wno-stringop-overread -Wno-enum-conversion
+ccflags-y += -Wno-int-in-bool-context -Wno-missing-prototypes -Wno-missing-declarations
 endif
 
 src := $(PWD)
 ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform  -I$(src)/include
-
-#ldflags-y += --strip-debug
-ldflags-y += --strip-all -O3
 
 CONFIG_AUTOCFG_CP = n
 
@@ -97,7 +101,8 @@ CONFIG_TXPWR_BY_RATE = y
 CONFIG_TXPWR_BY_RATE_EN = y
 CONFIG_TXPWR_LIMIT = y
 CONFIG_TXPWR_LIMIT_EN = n
-CONFIG_RTW_CHPLAN = 0xFF
+#CONFIG_RTW_CHPLAN = 0xFF
+CONFIG_RTW_CHPLAN = 0x7F
 CONFIG_RTW_ADAPTIVITY_EN = disable
 CONFIG_RTW_ADAPTIVITY_MODE = normal
 CONFIG_SIGNAL_SCALE_MAPPING = n
@@ -118,6 +123,10 @@ CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
 # user priority mapping rule : tos, dscp
 CONFIG_RTW_UP_MAPPING_RULE = tos
 CONFIG_RTW_MBO = n
+# Sets wireless regulatory (REGD) sourse to OS
+CONFIG_REGD_SRC_FROM_OS = y
+# May be needed to ensure all channels are scanned
+CONFIG_FORCE_SW_CHANNEL_PLAN = y
 # AMSDU in security network
 CONFIG_SEC_AMSDU_MODE = non-spp
 ########################## Android ###########################
@@ -127,16 +136,13 @@ CONFIG_RTW_ANDROID = 0
 ifeq ($(shell test $(CONFIG_RTW_ANDROID) -gt 0; echo $$?), 0)
 ccflags-y += -DCONFIG_RTW_ANDROID=$(CONFIG_RTW_ANDROID)
 endif
-
 ########################## Debug ###########################
 CONFIG_RTW_DEBUG = n
 # default log level is _DRV_INFO_ = 2,
 # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
 CONFIG_RTW_LOG_LEVEL = 3
-
 # enable /proc/net/rtlxxxx/ debug interfaces
 CONFIG_PROC_DEBUG = n
-
 ######################## Wake On Lan ##########################
 CONFIG_WOWLAN = n
 #bit3: ARP enable, bit2: deauth, bit1: unicast, bit0: magic pkt.
@@ -1365,6 +1371,15 @@ ifeq ($(CONFIG_RTW_MBO), y)
 ccflags-y += -DCONFIG_RTW_MBO -DCONFIG_RTW_80211K -DCONFIG_RTW_WNM -DCONFIG_RTW_BTM_ROAM
 ccflags-y += -DCONFIG_RTW_80211R
 endif
+
+ifeq ($(CONFIG_REGD_SRC_FROM_OS), y)
+ccflags-y += -DCONFIG_REGD_SRC_FROM_OS
+endif
+
+ifeq ($(CONFIG_FORCE_SW_CHANNEL_PLAN), y)
+ccflags-y += -DCONFIG_FORCE_SW_CHANNEL_PLAN
+endif
+
 
 ifeq ($(CONFIG_SEC_AMSDU_MODE), non-spp)
 ccflags-y += -DRTW_AMSDU_MODE=0
