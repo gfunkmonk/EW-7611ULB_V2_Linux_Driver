@@ -19,6 +19,7 @@
  *
  */
 
+#include <linux/version.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -31,7 +32,12 @@
 #include <linux/dcache.h>
 #include <linux/in.h>
 #include <net/sock.h>
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+#include <linux/unaligned.h>
+#else
 #include <asm/unaligned.h>
+#endif
 
 #include <linux/interrupt.h>
 #include <linux/module.h>
@@ -44,8 +50,6 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/poll.h>
-
-#include <linux/version.h>
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32)
 #include <linux/pm_runtime.h>
