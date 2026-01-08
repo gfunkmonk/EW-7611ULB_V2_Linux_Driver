@@ -57,11 +57,11 @@ endif
 
 ############# SOURCE & HEADERS #############
 src := $(PWD)
-
-ccflags-y += -I$(src)/include -I$(src)/hal/phydm
-
 export TopDIR ?= $(shell pwd)
+ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform  -I$(src)/include -I$(src)/hal/btc
 
+########################## WIFI IC ############################
+CONFIG_RTL8723D = y
 ########################## Features ###########################
 CONFIG_AUTOCFG_CP = n
 CONFIG_AP_MODE = y
@@ -79,8 +79,10 @@ CONFIG_EFUSE_CONFIG_FILE = y
 CONFIG_EXT_CLK = n
 CONFIG_TRAFFIC_PROTECT = n
 CONFIG_LOAD_PHY_PARA_FROM_FILE = y
+# CONFIG_CALIBRATE_TX_POWER_TO_MAX = n
 CONFIG_TXPWR_BY_RATE = y
 CONFIG_TXPWR_BY_RATE_EN = y
+# CONFIG_CALIBRATE_TX_POWER_BY_REGULATORY = n
 CONFIG_TXPWR_LIMIT = y
 CONFIG_TXPWR_LIMIT_EN = n
 #CONFIG_RTW_CHPLAN = 0xFF
@@ -101,25 +103,16 @@ CONFIG_RTW_NETIF_SG = y
 CONFIG_RTW_IPCAM_APPLICATION = n
 CONFIG_RTW_REPEATER_SON = n
 CONFIG_ICMP_VOQ = n
-CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
+CONFIG_IP_R_MONITOR = n  #arp VOQ and high rate
 # user priority mapping rule : tos, dscp
 CONFIG_RTW_UP_MAPPING_RULE = tos
 CONFIG_RTW_MBO = n
-# Sets wireless regulatory (REGD) sourse to OS
-CONFIG_REGD_SRC_FROM_OS = y
-# May be needed to ensure all channels are scanned
-CONFIG_FORCE_SW_CHANNEL_PLAN = y
-# AMSDU in security network
-CONFIG_SEC_AMSDU_MODE = non-spp
-########################## Debug ################################
-# default log level is _DRV_INFO_ = 2,
-# please refer to "How_to_set_driver_debug_log_level.doc" to set 
-# the available level.
+CONFIG_SEC_AMSDU_MODE = non-spp   # AMSDU in security network
+########################## Debug ##############################
 CONFIG_RTW_DEBUG = n
-CONFIG_RTW_LOG_LEVEL = 3
-# enable /proc/net/rtlxxxx/ debug interfaces
-CONFIG_PROC_DEBUG = n
-######################## Wake On Lan ############################
+CONFIG_RTW_LOG_LEVEL = 3 # default log level is _DRV_INFO_ = 2
+CONFIG_PROC_DEBUG = n # enable /proc/net/rtlxxxx/ interfaces
+######################## Wake On Lan ###########################
 CONFIG_WOWLAN = n
 #bit3: ARP enable, bit2: deauth, bit1: unicast, bit0: magic pkt.
 CONFIG_WAKEUP_TYPE = 0xf
@@ -144,24 +137,29 @@ CONFIG_MP_VHT_HW_TX_MODE = n
 CONFIG_LAYER2_ROAMING = y
 #bit0: ROAM_ON_EXPIRED, #bit1: ROAM_ON_RESUME, #bit2: ROAM_ACTIVE
 CONFIG_ROAMING_FLAG = 0x3
-##################### CUSTOMER ##################################
-CONFIG_CUSTOMER_HUAWEI_GENERAL = n
-CONFIG_DRVEXT_MODULE = n
+####################### HACKS? ##################################
+CONFIG_REGD_SRC_FROM_OS = y       # Sets (REGD) sourse to OS
+CONFIG_FORCE_SW_CHANNEL_PLAN = y  # needed to scan all channels
 ###################### COMMON  ##################################
 
 SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc/powerpc/; s/armv.l/arm/; s/aarch64/arm64/; s/riscv.*/riscv/; s/mipseb/mips/; s/loong.*64/loongarch/;")
-
 ifndef ARCH
     ARCH := $(SUBARCH)
 endif
 
 CROSS_COMPILE ?=
-KVER  ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
-KSRC := /lib/modules/$(KVER)/build
-ccflags-y += -DCONFIG_LITTLE_ENDIAN -DCONFIG_IOCTL_CFG80211
-ccflags-y += -DRTW_USE_CFG80211_STA_EVENT
 
-_OS_INTFS_FILES :=      os_dep/osdep_service.o \
+ccflags-y += -DCONFIG_LITTLE_ENDIAN
+ccflags-y += -DCONFIG_IOCTL_CFG80211
+ccflags-y += -DRTW_USE_CFG80211_STA_EVENT
+ccflags-y += -DCONFIG_RTL8723D
+
+KVER ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
+KSRC := /lib/modules/$(KVER)/build
+
+########### HAL_RTL8723D #################################
+
+_OS_INTFS_FILES := os_dep/osdep_service.o \
                         os_dep/linux/os_intfs.o \
                         os_dep/linux/usb_intf.o \
                         os_dep/linux/usb_ops_linux.o \
@@ -175,21 +173,8 @@ _OS_INTFS_FILES :=      os_dep/osdep_service.o \
                         os_dep/linux/rtw_android.o \
                         os_dep/linux/rtw_proc.o \
                         os_dep/linux/nlrtw.o \
-                        os_dep/linux/rtw_rhashtable.o
-
-ifeq ($(CONFIG_MP_INCLUDED), y)
-_OS_INTFS_FILES += 	os_dep/linux/ioctl_mp.o
-endif
-
-ccflags-y += -I$(src)/platform
-_PLATFORM_FILES := 	platform/platform_ops.o
-
-########### HAL_RTL8723D #################################
-
-ccflags-y += -I$(src)/hal/btc
-ccflags-y += -DCONFIG_RTL8723D
-
-_HAL_INTFS_FILES :=     hal/hal_intf.o \
+                        os_dep/linux/rtw_rhashtable.o \
+                        hal/hal_intf.o \
                         hal/hal_com.o \
                         hal/hal_com_phycfg.o \
                         hal/hal_phy.o \
@@ -201,11 +186,18 @@ _HAL_INTFS_FILES :=     hal/hal_intf.o \
                         hal/hal_mcc.o \
                         hal/hal_hci/hal_usb.o \
                         hal/led/hal_led.o \
-                        hal/led/hal_usb_led.o \
-			hal/HalPwrSeqCmd.o \
-             		hal/rtl8723d/Hal8723DPwrSeq.o \
-        		hal/rtl8723d/rtl8723d_sreset.o \
-			hal/rtl8723d/rtl8723d_hal_init.o \
+                        hal/led/hal_usb_led.o
+
+_PLATFORM_FILES := platform/platform_ops.o
+
+ifeq ($(CONFIG_MP_INCLUDED), y)
+_OS_INTFS_FILES += os_dep/linux/ioctl_mp.o
+endif
+
+_HAL_INTFS_FILES += hal/HalPwrSeqCmd.o \
+                        hal/rtl8723d/Hal8723DPwrSeq.o \
+                        hal/rtl8723d/rtl8723d_sreset.o \
+                        hal/rtl8723d/rtl8723d_hal_init.o \
                         hal/rtl8723d/rtl8723d_phycfg.o \
                         hal/rtl8723d/rtl8723d_rf6052.o \
                         hal/rtl8723d/rtl8723d_dm.o \
@@ -217,12 +209,12 @@ _HAL_INTFS_FILES :=     hal/hal_intf.o \
                         hal/rtl8723d/usb/rtl8723du_led.o \
                         hal/rtl8723d/usb/rtl8723du_xmit.o \
                         hal/rtl8723d/usb/rtl8723du_recv.o \
-			hal/rtl8723d/usb/usb_ops.o  \
-			hal/efuse/rtl8723d/HalEfuseMask8723D_USB.o
+                        hal/efuse/rtl8723d/HalEfuseMask8723D_USB.o \
+                        hal/rtl8723d/usb/usb_ops.o
 
 ifeq ($(CONFIG_BT_COEXIST), y)
-_BTC_FILES += 		hal/btc/halbtc8723d1ant.o \
-              		hal/btc/halbtc8723d2ant.o
+_BTC_FILES += hal/btc/halbtc8723d1ant.o \
+                  hal/btc/halbtc8723d2ant.o
 endif
 
 ########### AUTO_CFG  #################################
@@ -261,11 +253,9 @@ ifeq ($(CONFIG_POWER_SAVING), y)
 ifneq ($(CONFIG_IPS_MODE), default)
 ccflags-y += -DRTW_IPS_MODE=$(CONFIG_IPS_MODE)
 endif
-
 ifneq ($(CONFIG_LPS_MODE), default)
 ccflags-y += -DRTW_LPS_MODE=$(CONFIG_LPS_MODE)
 endif
-
 ifneq ($(CONFIG_WOW_LPS_MODE), default)
 ccflags-y += -DRTW_WOW_LPS_MODE=$(CONFIG_WOW_LPS_MODE)
 endif
@@ -302,7 +292,6 @@ ccflags-y += -DWIFIMAC_PATH=\"$(USER_WIFIMAC_PATH)\"
 else
 ccflags-y += -DWIFIMAC_PATH=\"/data/wifimac.txt\"
 endif
-
 endif
 
 ifeq ($(CONFIG_EXT_CLK), y)
@@ -545,36 +534,12 @@ else ifeq ($(CONFIG_SEC_AMSDU_MODE), disable)
 ccflags-y += -DRTW_AMSDU_MODE=2
 endif
 
-########### CUSTOMER ################################
-ifeq ($(CONFIG_CUSTOMER_HUAWEI_GENERAL), y)
-CONFIG_CUSTOMER_HUAWEI = y
-endif
-
-ifeq ($(CONFIG_CUSTOMER_HUAWEI), y)
-ccflags-y += -DCONFIG_HUAWEI_PROC
-endif
-
-CONFIG_PLATFORM_CMAP_INTFS = n
-ifeq ($(CONFIG_PLATFORM_CMAP_INTFS), y)
-PLATFORM_CMAP_INTFS_TYPE = 00
-ccflags-y += -DCONFIG_PLATFORM_CMAP_INTFS -DCMAP_UNASSOC_METRICS_STA_MAX=32
-_OS_INTFS_FILES += os_dep/linux/custom_multiap_intfs/custom_multiap_intfs.o
-_PLATFORM_FILES += platform/custom_multiap_intfs_$(PLATFORM_CMAP_INTFS_TYPE).o
-endif
-
-CONFIG_RTL8723DU = m
-
-USER_MODULE_NAME ?=
-ifneq ($(USER_MODULE_NAME),)
-MODULE_NAME := $(USER_MODULE_NAME)
-endif
-
 ifneq ($(KERNELRELEASE),)
 
 ########### this part for *.mk ############################
 include $(src)/hal/phydm/phydm.mk
 
-rtk_core :=     core/rtw_cmd.o \
+rtk_core := core/rtw_cmd.o \
                 core/rtw_security.o \
                 core/rtw_debug.o \
                 core/rtw_io.o \
@@ -647,82 +612,76 @@ $(MODULE_NAME)-y += $(_PLATFORM_FILES)
 
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o
 
-obj-$(CONFIG_RTL8723DU) := $(MODULE_NAME).o
-
-else
-
-export CONFIG_RTL8723DU = m
+obj-m := $(MODULE_NAME).o
 
 all: modules
 
 modules:
-        $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
+	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
 
 strip:
-        $(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
+	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
 
 install:
-        mkdir -p $(MODDESTDIR)
-        install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
-        /sbin/depmod -a ${KVER}
+	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
+	/sbin/depmod -a ${KVER}
 
 uninstall:
-        rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
-        /sbin/depmod -a ${KVER}
+	rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
+	/sbin/depmod -a ${KVER}
 
 backup_rtlwifi:
-        @echo "Making backup rtlwifi drivers"
+	@echo "Making backup rtlwifi drivers"
 ifneq (,$(wildcard $(STAGINGMODDIR)/rtl*))
-        @tar cPf $(wildcard $(STAGINGMODDIR))/backup_rtlwifi_driver.tar $(wildcard $(STAGINGMODDIR)/rtl*)
-        @rm -rf $(wildcard $(STAGINGMODDIR)/rtl*)
+	@tar cPf $(wildcard $(STAGINGMODDIR))/backup_rtlwifi_driver.tar $(wildcard $(STAGINGMODDIR)/rtl*)
+	@rm -rf $(wildcard $(STAGINGMODDIR)/rtl*)
 endif
 ifneq (,$(wildcard $(MODDESTDIR)realtek))
-        @tar cPf $(MODDESTDIR)backup_rtlwifi_driver.tar $(MODDESTDIR)realtek
-        @rm -fr $(MODDESTDIR)realtek
+	@tar cPf $(MODDESTDIR)backup_rtlwifi_driver.tar $(MODDESTDIR)realtek
+	@rm -fr $(MODDESTDIR)realtek
 endif
 ifneq (,$(wildcard $(MODDESTDIR)rtl*))
-        @tar cPf $(MODDESTDIR)../backup_rtlwifi_driver.tar $(wildcard $(MODDESTDIR)rtl*)
-        @rm -fr $(wildcard $(MODDESTDIR)rtl*)
+	@tar cPf $(MODDESTDIR)../backup_rtlwifi_driver.tar $(wildcard $(MODDESTDIR)rtl*)
+	@rm -fr $(wildcard $(MODDESTDIR)rtl*)
 endif
-        @/sbin/depmod -a ${KVER}
-        @echo "Please reboot your system"
+	@/sbin/depmod -a ${KVER}
+	@echo "Please reboot your system"
 
 restore_rtlwifi:
-        @echo "Restoring backups"
+	@echo "Restoring backups"
 ifneq (,$(wildcard $(STAGINGMODDIR)/backup_rtlwifi_driver.tar))
-        @tar xPf $(STAGINGMODDIR)/backup_rtlwifi_driver.tar
-        @rm $(STAGINGMODDIR)/backup_rtlwifi_driver.tar
+	@tar xPf $(STAGINGMODDIR)/backup_rtlwifi_driver.tar
+	@rm $(STAGINGMODDIR)/backup_rtlwifi_driver.tar
 endif
 ifneq (,$(wildcard $(MODDESTDIR)backup_rtlwifi_driver.tar))
-        @tar xPf $(MODDESTDIR)backup_rtlwifi_driver.tar
-        @rm $(MODDESTDIR)backup_rtlwifi_driver.tar
+	@tar xPf $(MODDESTDIR)backup_rtlwifi_driver.tar
+	@rm $(MODDESTDIR)backup_rtlwifi_driver.tar
 endif
 ifneq (,$(wildcard $(MODDESTDIR)../backup_rtlwifi_driver.tar))
-        @tar xPf $(MODDESTDIR)../backup_rtlwifi_driver.tar
-        @rm $(MODDESTDIR)../backup_rtlwifi_driver.tar
+	@tar xPf $(MODDESTDIR)../backup_rtlwifi_driver.tar
+	@rm $(MODDESTDIR)../backup_rtlwifi_driver.tar
 endif
-        @/sbin/depmod -a ${KVER}
-        @echo "Please reboot your system"
+	@/sbin/depmod -a ${KVER}
+	@echo "Please reboot your system"
 
 config_r:
-        @echo "make config"
-        /bin/bash script/Configure script/config.in
-
+	@echo "make config"
+	/bin/bash script/Configure script/config.in
 
 .PHONY: modules clean
 
 clean:
         #$(MAKE) -C $(KSRC) M=$(shell pwd) clean
-        cd hal ; rm -fr */*/*/*.mod.c */*/*/*.mod */*/*/*.o */*/*/.*.cmd */*/*/*.ko
-        cd hal ; rm -fr */*/*.mod.c */*/*.mod */*/*.o */*/.*.cmd */*/*.ko
-        cd hal ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-        cd hal ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-        cd core ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-        cd core ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-        cd os_dep/linux ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-        cd os_dep ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-        cd platform ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-        rm -fr Module.symvers ; rm -fr Module.markers ; rm -fr modules.order
-        rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
-        rm -fr .tmp_versions
+	cd hal ; rm -fr */*/*/*.mod.c */*/*/*.mod */*/*/*.o */*/*/.*.cmd */*/*/*.ko
+	cd hal ; rm -fr */*/*.mod.c */*/*.mod */*/*.o */*/.*.cmd */*/*.ko
+	cd hal ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
+	cd hal ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd core ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
+	cd core ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd os_dep/linux ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd os_dep ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd platform ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	rm -fr Module.symvers ; rm -fr Module.markers ; rm -fr modules.order
+	rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
+	rm -fr .tmp_versions
 endif
