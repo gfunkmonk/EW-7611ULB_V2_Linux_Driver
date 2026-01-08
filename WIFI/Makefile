@@ -535,7 +535,7 @@ ccflags-y += -DRTW_AMSDU_MODE=2
 endif
 
 ifneq ($(KERNELRELEASE),)
-
+endif
 ########### this part for *.mk ############################
 include $(src)/hal/phydm/phydm.mk
 
@@ -684,4 +684,3 @@ clean:
 	rm -fr Module.symvers ; rm -fr Module.markers ; rm -fr modules.order
 	rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
 	rm -fr .tmp_versions
-endif
