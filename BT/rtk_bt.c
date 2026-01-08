@@ -1442,6 +1442,26 @@ static void btusb_notify(struct hci_dev *hdev, unsigned int evt)
 	}
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
+static u8 btusb_get_data_path_id(struct hci_dev *hdev)
+{
+	/* Return 0 for HCI path (default) */
+	return 0;
+}
+
+static int btusb_get_codec_config_data(struct hci_dev *hdev,
+					__u8 type, struct bt_codec *codec,
+					__u8 *vnd_len, __u8 **vnd_data)
+{
+	/* No vendor specific codec config for now */
+	if (vnd_len)
+		*vnd_len = 0;
+	if (vnd_data)
+		*vnd_data = NULL;
+	return 0;
+}
+#endif
+
 static inline int __set_isoc_interface(struct hci_dev *hdev, int altsetting)
 {
 	struct btusb_data *data = GET_DRV_DATA(hdev);
@@ -2031,6 +2051,10 @@ static int btusb_probe(struct usb_interface *intf,
 	set_bit(BTUSB_USE_ALT3_FOR_WBS, &data->flags);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 15, 0)
 	set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
+#else
+	/* In kernel 6.15+, wideband speech is handled via offload codecs */
+	hdev->get_data_path_id = btusb_get_data_path_id;
+	hdev->get_codec_config_data = btusb_get_codec_config_data;
 #endif
 #endif
 
