@@ -1,3 +1,17 @@
+NC            := \033[0m
+RED           := \033[1;31m
+GREEN         := \033[1;32m
+YELLOW        := \033[1;33m
+BLUE          := \033[1;34m
+PURPLE        := \033[1;35m
+CYAN          := \033[1;36m
+WHITE         := \033[0;37m
+DKPURPLE      := \033[0;35m
+BROWN         := \033[0;33m
+TEAL          := \033[2;36m
+BWHITE        := \033[1;37m
+RESET         := \033[0m
+
 # Install location of module
 MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
 
@@ -618,9 +632,11 @@ all: modules
 
 modules:
 	@if [ ! -f $(MODULE_NAME).ko ]; then \
+		echo "$(YELLOW)Building $(MODULE_NAME) modules...$(NC)"; \
 		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules; \
+		echo "$(TEAL)✓ Modules were successfully built!$(NC)"; \
 	else \
-		echo "Module $(MODULE_NAME).ko already exists, skipping compilation."; \
+		echo "$(BROWN)Module $(MODULE_NAME).ko already exists, skipping compilation."; \
 	fi
 
 strip:
@@ -628,14 +644,19 @@ strip:
 
 install:
 	@if [ ! -f $(MODULE_NAME).ko ]; then \
+		echo "$(BLUE)Building $(MODULE_NAME) modules...$(NC)"; \
 		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules; \
+		echo "$(RED)✓ Modules were successfully built!$(NC)"; \
 	fi
+	@echo "$(PURPLE)Installing $(MODULE_NAME) module...$(NC)"
 	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
 	/sbin/depmod -a ${KVER}
 
 uninstall:
+	@echo "$(CYAN)Uninstalling $(MODULE_NAME) module...$(NC)"
 	rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
 	/sbin/depmod -a ${KVER}
+	@echo "$(GREEN)✓ Uninstall $(MODULE_NAME) success!$(NC)"
 
 backup_rtlwifi:
 	@echo "Making backup rtlwifi drivers"
@@ -691,3 +712,4 @@ clean:
 	rm -fr Module.symvers ; rm -fr Module.markers ; rm -fr modules.order
 	rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
 	rm -fr .tmp_versions
+	@echo "$(DKPURPLE)✓ All clean!$(NC)"
