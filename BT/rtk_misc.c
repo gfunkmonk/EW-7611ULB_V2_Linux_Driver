@@ -374,6 +374,7 @@ static patch_info fw_patch_table[] = {
 	{0xd739, 0x8723, "mp_rtl8723du_fw", "rtl8723du_fw", "rtl8723du_config", RTL8723DU}, /* RTL8723DU */
 	{0xb009, 0x8723, "mp_rtl8723du_fw", "rtl8723du_fw", "rtl8723du_config", RTL8723DU}, /* RTL8723DU */
 	{0x0231, 0x8723, "mp_rtl8723du_fw", "rtl8723du_fw", "rtl8723du_config", RTL8723DU}, /* RTL8723DU for LiteOn */
+	{0xd611, 0x8723, "mp_rtl8723du_fw", "rtl8723du_fw", "rtl8723du_config", RTL8723DU}, /* RTL8723DU for Edimax */
 
 	{0xb820, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CU */
 	{0xc820, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CU */
