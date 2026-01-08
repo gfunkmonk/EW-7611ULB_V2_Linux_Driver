@@ -617,12 +617,19 @@ obj-m := $(MODULE_NAME).o
 all: modules
 
 modules:
-	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
+	@if [ ! -f $(MODULE_NAME).ko ]; then \
+		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules; \
+	else \
+		echo "Module $(MODULE_NAME).ko already exists, skipping compilation."; \
+	fi
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
 
 install:
+	@if [ ! -f $(MODULE_NAME).ko ]; then \
+		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules; \
+	fi
 	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
 	/sbin/depmod -a ${KVER}
 
