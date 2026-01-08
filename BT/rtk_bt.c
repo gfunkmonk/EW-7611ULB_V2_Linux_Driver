@@ -2029,7 +2029,9 @@ static int btusb_probe(struct usb_interface *intf,
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
 	set_bit(BTUSB_USE_ALT3_FOR_WBS, &data->flags);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 15, 0)
 	set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
+#endif
 #endif
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(3, 7, 1)
