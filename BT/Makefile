@@ -23,12 +23,14 @@ ccflags-y += -Wno-missing-prototypes -Wno-missing-declarations -Wno-attribute-wa
 
 .PHONY: build firmware install uninstall clean all help
 
-build_modules : rtk_btusb.o rtk_coex.o rtk_misc.o rtk_bt.o rtk_btusb.ko
-
-build : build_modules
-	@echo "$(PURPLE)Building $(BTMOD) modules...$(RESET)"
-	$(MAKE) -C $(MDL_DIR)/build M=$(PWD) modules
-	@echo "$(BLUE)Modules were successfully built!"
+build :
+	@if [ ! -f $(BTMOD).ko ]; then \
+		echo "$(PURPLE)Building $(BTMOD) modules...$(RESET)"; \
+		$(MAKE) -C $(MDL_DIR)/build M=$(PWD) modules; \
+		echo "$(BLUE)Modules were successfully built!$(RESET)"; \
+	else \
+		echo "$(GREEN)Modules already built, skipping compilation.$(RESET)"; \
+	fi
 
 firmware :
 	@echo "$(YELLOW)Copying RTL8723D fw/config to $(FW_DIR)$(RESET)"
@@ -46,7 +48,12 @@ firmware :
 		echo "$(RED)Warning: rtl8723du_config not found!$(RESET)"; \
 	fi
 
-install : build firmware
+install : firmware
+	@if [ ! -f $(BTMOD).ko ]; then \
+		echo "$(PURPLE)Building $(BTMOD) modules...$(RESET)"; \
+		$(MAKE) -C $(MDL_DIR)/build M=$(PWD) modules; \
+		echo "$(BLUE)Modules were successfully built!$(RESET)"; \
+	fi
 	@echo "$(BLUE)Installing $(BTMOD) module...$(RESET)"
 	-@rmmod btusb 2>/dev/null || true
 	#-@ mv $(DRV_DIR)/btusb.ko $(DRV_DIR)/btusb_bak
