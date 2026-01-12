@@ -1,16 +1,16 @@
-NC            := \033[0m
-RED           := \033[1;31m
-GREEN         := \033[1;32m
-YELLOW        := \033[1;33m
-BLUE          := \033[1;34m
-PURPLE        := \033[1;35m
-CYAN          := \033[1;36m
-WHITE         := \033[0;37m
-DKPURPLE      := \033[0;35m
-BROWN         := \033[0;33m
-TEAL          := \033[2;36m
-BWHITE        := \033[1;37m
-RESET         := \033[0m
+NC := \033[0m
+RED := \033[1;31m
+GREEN := \033[1;32m
+YELLOW := \033[1;33m
+BLUE := \033[1;34m
+PURPLE := \033[1;35m
+CYAN := \033[1;36m
+WHITE := \033[0;37m
+DKPURPLE := \033[0;35m
+BROWN := \033[0;33m
+TEAL := \033[2;36m
+BWHITE := \033[1;37m
+RESET := \033[0m
 
 # Install location of module
 MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
@@ -628,7 +628,7 @@ $(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o
 
 obj-m := $(MODULE_NAME).o
 
-all: modules
+all: modules strip install
 
 modules:
 	@if [ ! -f $(MODULE_NAME).ko ]; then \
@@ -658,44 +658,6 @@ uninstall:
 	/sbin/depmod -a ${KVER}
 	@echo "$(GREEN)✓ Uninstall $(MODULE_NAME) success!$(NC)"
 
-backup_rtlwifi:
-	@echo "Making backup rtlwifi drivers"
-ifneq (,$(wildcard $(STAGINGMODDIR)/rtl*))
-	@tar cPf $(wildcard $(STAGINGMODDIR))/backup_rtlwifi_driver.tar $(wildcard $(STAGINGMODDIR)/rtl*)
-	@rm -rf $(wildcard $(STAGINGMODDIR)/rtl*)
-endif
-ifneq (,$(wildcard $(MODDESTDIR)realtek))
-	@tar cPf $(MODDESTDIR)backup_rtlwifi_driver.tar $(MODDESTDIR)realtek
-	@rm -fr $(MODDESTDIR)realtek
-endif
-ifneq (,$(wildcard $(MODDESTDIR)rtl*))
-	@tar cPf $(MODDESTDIR)../backup_rtlwifi_driver.tar $(wildcard $(MODDESTDIR)rtl*)
-	@rm -fr $(wildcard $(MODDESTDIR)rtl*)
-endif
-	@/sbin/depmod -a ${KVER}
-	@echo "Please reboot your system"
-
-restore_rtlwifi:
-	@echo "Restoring backups"
-ifneq (,$(wildcard $(STAGINGMODDIR)/backup_rtlwifi_driver.tar))
-	@tar xPf $(STAGINGMODDIR)/backup_rtlwifi_driver.tar
-	@rm $(STAGINGMODDIR)/backup_rtlwifi_driver.tar
-endif
-ifneq (,$(wildcard $(MODDESTDIR)backup_rtlwifi_driver.tar))
-	@tar xPf $(MODDESTDIR)backup_rtlwifi_driver.tar
-	@rm $(MODDESTDIR)backup_rtlwifi_driver.tar
-endif
-ifneq (,$(wildcard $(MODDESTDIR)../backup_rtlwifi_driver.tar))
-	@tar xPf $(MODDESTDIR)../backup_rtlwifi_driver.tar
-	@rm $(MODDESTDIR)../backup_rtlwifi_driver.tar
-endif
-	@/sbin/depmod -a ${KVER}
-	@echo "Please reboot your system"
-
-config_r:
-	@echo "make config"
-	/bin/bash script/Configure script/config.in
-
 .PHONY: modules clean
 
 clean:
@@ -713,3 +675,17 @@ clean:
 	rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
 	rm -fr .tmp_versions
 	@echo "$(DKPURPLE)✓ All clean!$(NC)"
+
+help:
+	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
+	@echo "$(BLUE)  RTL8723DU WIFI USB Driver Build System$(NC)"
+	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
+	@echo "$(GREEN)Available targets:$(NC)"
+	@echo "  $(YELLOW)modules$(NC)    $(BWHITE)- Compile the kernel module$(NC)"
+	@echo "  $(YELLOW)strip$(NC)      $(BWHITE)- remove debug symbols from .ko$(NC)"
+	@echo "  $(YELLOW)install$(NC)    $(BWHITE)- Build and install module$(NC)"
+	@echo "  $(YELLOW)uninstall$(NC)  $(BWHITE)- Remove installed module$(NC)"
+	@echo "  $(YELLOW)clean$(NC)      $(BWHITE)- Remove build artifacts$(NC)"
+	@echo "  $(YELLOW)all$(NC)        $(BWHITE)- Build, strip & install (default)$(NC)"
+	@echo "  $(YELLOW)help$(NC)       $(BWHITE)- Show this help message$(NC)"
+	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
