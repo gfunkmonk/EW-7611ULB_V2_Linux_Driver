@@ -678,11 +678,12 @@ static void rtk_notify_profileinfo_to_fw(void)
                         break;
         }
 
-        *p++ = btrtl_coex.profile_status;
+	if(!profileinfo_cmd) {
+        	*p++ = btrtl_coex.profile_status;
 		rtk_vendor_cmd_to_fw(HCI_VENDOR_SET_PROFILE_REPORT_LEGACY_COMMAND, buffer_size,
 			     p_buf);
 	} else {
-        rtk_vendor_cmd_to_fw(HCI_VENDOR_SET_PROFILE_REPORT_COMMAND, buffer_size,
+        	rtk_vendor_cmd_to_fw(HCI_VENDOR_SET_PROFILE_REPORT_COMMAND, buffer_size,
                              p_buf);
 	}
 
@@ -1145,7 +1146,9 @@ static int udpsocket_send(char *tx_msg, int msg_size)
 {
         u8 error = 0;
         struct msghdr udpmsg;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
         mm_segment_t oldfs;
+#endif
         struct iovec iov;
 
         RTKBT_DBG("send msg %s with len:%d", tx_msg, msg_size);
@@ -1164,14 +1167,18 @@ static int udpsocket_send(char *tx_msg, int msg_size)
                 udpmsg.msg_control = NULL;
                 udpmsg.msg_controllen = 0;
                 udpmsg.msg_flags = MSG_DONTWAIT | MSG_NOSIGNAL;
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
                 oldfs = get_fs();
                 set_fs(KERNEL_DS);
+#endif
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
                 error = sock_sendmsg(btrtl_coex.udpsock, &udpmsg, msg_size);
 #else
                 error = sock_sendmsg(btrtl_coex.udpsock, &udpmsg);
 #endif
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
                 set_fs(oldfs);
+#endif
 
                 if (error < 0)
                         RTKBT_DBG("Error when sendimg msg, error:%d", error);
@@ -2032,9 +2039,9 @@ static u8 disconn_profile(struct rtl_hci_conn *conn, u8 pfe_index)
                 /* if profile does not exist, status is meaningless */
                 btrtl_coex.profile_status &= ~(BIT(pfe_index));
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
-                rtk_check_timer_delete_sync(pfe_index);
+                rtk_check_timer_delete_sync(pfe_index, conn);
 #else
-                rtk_check_del_timer(pfe_index);
+                rtk_check_del_timer(pfe_index, conn);
 #endif
         }
 
@@ -2982,16 +2989,10 @@ void rtk_btcoex_open(struct hci_dev *hdev)
 #ifdef RTB_SOFTWARE_MAILBOX
         timer_setup(&btrtl_coex.polling_timer, polling_bt_info, 0);
 #endif
-        timer_setup(&btrtl_coex.a2dp_count_timer, count_a2dp_packet_timeout, 0);
-        timer_setup(&btrtl_coex.pan_count_timer, count_pan_packet_timeout, 0);
-        timer_setup(&btrtl_coex.hogp_count_timer, count_hogp_packet_timeout, 0);
 #else
 #ifdef RTB_SOFTWARE_MAILBOX
         setup_timer(&btrtl_coex.polling_timer, polling_bt_info, 0);
 #endif
-        setup_timer(&btrtl_coex.a2dp_count_timer, count_a2dp_packet_timeout, 0);
-        setup_timer(&btrtl_coex.pan_count_timer, count_pan_packet_timeout, 0);
-        setup_timer(&btrtl_coex.hogp_count_timer, count_hogp_packet_timeout, 0);
 #endif
 
         btrtl_coex.hdev = hdev;
@@ -3060,15 +3061,6 @@ void rtk_btcoex_close(void)
         }
 #endif /* RTB_SOFTWARE_MAILBOX */
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
-        timer_delete_sync(&btrtl_coex.a2dp_count_timer);
-        timer_delete_sync(&btrtl_coex.pan_count_timer);
-        timer_delete_sync(&btrtl_coex.hogp_count_timer);
-#else
-        del_timer_sync(&btrtl_coex.a2dp_count_timer);
-        del_timer_sync(&btrtl_coex.pan_count_timer);
-        del_timer_sync(&btrtl_coex.hogp_count_timer);
-#endif
         cancel_delayed_work_sync(&btrtl_coex.fw_work);
         cancel_delayed_work_sync(&btrtl_coex.l2_work);
 

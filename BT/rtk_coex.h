@@ -53,6 +53,7 @@
 #define HCI_EV_LE_ENHANCED_CONN_COMPLETE    0x0a
 
 //vendor cmd to fw
+#define HCI_VENDOR_READ_CMD                             0xfc61
 #define HCI_VENDOR_ENABLE_PROFILE_REPORT_COMMAND        0xfc18
 #define HCI_VENDOR_SET_PROFILE_REPORT_LEGACY_COMMAND    0xfc19
 #define HCI_VENDOR_SET_PROFILE_REPORT_COMMAND		0xfc1B

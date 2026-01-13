@@ -1961,7 +1961,7 @@ int load_firmware(dev_data * dev_entry, uint8_t ** buff)
                                 if (current_entry.patch_length == 0)
                                         goto alloc_fail;
 
-					buf_len = current_entry.patch_length + config_len;
+                                buf_len = current_entry.patch_length + config_len;
                                 RTKBT_DBG("buf_len = 0x%x", buf_len);
 				}
 
