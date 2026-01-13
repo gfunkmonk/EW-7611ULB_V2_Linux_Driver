@@ -9962,6 +9962,8 @@ void rtw_wiphy_free(struct wiphy *wiphy)
 
 int rtw_wiphy_register(struct wiphy *wiphy)
 {
+	int ret;
+
 	RTW_INFO(FUNC_WIPHY_FMT"\n", FUNC_WIPHY_ARG(wiphy));
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0)) || defined(RTW_VENDOR_EXT_SUPPORT)
@@ -9970,7 +9972,14 @@ int rtw_wiphy_register(struct wiphy *wiphy)
 
 	rtw_regd_init(wiphy);
 
-	return wiphy_register(wiphy);
+	ret = wiphy_register(wiphy);
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0))
+	if (ret == 0)
+		rtw_regd_apply_regulatory(wiphy);
+#endif
+
+	return ret;
 }
 
 void rtw_wiphy_unregister(struct wiphy *wiphy)
