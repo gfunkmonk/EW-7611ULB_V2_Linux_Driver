@@ -1,6 +1,5 @@
 # Install location of module
-#MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/
-MODDESTDIR := /lib/modules/$(shell uname -r)/extras/
+MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/
 
 # Filename of finished module
 MODULE_NAME := 8723du
@@ -11,10 +10,8 @@ CROSS_COMPILE :=
 
 ##################### Optimization Flags ##########################
 ccflags-y += $(USER_EXTRA_CFLAGS)
-ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables -fomit-frame-pointer
+ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables
 ldflags-y += --strip-all -O3
-CONFIG_STACK_VALIDATION := n
-OBJECT_FILES_NON_STANDARD := y
 
 ##################### Compile-time Warnings #######################
 ccflags-y += -Wno-missing-include-dirs -Wno-missing-prototypes
