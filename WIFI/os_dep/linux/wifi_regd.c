@@ -388,9 +388,8 @@ static void _rtw_regd_init_wiphy(struct rtw_regulatory *reg, struct wiphy *wiphy
 	regd = _rtw_regdomain_select(reg);
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 11, 0))
 	wiphy_apply_custom_regulatory(wiphy, regd);
-#endif
-
 	rtw_regd_apply_flags(wiphy);
+#endif
 }
 
 int rtw_regd_init(struct wiphy *wiphy)
@@ -422,6 +421,7 @@ void rtw_regd_apply_regulatory(struct wiphy *wiphy)
 
 	regd = _rtw_regdomain_select(NULL);
 	wiphy_apply_custom_regulatory(wiphy, regd);
+	rtw_regd_apply_flags(wiphy);
 #endif
 }
 #endif /* CONFIG_IOCTL_CFG80211 */
