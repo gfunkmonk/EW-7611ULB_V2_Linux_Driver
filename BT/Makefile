@@ -61,7 +61,7 @@ install: firmware
 	fi
 	@echo "$(TEAL)Installing $(BTMOD) module...$(RESET)"
 	-@rmmod btusb 2>/dev/null || true
-	-@if [ -f $(DRV_DIR)/btusb.* ]; then \
+	#-@if [ -f $(DRV_DIR)/btusb.* ]; then \
 	#	mv $(DRV_DIR)/btusb.ko $(DRV_DIR)/btusb_bak 2>/dev/null || true; \
 	#fi
 	-@rmmod $(BTMOD) 2>/dev/null || true

@@ -311,7 +311,11 @@ static void rtk_check_setup_timer(rtk_conn_prof * phci_conn, uint8_t profile_ind
 	}
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+static void rtk_check_timer_delete_sync(uint8_t profile_index, rtk_conn_prof * phci_conn)
+#else
 static void rtk_check_del_timer(uint8_t profile_index, rtk_conn_prof * phci_conn)
+#endif
 {
 	RTKBT_DBG("%s: handle 0x%4x", __func__, phci_conn->handle);
         if (profile_a2dp == profile_index) {
@@ -776,6 +780,9 @@ static void update_profile_connection(rtk_conn_prof * phci_conn,
                         need_update = TRUE;
                         phci_conn->profile_bitmap &= ~(BIT(profile_index));
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+			phci_conn->profile_status &= ~(BIT(profile_index));
+			rtk_check_timer_delete_sync(profile_index, phci_conn);
+#else
 			phci_conn->profile_status &= ~(BIT(profile_index));
 			rtk_check_del_timer(profile_index, phci_conn);
 #endif
