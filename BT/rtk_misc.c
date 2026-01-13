@@ -363,6 +363,7 @@ static patch_info fw_patch_table[] = {
         {0xb009, 0x8723, "mp_rtl8723du_fw", "rtl8723du_fw", "rtl8723du_config", RTL8723DU}, /* RTL8723DU */
         {0x0231, 0x8723, "mp_rtl8723du_fw", "rtl8723du_fw", "rtl8723du_config", RTL8723DU}, /* RTL8723DU for LiteOn */
         {0xd611, 0x8723, "mp_rtl8723du_fw", "rtl8723du_fw", "rtl8723du_config", RTL8723DU}, /* RTL8723DU for Edimax */
+        {0xa611, 0x8723, "mp_rtl8723b_fw", "rtl8723b_fw", "rtl8723bu_config", RTLPREVIOUS}, /* RTL8723BU for Edimax */
 
         {0xb820, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CU */
         {0xc820, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CU */
@@ -385,9 +386,9 @@ static patch_info fw_patch_table[] = {
         {0x3533, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
         {0x3538, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
         {0x3539, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
-	{0x3558, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
-	{0x3559, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
-	{0x3581, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
+        {0x3558, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
+        {0x3559, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
+        {0x3581, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for Azurewave */
         {0x3540, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE */
         {0x3541, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for GSD */
         {0x3543, 0x8821, "mp_rtl8821cu_fw", "rtl8821cu_fw", "rtl8821cu_config", RTL8821CU}, /* RTL8821CE for GSD */
@@ -396,7 +397,7 @@ static patch_info fw_patch_table[] = {
         {0xc82c, 0x8822, "mp_rtl8822cu_fw", "rtl8822cu_fw", "rtl8822cu_config", RTL8822CU}, /* RTL8822CU */
         {0xc82e, 0x8822, "mp_rtl8822cu_fw", "rtl8822cu_fw", "rtl8822cu_config", RTL8822CU}, /* RTL8822CU */
         {0xc81d, 0x8822, "mp_rtl8822cu_fw", "rtl8822cu_fw", "rtl8822cu_config", RTL8822CU}, /* RTL8822CU */
-	{0xd820, 0x8822, "mp_rtl8821du_fw", "rtl8821du_fw", "rtl8821du_config", RTL8822CU}, /* RTL8821DU */
+        {0xd820, 0x8822, "mp_rtl8821du_fw", "rtl8821du_fw", "rtl8821du_config", RTL8822CU}, /* RTL8821DU */
 
         {0xc822, 0x8822, "mp_rtl8822cu_fw", "rtl8822cu_fw", "rtl8822cu_config", RTL8822CU}, /* RTL8822CE */
         {0xc82b, 0x8822, "mp_rtl8822cu_fw", "rtl8822cu_fw", "rtl8822cu_config", RTL8822CU}, /* RTL8822CE */
@@ -454,35 +455,35 @@ static patch_info fw_patch_table[] = {
         {0xb73a, 0x8723, "mp_rtl8723fu_fw", "rtl8723fu_fw", "rtl8723fu_config", RTL8723FU}, /* RTL8723FU */
         {0xf72b, 0x8723, "mp_rtl8723fu_fw", "rtl8723fu_fw", "rtl8723fu_config", RTL8723FU}, /* RTL8723FU */
 
-	{0x8851, 0x8852, "mp_rtl8851au_fw", "rtl8851au_fw", "rtl8851au_config", RTL8852BU}, /* RTL8851AU */
-	{0xa85b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BU */
-	{0xb85b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0xb85c, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x3571, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x3570, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x3572, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x4b06, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x885b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x886b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x887b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0xc559, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0xb052, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0xb152, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0xb252, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x4853, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
-	{0x1670, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x8851, 0x8852, "mp_rtl8851au_fw", "rtl8851au_fw", "rtl8851au_config", RTL8852BU}, /* RTL8851AU */
+        {0xa85b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BU */
+        {0xb85b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0xb85c, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x3571, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x3570, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x3572, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x4b06, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x885b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x886b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x887b, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0xc559, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0xb052, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0xb152, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0xb252, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x4853, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
+        {0x1670, 0x8852, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", RTL8852BU}, /* RTL8852BE */
 
-	{0xc85a, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CU */
-	{0x0852, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
-	{0x5852, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
-	{0xc85c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
-	{0x885c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
-	{0x886c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
-	{0x887c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
-	{0x4007, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
+        {0xc85a, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CU */
+        {0x0852, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
+        {0x5852, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
+        {0xc85c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
+        {0x885c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
+        {0x886c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
+        {0x887c, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
+        {0x4007, 0x8852, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", RTL8852CU}, /* RTL8852CE */
 
-	{0xe822, 0x8822, "mp_rtl8822eu_fw", "rtl8822eu_fw", "rtl8822eu_config", RTL8822EU}, /* RTL8822EU */
-	{0xa82a, 0x8822, "mp_rtl8822eu_fw", "rtl8822eu_fw", "rtl8822eu_config", RTL8822EU}, /* RTL8822EU */
+        {0xe822, 0x8822, "mp_rtl8822eu_fw", "rtl8822eu_fw", "rtl8822eu_config", RTL8822EU}, /* RTL8822EU */
+        {0xa82a, 0x8822, "mp_rtl8822eu_fw", "rtl8822eu_fw", "rtl8822eu_config", RTL8822EU}, /* RTL8822EU */
 
 /* NOTE: must append patch entries above the null entry */
         {0, 0, NULL, NULL, NULL, 0}

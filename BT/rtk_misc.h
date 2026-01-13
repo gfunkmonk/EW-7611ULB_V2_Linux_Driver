@@ -61,10 +61,6 @@
 /* Vendor HCI commands */
 #define HCI_VENDOR_READ_CMD  0xfc61
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 33)
-#define USB_RPM
-#endif
-
 #define CONFIG_NEEDS_BINDING
 
 /* If module is still powered when kernel suspended, there is no re-binding. */

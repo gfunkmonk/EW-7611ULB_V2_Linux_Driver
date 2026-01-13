@@ -1674,7 +1674,7 @@ static int btusb_probe(struct usb_interface *intf,
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(3, 7, 1)
         if (!reset)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
 		hci_set_quirk(hdev, HCI_QUIRK_RESET_ON_CLOSE);
 #else
                 set_bit(HCI_QUIRK_RESET_ON_CLOSE, &hdev->quirks);
@@ -1696,7 +1696,7 @@ static int btusb_probe(struct usb_interface *intf,
         }
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
 	hci_clear_quirk(hdev, HCI_QUIRK_SIMULTANEOUS_DISCOVERY);
 #else
         set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
