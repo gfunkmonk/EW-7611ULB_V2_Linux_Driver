@@ -58,6 +58,9 @@
 #define RTKBT_ERR(fmt, arg...)
 #endif
 
+/* Vendor HCI commands */
+#define HCI_VENDOR_READ_CMD  0xfc61
+
 #if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 33)
 #define USB_RPM
 #endif
