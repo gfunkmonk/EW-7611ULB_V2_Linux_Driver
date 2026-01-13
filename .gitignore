@@ -1,0 +1,21 @@
+# Kernel module build artifacts
+*.o
+*.ko
+*.mod
+*.mod.c
+*.mod.o
+*.cmd
+*.symvers
+*.order
+*.markers
+.*.cmd
+.tmp_versions/
+Module.symvers
+modules.order
+
+# Compiled binaries
+*.a
+
+# Build directories
+WIFI/.tmp_versions/
+BT/.tmp_versions/

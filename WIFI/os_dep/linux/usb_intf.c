@@ -262,8 +262,8 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 
 #ifdef CONFIG_RTL8723D
 	/*=== Realtek demoboard ===*/
-	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xD723, 0xff, 0xff, 0xff), .driver_info = RTL8723D}, /* 8723DU 1*1 */
-	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDOR_ID_EDIMAX, 0xd611, 0xff, 0xff, 0xff), .driver_info = RTL8723D}, /* Edimax - Edimax */
+	{USB_DEVICE(USB_VENDER_ID_REALTEK, 0xD723), .driver_info = RTL8723D}, /* 8723DU 1*1 */
+	{USB_DEVICE(USB_VENDOR_ID_EDIMAX, 0xd611), .driver_info = RTL8723D}, /* Edimax - Edimax */
 #endif
 
 #ifdef CONFIG_RTL8192F
