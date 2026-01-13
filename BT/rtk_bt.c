@@ -1271,8 +1271,11 @@ static void btusb_work(struct work_struct *work)
                         mdelay(URB_CANCELING_DELAY_MS);
                         usb_kill_anchored_urbs(&data->isoc_anchor);
 
-                        if (__set_isoc_interface(hdev, new_alts) < 0)
+                        if (__set_isoc_interface(hdev, new_alts) < 0) {
+                                if (test_and_clear_bit(BTUSB_DID_ISO_RESUME, &data->flags))
+                                        usb_autopm_put_interface(data->isoc ? data->isoc : data->intf);
                                 return;
+                        }
                 }
 
                 if (!test_and_set_bit(BTUSB_ISOC_RUNNING, &data->flags)) {
