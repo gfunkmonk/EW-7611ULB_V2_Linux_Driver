@@ -1506,3 +1506,8 @@ static void __exit rtw_drv_halt(void)
 
 module_init(rtw_drv_entry);
 module_exit(rtw_drv_halt);
+
+MODULE_LICENSE("GPL");
+MODULE_DESCRIPTION("Realtek Wireless Lan Driver");
+MODULE_AUTHOR("Realtek Semiconductor Corp.");
+MODULE_VERSION(DRIVERVERSION);

@@ -138,6 +138,7 @@ struct btusb_data {
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
 	unsigned int air_mode;
+	bool usb_alt6_packet_flow;
 #endif
 	int isoc_altsetting;
 	int suspend_count;
@@ -146,5 +147,6 @@ struct btusb_data {
 	int (*recv_bulk) (struct btusb_data * data, void *buffer, int count);
 #endif
 	struct notifier_block pm_notifier;
+	struct notifier_block shutdown_notifier;
 	void *context;
 };

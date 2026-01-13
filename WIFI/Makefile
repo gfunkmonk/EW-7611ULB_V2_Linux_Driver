@@ -1,5 +1,6 @@
 # Install location of module
-MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/
+#MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/
+MODDESTDIR := /lib/modules/$(shell uname -r)/extras/
 
 # Filename of finished module
 MODULE_NAME := 8723du
@@ -10,60 +11,49 @@ CROSS_COMPILE :=
 
 ##################### Optimization Flags ##########################
 ccflags-y += $(USER_EXTRA_CFLAGS)
-ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables
-#ccflags-y += -Wall -Wextra -Werror -pedantic
-#ccflags-y += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
+ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables -fomit-frame-pointer
 ldflags-y += --strip-all -O3
+CONFIG_STACK_VALIDATION := n
+OBJECT_FILES_NON_STANDARD := y
 
 ##################### Compile-time Warnings #######################
-ccflags-y += -Wno-missing-include-dirs -Wno-missing-prototypes -Wno-missing-declarations
-ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter
+ccflags-y += -Wno-missing-include-dirs -Wno-missing-prototypes
+ccflags-y += -Wno-missing-declarations -Wno-unused-parameter
+ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label
 ccflags-y += -Wno-unused -Wno-unused-function -Wno-unused-const-variable
 ccflags-y += -Wno-implicit-function-declaration -Wno-implicit-fallthrough
 ccflags-y += -Wno-missing-format-attribute -Wno-format-truncation
-ccflags-y += -Wno-incompatible-pointer-types
-ccflags-y += -Wno-misleading-indentation
-ccflags-y += -Wno-old-style-declaration
-ccflags-y += -Wno-discarded-qualifiers
-ccflags-y += -Wno-implicit-fallthrough
-ccflags-y += -Wno-cast-function-type
-ccflags-y += -Wno-ignored-attributes
-ccflags-y += -Wno-stringop-overread
-ccflags-y += -Wno-sizeof-array-div
-ccflags-y += -Wno-enum-conversion
-ccflags-y += -Wno-uninitialized
-ccflags-y += -Wno-empty-body
-ccflags-y += -Wno-attributes
-ccflags-y += -Wno-date-time
-ccflags-y += -Wno-address
-ccflags-y += -Wno-undef
-ccflags-y += -Wno-vla
+ccflags-y += -Wno-incompatible-pointer-types -Wno-misleading-indentation
+ccflags-y += -Wno-old-style-declaration -Wno-discarded-qualifiers
+ccflags-y += -Wno-cast-function-type -Wno-ignored-attributes
+ccflags-y += -Wno-sizeof-array-div -Wno-enum-conversion -Wno-uninitialized
+ccflags-y += -Wno-empty-body -Wno-attributes -Wno-date-time -Wno-address
+ccflags-y += -Wno-stringop-overread -Wno-vla -Wno-undef
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
-ccflags-y += -Wno-uninitialized -Wno-enum-conversion -Wno-fortify-source
-ccflags-y += -Wno-invalid-source-encoding -Wno-tautological-pointer-compare
-ccflags-y += -Wno-tautological-overlap-compare -Wno-pointer-bool-conversion
-ccflags-y += -Wno-misleading-indentation -Wno-self-assign -Wno-header-guard
+ccflags-y += -Wno-fortify-source -Wno-invalid-source-encoding
+ccflags-y += -Wno-tautological-pointer-compare -Wno-header-guard
+ccflags-y += -Wno-tautological-overlap-compare -Wno-self-assign
+ccflags-y += -Wno-pointer-bool-conversion
 endif
 
 ################# GCC ######################
 ifeq ($(CC), gcc)
-ccflags-y += -Wno-date-time     # Fix compile error && warning on gcc 4.9 and later
-ccflags-y += -Wno-address -Wframe-larger-than=1648 -Wno-cast-function-type
-ccflags-y += -Wno-enum-int-mismatch -Wno-stringop-overread -Wno-enum-conversion
-ccflags-y += -Wno-int-in-bool-context -Wno-missing-prototypes -Wno-missing-declarations
+ccflags-y += -Wframe-larger-than=1648 -Wno-enum-int-mismatch
+ccflags-y += -Wno-int-in-bool-context
 endif
 
 ############# SOURCE & HEADERS #############
 src := $(PWD)
 export TopDIR ?= $(shell pwd)
-ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform  -I$(src)/include -I$(src)/hal/btc
+ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform
+ccflags-y += -I$(src)/include -I$(src)/hal/btc
 
 ########################## WIFI IC ############################
 CONFIG_RTL8723D = y
+
 ########################## Features ###########################
-CONFIG_AUTOCFG_CP = n
 CONFIG_AP_MODE = y
 CONFIG_P2P = y
 CONFIG_MP_INCLUDED = y
@@ -142,21 +132,20 @@ CONFIG_REGD_SRC_FROM_OS = y       # Sets (REGD) sourse to OS
 CONFIG_FORCE_SW_CHANNEL_PLAN = y  # needed to scan all channels
 ###################### COMMON  ##################################
 
-SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc/powerpc/; s/armv.l/arm/; s/aarch64/arm64/; s/riscv.*/riscv/; s/mipseb/mips/; s/loong.*64/loongarch/;")
+SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc/powerpc/; s/armv.l/arm/; s/aarch64/arm64/; s/riscv.*/riscv/; s/mipseb/mips/; s/loong.*64/loongarch/; s/x.6_64/x86_64/;")
 ifndef ARCH
     ARCH := $(SUBARCH)
 endif
 
 CROSS_COMPILE ?=
 
-ccflags-y += -DCONFIG_LITTLE_ENDIAN
-ccflags-y += -DCONFIG_IOCTL_CFG80211
-ccflags-y += -DRTW_USE_CFG80211_STA_EVENT
-ccflags-y += -DCONFIG_RTL8723D
+ccflags-y += -DCONFIG_LITTLE_ENDIAN -DCONFIG_IOCTL_CFG80211
+ccflags-y += -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_RTL8723D
 
 KVER ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
 KSRC := /lib/modules/$(KVER)/build
 
+# Color definitions
 NC := \033[0m
 RED := \033[1;31m
 GREEN := \033[1;32m
@@ -164,81 +153,49 @@ YELLOW := \033[1;33m
 BLUE := \033[1;34m
 PURPLE := \033[1;35m
 CYAN := \033[1;36m
-WHITE := \033[0;37m
-DKPURPLE := \033[0;35m
 BROWN := \033[0;33m
 TEAL := \033[2;36m
 BWHITE := \033[1;37m
-RESET := \033[0m
+DKPURPLE := \033[0;35m
+WHITE := \033[0;37m
 
 ########### HAL_RTL8723D #################################
-
-_OS_INTFS_FILES := os_dep/osdep_service.o \
-                        os_dep/linux/os_intfs.o \
-                        os_dep/linux/usb_intf.o \
-                        os_dep/linux/usb_ops_linux.o \
-                        os_dep/linux/ioctl_linux.o \
-                        os_dep/linux/xmit_linux.o \
-                        os_dep/linux/mlme_linux.o \
-                        os_dep/linux/recv_linux.o \
-                        os_dep/linux/ioctl_cfg80211.o \
-                        os_dep/linux/rtw_cfgvendor.o \
-                        os_dep/linux/wifi_regd.o \
-                        os_dep/linux/rtw_android.o \
-                        os_dep/linux/rtw_proc.o \
-                        os_dep/linux/nlrtw.o \
-                        os_dep/linux/rtw_rhashtable.o \
-                        hal/hal_intf.o \
-                        hal/hal_com.o \
-                        hal/hal_com_phycfg.o \
-                        hal/hal_phy.o \
-                        hal/hal_dm.o \
-                        hal/hal_dm_acs.o \
-                        hal/hal_btcoex_wifionly.o \
-                        hal/hal_btcoex.o \
-                        hal/hal_mp.o \
-                        hal/hal_mcc.o \
-                        hal/hal_hci/hal_usb.o \
-                        hal/led/hal_led.o \
-                        hal/led/hal_usb_led.o
+_OS_INTFS_FILES := os_dep/osdep_service.o os_dep/linux/os_intfs.o \
+	os_dep/linux/usb_intf.o os_dep/linux/usb_ops_linux.o \
+	os_dep/linux/ioctl_linux.o os_dep/linux/xmit_linux.o \
+	os_dep/linux/mlme_linux.o os_dep/linux/recv_linux.o \
+	os_dep/linux/ioctl_cfg80211.o os_dep/linux/rtw_cfgvendor.o \
+	os_dep/linux/wifi_regd.o os_dep/linux/rtw_android.o \
+	os_dep/linux/rtw_proc.o os_dep/linux/nlrtw.o \
+	os_dep/linux/rtw_rhashtable.o hal/hal_intf.o hal/hal_com.o
 
 _PLATFORM_FILES := platform/platform_ops.o
 
 ifeq ($(CONFIG_MP_INCLUDED), y)
 _OS_INTFS_FILES += os_dep/linux/ioctl_mp.o
+ccflags-y += -DCONFIG_MP_INCLUDED
 endif
 
-_HAL_INTFS_FILES += hal/HalPwrSeqCmd.o \
-                        hal/rtl8723d/Hal8723DPwrSeq.o \
-                        hal/rtl8723d/rtl8723d_sreset.o \
-                        hal/rtl8723d/rtl8723d_hal_init.o \
-                        hal/rtl8723d/rtl8723d_phycfg.o \
-                        hal/rtl8723d/rtl8723d_rf6052.o \
-                        hal/rtl8723d/rtl8723d_dm.o \
-                        hal/rtl8723d/rtl8723d_rxdesc.o \
-                        hal/rtl8723d/rtl8723d_cmd.o \
-                        hal/rtl8723d/hal8723d_fw.o \
-                        hal/rtl8723d/rtl8723d_lps_poff.o \
-                        hal/rtl8723d/usb/usb_halinit.o \
-                        hal/rtl8723d/usb/rtl8723du_led.o \
-                        hal/rtl8723d/usb/rtl8723du_xmit.o \
-                        hal/rtl8723d/usb/rtl8723du_recv.o \
-                        hal/efuse/rtl8723d/HalEfuseMask8723D_USB.o \
-                        hal/rtl8723d/usb/usb_ops.o
+_HAL_INTFS_FILES += hal/hal_com_phycfg.o hal/hal_phy.o hal/hal_dm.o \
+          hal/hal_dm_acs.o hal/hal_btcoex_wifionly.o hal/hal_btcoex.o \
+          hal/hal_mp.o hal/hal_mcc.o hal/hal_hci/hal_usb.o hal/led/hal_led.o \
+          hal/led/hal_usb_led.o hal/HalPwrSeqCmd.o \
+          hal/rtl8723d/Hal8723DPwrSeq.o \
+          hal/rtl8723d/rtl8723d_sreset.o hal/rtl8723d/rtl8723d_hal_init.o \
+          hal/rtl8723d/rtl8723d_phycfg.o hal/rtl8723d/rtl8723d_rf6052.o \
+          hal/rtl8723d/rtl8723d_dm.o hal/rtl8723d/rtl8723d_rxdesc.o \
+          hal/rtl8723d/rtl8723d_cmd.o hal/rtl8723d/hal8723d_fw.o \
+          hal/rtl8723d/rtl8723d_lps_poff.o hal/rtl8723d/usb/usb_halinit.o \
+          hal/rtl8723d/usb/rtl8723du_led.o hal/rtl8723d/usb/rtl8723du_xmit.o \
+          hal/rtl8723d/usb/rtl8723du_recv.o \
+          hal/efuse/rtl8723d/HalEfuseMask8723D_USB.o hal/rtl8723d/usb/usb_ops.o
 
 ifeq ($(CONFIG_BT_COEXIST), y)
-_BTC_FILES += hal/btc/halbtc8723d1ant.o \
-                  hal/btc/halbtc8723d2ant.o
+_BTC_FILES += hal/btc/halbtc8723d1ant.o hal/btc/halbtc8723d2ant.o
+ccflags-y += -DCONFIG_BT_COEXIST
 endif
 
-########### AUTO_CFG  #################################
-
-ifeq ($(CONFIG_AUTOCFG_CP), y)
-$(shell cp $(TopDIR)/autoconf_rtl8723d_usb_linux.h $(TopDIR)/include/autoconf.h)
-endif
-
-########### END OF PATH  #################################
-
+########### Feature Flags #################################
 ifeq ($(CONFIG_AP_MODE), y)
 ccflags-y += -DCONFIG_AP_MODE
 endif
@@ -525,8 +482,6 @@ else
 ccflags-y += -DCONFIG_RTW_UP_MAPPING_RULE=0
 endif
 
-ccflags-y += -DDM_ODM_SUPPORT_TYPE=0x04
-
 ifeq ($(CONFIG_RTW_MBO), y)
 ccflags-y += -DCONFIG_RTW_MBO -DCONFIG_RTW_80211K -DCONFIG_RTW_WNM -DCONFIG_RTW_BTM_ROAM
 ccflags-y += -DCONFIG_RTW_80211R
@@ -548,70 +503,32 @@ else ifeq ($(CONFIG_SEC_AMSDU_MODE), disable)
 ccflags-y += -DRTW_AMSDU_MODE=2
 endif
 
-ifneq ($(KERNELRELEASE),)
-endif
-########### this part for *.mk ############################
+ccflags-y += -DDM_ODM_SUPPORT_TYPE=0x04
+
+########### Module Assembly ############################
 include $(src)/hal/phydm/phydm.mk
 
-rtk_core := core/rtw_cmd.o \
-                core/rtw_security.o \
-                core/rtw_debug.o \
-                core/rtw_io.o \
-                core/rtw_ioctl_query.o \
-                core/rtw_ioctl_set.o \
-                core/rtw_ieee80211.o \
-                core/rtw_mlme.o \
-                core/rtw_mlme_ext.o \
-                core/rtw_mi.o \
-                core/rtw_wlan_util.o \
-                core/rtw_vht.o \
-                core/rtw_pwrctrl.o \
-                core/rtw_rf.o \
-                core/rtw_chplan.o \
-                core/monitor/rtw_radiotap.o \
-                core/rtw_recv.o \
-                core/rtw_sta_mgt.o \
-                core/rtw_ap.o \
-                core/wds/rtw_wds.o \
-                core/mesh/rtw_mesh.o \
-                core/mesh/rtw_mesh_pathtbl.o \
-                core/mesh/rtw_mesh_hwmp.o \
-                core/rtw_xmit.o \
-                core/rtw_p2p.o \
-                core/rtw_rson.o \
-                core/rtw_tdls.o \
-                core/rtw_br_ext.o \
-                core/rtw_iol.o \
-                core/rtw_sreset.o \
-                core/rtw_btcoex_wifionly.o \
-                core/rtw_btcoex.o \
-                core/rtw_beamforming.o \
-                core/rtw_odm.o \
-                core/rtw_rm.o \
-                core/rtw_rm_fsm.o \
-                core/rtw_ft.o \
-                core/rtw_wnm.o \
-                core/rtw_mbo.o \
-                core/rtw_rm_util.o \
-                core/efuse/rtw_efuse.o \
-                core/rtw_roch.o
+rtk_core := core/rtw_cmd.o core/rtw_security.o core/rtw_debug.o \
+	core/rtw_io.o core/rtw_ioctl_query.o core/rtw_ioctl_set.o \
+	core/rtw_ieee80211.o core/rtw_mlme.o core/rtw_mlme_ext.o \
+	core/rtw_mi.o core/rtw_wlan_util.o core/rtw_vht.o \
+	core/rtw_pwrctrl.o core/rtw_rf.o core/rtw_chplan.o \
+	core/monitor/rtw_radiotap.o core/rtw_recv.o core/rtw_sta_mgt.o \
+	core/rtw_ap.o core/wds/rtw_wds.o core/mesh/rtw_mesh.o \
+	core/mesh/rtw_mesh_pathtbl.o core/mesh/rtw_mesh_hwmp.o \
+	core/rtw_xmit.o core/rtw_p2p.o core/rtw_rson.o core/rtw_tdls.o \
+	core/rtw_br_ext.o core/rtw_iol.o core/rtw_sreset.o \
+	core/rtw_btcoex_wifionly.o core/rtw_btcoex.o core/rtw_beamforming.o \
+	core/rtw_odm.o core/rtw_rm.o core/rtw_rm_fsm.o core/rtw_ft.o \
+	core/rtw_wnm.o core/rtw_mbo.o core/rtw_rm_util.o \
+	core/efuse/rtw_efuse.o core/rtw_roch.o
 
 ccflags-y += -I$(src)/core/crypto
-rtk_core += \
-                core/crypto/aes-internal.o \
-                core/crypto/aes-internal-enc.o \
-                core/crypto/aes-gcm.o \
-                core/crypto/aes-ccm.o \
-                core/crypto/aes-omac1.o \
-                core/crypto/ccmp.o \
-                core/crypto/gcmp.o \
-                core/crypto/aes-siv.o \
-                core/crypto/aes-ctr.o \
-                core/crypto/sha256-internal.o \
-                core/crypto/sha256.o \
-                core/crypto/sha256-prf.o \
-                core/crypto/rtw_crypto_wrap.o \
-                core/rtw_swcrypto.o
+rtk_core += core/crypto/aes-internal.o core/crypto/aes-internal-enc.o \
+	core/crypto/aes-gcm.o core/crypto/aes-ccm.o core/crypto/aes-omac1.o \
+	core/crypto/ccmp.o core/crypto/gcmp.o core/crypto/aes-siv.o \
+	core/crypto/aes-ctr.o core/crypto/sha256-internal.o core/crypto/sha256.o \
+	core/crypto/sha256-prf.o core/crypto/rtw_crypto_wrap.o core/rtw_swcrypto.o
 
 $(MODULE_NAME)-y += $(rtk_core)
 
@@ -623,70 +540,90 @@ $(MODULE_NAME)-y += $(_HAL_INTFS_FILES)
 $(MODULE_NAME)-y += $(_PHYDM_FILES)
 $(MODULE_NAME)-y += $(_BTC_FILES)
 $(MODULE_NAME)-y += $(_PLATFORM_FILES)
-
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o
 
 obj-m := $(MODULE_NAME).o
 
-all: modules strip install
+########### Build Targets ############################
 
-modules:
-	@if [ ! -f $(MODULE_NAME).ko ]; then \
-		echo "$(YELLOW)Building $(MODULE_NAME) modules...$(NC)"; \
-		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules; \
-		echo "$(TEAL)✓ Modules were successfully built!$(NC)"; \
-	else \
-		echo "$(BROWN)Module $(MODULE_NAME).ko already exists, skipping compilation."; \
+all: build install
+
+.PHONY: all build install uninstall clean help config
+
+build:
+	@if [ ! -d $(KSRC) ]; then \
+		echo "$(RED)Error: Kernel source not found at $(KSRC)$(NC)"; \
+		exit 1; \
 	fi
-
-strip:
-	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
+	@if [ ! -f $(MODULE_NAME).ko ]; then \
+		echo "$(YELLOW)Building $(MODULE_NAME) module...$(NC)"; \
+		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules || exit 1; \
+		echo "$(TEAL)✓ Module successfully built!$(NC)"; \
+	else \
+		echo "$(BROWN)Module $(MODULE_NAME).ko already exists, skipping compilation.$(NC)"; \
+	fi
 
 install:
 	@if [ ! -f $(MODULE_NAME).ko ]; then \
-		echo "$(BLUE)Building $(MODULE_NAME) modules...$(NC)"; \
-		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules; \
-		echo "$(RED)✓ Modules were successfully built!$(NC)"; \
+		echo "$(BLUE)Building $(MODULE_NAME) module...$(NC)"; \
+		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules || exit 1; \
+		echo "$(TEAL)✓ Module successfully built!$(NC)"; \
 	fi
 	@echo "$(PURPLE)Installing $(MODULE_NAME) module...$(NC)"
+	@-rmmod $(MODULE_NAME) 2>/dev/null || true
 	@mkdir -p $(MODDESTDIR)
-	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
-	/sbin/depmod -a ${KVER}
+	@install -p -m 644 $(MODULE_NAME).ko $(MODDESTDIR)
+	@/sbin/depmod -a $(KVER)
+	@echo "$(GREEN)✓ Module installed successfully!$(NC)"
 
 uninstall:
 	@echo "$(CYAN)Uninstalling $(MODULE_NAME) module...$(NC)"
-	rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
-	/sbin/depmod -a ${KVER}
-	@echo "$(GREEN)✓ Uninstall $(MODULE_NAME) success!$(NC)"
-
-.PHONY: modules clean
+	@-rmmod $(MODULE_NAME) 2>/dev/null || true
+	@rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
+	@/sbin/depmod -a $(KVER)
+	@echo "$(GREEN)✓ Module uninstalled successfully!$(NC)"
 
 clean:
-        #$(MAKE) -C $(KSRC) M=$(shell pwd) clean
-	cd hal ; rm -fr */*/*/*.mod.c */*/*/*.mod */*/*/*.o */*/*/.*.cmd */*/*/*.ko
-	cd hal ; rm -fr */*/*.mod.c */*/*.mod */*/*.o */*/.*.cmd */*/*.ko
-	cd hal ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-	cd hal ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd core ; rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-	cd core ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd os_dep/linux ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd os_dep ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd platform ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	rm -fr Module.symvers ; rm -fr Module.markers ; rm -fr modules.order
-	rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
-	rm -fr .tmp_versions
+	@cd hal && rm -fr */*/*/*.mod.c */*/*/*.mod */*/*/*.o */*/*/.*.cmd */*/*/*.ko
+	@cd hal && rm -fr */*/*.mod.c */*/*.mod */*/*.o */*/.*.cmd */*/*.ko
+	@cd hal && rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
+	@cd hal && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	@cd core && rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
+	@cd core && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	@cd os_dep/linux && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	@cd os_dep && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	@cd platform && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	@rm -fr Module.symvers Module.markers modules.order
+	@rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
+	@rm -fr .tmp_versions
 	@echo "$(DKPURPLE)✓ All clean!$(NC)"
 
 help:
 	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
-	@echo "$(BLUE)  RTL8723DU WIFI USB Driver Build System$(NC)"
+	@echo "$(BLUE)  RTL8723DU WiFi USB Driver Build System$(NC)"
 	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
 	@echo "$(GREEN)Available targets:$(NC)"
-	@echo "  $(YELLOW)modules$(NC)    $(BWHITE)- Compile the kernel module$(NC)"
-	@echo "  $(YELLOW)strip$(NC)      $(BWHITE)- remove debug symbols from .ko$(NC)"
+	@echo "  $(YELLOW)build$(NC)      $(BWHITE)- Compile the kernel module$(NC)"
 	@echo "  $(YELLOW)install$(NC)    $(BWHITE)- Build and install module$(NC)"
 	@echo "  $(YELLOW)uninstall$(NC)  $(BWHITE)- Remove installed module$(NC)"
 	@echo "  $(YELLOW)clean$(NC)      $(BWHITE)- Remove build artifacts$(NC)"
-	@echo "  $(YELLOW)all$(NC)        $(BWHITE)- Build, strip & install (default)$(NC)"
+	@echo "  $(YELLOW)all$(NC)        $(BWHITE)- Build and install (default)$(NC)"
+	@echo "  $(YELLOW)config$(NC)     $(BWHITE)- Show current configuration$(NC)"
 	@echo "  $(YELLOW)help$(NC)       $(BWHITE)- Show this help message$(NC)"
 	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
+
+config:
+	@echo "$(BLUE)Current Configuration:$(NC)"
+	@echo "$(RED)  Module:$(BWHITE) $(MODULE_NAME)$(NC)"
+	@echo "$(RED)  Kernel:$(BWHITE) $(KVER)$(NC)"
+	@echo "$(RED)  Architecture:$(BWHITE) $(ARCH)$(NC)"
+	@echo "$(RED)  Install Dir:$(BWHITE) $(MODDESTDIR)$(NC)"
+	@echo "$(RED)  AP Mode:$(BWHITE) $(CONFIG_AP_MODE)$(NC)"
+	@echo "$(RED)  P2P:$(BWHITE) $(CONFIG_P2P)$(NC)"
+	@echo "$(RED)  Power Saving:$(BWHITE) $(CONFIG_POWER_SAVING)$(NC)"
+	@echo "$(RED)  BT Coexist:$(BWHITE) $(CONFIG_BT_COEXIST)$(NC)"
+	@echo "$(RED)  Concurrent Mode:$(BWHITE) $(CONFIG_CONCURRENT_MODE)$(NC)"
+	@echo "$(RED)  Wakeup Type:$(BWHITE) $(CONFIG_WAKEUP_TYPE)$(NC)"
+	@echo "$(RED)  Channel Plan:$(BWHITE) $(CONFIG_RTW_CHPLAN)$(NC)"
+	@echo "$(RED)  REGD source from OS:$(BWHITE) $(CONFIG_REGD_SRC_FROM_OS)$(NC)"
+	@echo "$(RED)  Force SW Channel Plan:$(BWHITE) $(CONFIG_FORCE_SW_CHANNEL_PLAN)$(NC)"

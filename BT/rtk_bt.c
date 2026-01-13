@@ -30,6 +30,7 @@
 #include <linux/skbuff.h>
 #include <linux/usb.h>
 #include <linux/dcache.h>
+#include <linux/reboot.h>
 #include <net/sock.h>
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
@@ -41,7 +42,7 @@
 #include "rtk_bt.h"
 #include "rtk_misc.h"
 
-#define VERSION "3.1.4ca2e79.20220318-102809"
+#define VERSION "3.1.6fd4e69.20220818-105856"
 
 #ifdef BTCOEX
 #include "rtk_coex.h"
@@ -50,7 +51,7 @@
 #ifdef RTKBT_SWITCH_PATCH
 #include <linux/semaphore.h>
 #include <net/bluetooth/hci_core.h>
-DEFINE_SEMAPHORE(switch_sem);
+static DEFINE_SEMAPHORE(switch_sem);
 #endif
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(3, 7, 1)
@@ -801,7 +802,10 @@ static int btusb_open(struct hci_dev *hdev)
                 goto failed;
         /*******************************/
 
-        RTKBT_INFO("%s set HCI_RUNNING", __func__);
+	RTKBT_INFO("%s set HCI UP RUNNING", __func__);
+	if (test_and_set_bit(HCI_UP, &hdev->flags))
+		goto done;
+
         if (test_and_set_bit(HCI_RUNNING, &hdev->flags))
                 goto done;
 
@@ -939,7 +943,7 @@ static int btusb_flush(struct hci_dev *hdev)
         return 0;
 }
 
-const char pkt_ind[][8] = {
+static const char pkt_ind[][8] = {
         [HCI_COMMAND_PKT] = "cmd",
         [HCI_ACLDATA_PKT] = "acl",
         [HCI_SCODATA_PKT] = "sco",
@@ -1356,7 +1360,7 @@ static int rtkbt_lookup_le_device_poweron_whitelist(struct hci_dev *hdev,
 }
 #endif
 
-int rtkbt_pm_notify(struct notifier_block *notifier,
+static int rtkbt_pm_notify(struct notifier_block *notifier,
                     ulong pm_event, void *unused)
 {
         struct btusb_data *data;
@@ -1445,21 +1449,25 @@ int rtkbt_pm_notify(struct notifier_block *notifier,
                 kfree(cmd);
                 msleep(100); /* From FW colleague's recommendation */
                 result = download_lps_patch(intf);
+#endif
 
+#ifdef RTKBT_TV_POWERON_WHITELIST
+		result = rtkbt_lookup_le_device_poweron_whitelist(hdev, udev);
+		if (result < 0) {
+			RTKBT_ERR("rtkbt_lookup_le_device_poweron_whitelist error: %d", result);
+		}
+#endif
+
+#if defined RTKBT_SUSPEND_WAKEUP || defined RTKBT_SWITCH_PATCH
+#ifdef RTKBT_POWERKEY_WAKEUP
                 /* Tell the controller to wake up host if received special
                  * advertising packet
                  */
                 set_scan(intf);
-
+#endif
                 /* Send special vendor commands */
 #endif
 
-#ifdef RTKBT_TV_POWERON_WHITELIST
-                result = rtkbt_lookup_le_device_poweron_whitelist(hdev, udev);
-                if (result < 0) {
-                        RTKBT_ERR("rtkbt_lookup_le_device_poweron_whitelist error: %d", result);
-                }
-#endif
                 break;
 
         case PM_POST_SUSPEND:
@@ -1493,7 +1501,7 @@ int rtkbt_pm_notify(struct notifier_block *notifier,
                 }
 #endif
 
-#if BTUSB_RPM
+#ifdef BTUSB_RPM
                 RTKBT_DBG("%s: Re-enable autosuspend", __func__);
                 /* pm_runtime_use_autosuspend(&udev->dev);
                  * pm_runtime_set_autosuspend_delay(&udev->dev, 2000);
@@ -1518,6 +1526,36 @@ int rtkbt_pm_notify(struct notifier_block *notifier,
         return NOTIFY_DONE;
 }
 
+static int rtkbt_shutdown_notify(struct notifier_block *notifier,
+		    ulong pm_event, void *unused)
+{
+	struct btusb_data *data;
+	struct usb_device *udev;
+	struct usb_interface *intf;
+	struct hci_dev *hdev;
+	/* int err; */
+
+	data = container_of(notifier, struct btusb_data, shutdown_notifier);
+	udev = data->udev;
+	intf = data->intf;
+	hdev = data->hdev;
+
+	RTKBT_DBG("%s: pm_event %ld", __func__, pm_event);
+	switch (pm_event) {
+	case SYS_POWER_OFF:
+	case SYS_RESTART:
+#ifdef RTKBT_SHUTDOWN_WAKEUP
+		RTKBT_DBG("%s: power off", __func__);
+		set_scan(intf);
+#endif
+		break;
+
+	default:
+		break;
+	}
+
+	return NOTIFY_DONE;
+}
 
 static int btusb_probe(struct usb_interface *intf,
                        const struct usb_device_id *id)
@@ -1540,7 +1578,7 @@ static int btusb_probe(struct usb_interface *intf,
         flag1 = device_can_wakeup(&udev->dev);
         flag2 = device_may_wakeup(&udev->dev);
         RTKBT_DBG("btusb_probe can_wakeup %x, may wakeup %x", flag1, flag2);
-#if BTUSB_WAKEUP_HOST
+#ifdef BTUSB_WAKEUP_HOST
         device_wakeup_enable(&udev->dev);
 #endif
         //device_wakeup_enable(&udev->dev);
@@ -1560,6 +1598,10 @@ static int btusb_probe(struct usb_interface *intf,
 
         for (i = 0; i < intf->cur_altsetting->desc.bNumEndpoints; i++) {
                 ep_desc = &intf->cur_altsetting->endpoint[i].desc;
+		if (!data->intr_ep && usb_endpoint_is_bulk_in(ep_desc) && (ep_desc->bEndpointAddress == 0x81)) {
+			data->intr_ep = ep_desc;
+			continue;
+		}
 
                 if (!data->intr_ep && usb_endpoint_is_int_in(ep_desc)) {
                         data->intr_ep = ep_desc;
@@ -1632,7 +1674,7 @@ static int btusb_probe(struct usb_interface *intf,
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(3, 7, 1)
         if (!reset)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
 		hci_set_quirk(hdev, HCI_QUIRK_RESET_ON_CLOSE);
 #else
                 set_bit(HCI_QUIRK_RESET_ON_CLOSE, &hdev->quirks);
@@ -1654,7 +1696,7 @@ static int btusb_probe(struct usb_interface *intf,
         }
 
 #if HCI_VERSION_CODE >= KERNEL_VERSION(4, 1, 0)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0))
 	hci_clear_quirk(hdev, HCI_QUIRK_SIMULTANEOUS_DISCOVERY);
 #else
         set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
@@ -1674,6 +1716,9 @@ static int btusb_probe(struct usb_interface *intf,
         data->pm_notifier.notifier_call = rtkbt_pm_notify;
         register_pm_notifier(&data->pm_notifier);
 
+	/* Register POWER-OFF notifier */
+	data->shutdown_notifier.notifier_call = rtkbt_shutdown_notify;
+	register_reboot_notifier(&data->shutdown_notifier);
 #ifdef BTCOEX
         rtk_btcoex_probe(hdev);
 #endif
@@ -1700,6 +1745,7 @@ static void btusb_disconnect(struct usb_interface *intf)
 
         /* Un-register PM notifier */
         unregister_pm_notifier(&data->pm_notifier);
+	unregister_reboot_notifier(&data->shutdown_notifier);
 
         /*******************************/
         patch_remove(intf);
@@ -1875,13 +1921,14 @@ failed:
 #endif
 
 static struct usb_driver btusb_driver = {
-        .name = "rtk_btusbv2",
+        .name = "rtk_btusb",
         .probe = btusb_probe,
         .disconnect = btusb_disconnect,
 #ifdef CONFIG_PM
         .suspend = btusb_suspend,
         .resume = btusb_resume,
-#ifdef RTKBT_SWITCH_PATCH
+#if defined RTKBT_SWITCH_PATCH || defined RTKBT_SUSPEND_WAKEUP || defined \
+	RTKBT_SHUTDOWN_WAKEUP
         .reset_resume = btusb_resume,
 #endif
 #endif
@@ -1903,7 +1950,7 @@ static int __init btusb_init(void)
 
 static void __exit btusb_exit(void)
 {
-        RTKBT_DBG("rtk_btusbv2: btusb_exit");
+	RTKBT_DBG("rtk_btusb: btusb_exit");
         usb_deregister(&btusb_driver);
 
 #ifdef BTCOEX
