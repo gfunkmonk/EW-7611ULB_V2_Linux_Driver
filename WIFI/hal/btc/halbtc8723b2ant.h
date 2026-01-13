@@ -226,3 +226,4 @@ void ex_halbtc8723b2ant_display_coex_info(IN struct btc_coexist *btcoexist);
 #endif
 
 #endif
+

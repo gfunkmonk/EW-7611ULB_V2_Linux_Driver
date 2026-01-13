@@ -13,23 +13,26 @@
  *
  *****************************************************************************/
 /*
- * Public General Config
+ * Public General Configure
  */
 #define AUTOCONF_INCLUDED
 
-#define RTL871X_MODULE_NAME "8723BU"
-#define DRV_NAME "rtl8723bu"
+#define RTL871X_MODULE_NAME "8723DU"
+#ifdef CONFIG_FOR_RTL8723DU_VQ0
+#define DRV_NAME "rtl8723du-vq0"
+#else
+#define DRV_NAME "rtl8723du"
+#endif
 
-#ifndef CONFIG_RTL8723B
-#define CONFIG_RTL8723B
+#ifndef CONFIG_RTL8723D
+#define CONFIG_RTL8723D
 #endif
 #define CONFIG_USB_HCI
 
-#define PLATFORM_LINUX
-
+#define PLATFORM_LINUX 1
 
 /*
- * Wi-Fi Functions Config
+ * Wi-Fi Functions Configure
  */
 #define CONFIG_80211N_HT
 #define CONFIG_RECV_REORDERING_CTRL
@@ -37,32 +40,35 @@
 /* #define CONFIG_IOCTL_CFG80211 */		/* Set from Makefile */
 #ifdef CONFIG_IOCTL_CFG80211
 	/*
-	 * Indecate new sta asoc through cfg80211_new_sta
+	 * Indicate new sta asoc through cfg80211_new_sta
 	 * If kernel version >= 3.2 or
 	 * version < 3.2 but already apply cfg80211 patch,
-	 * RTW_USE_CFG80211_STA_EVENT must be defiend!
+	 * RTW_USE_CFG80211_STA_EVENT must be defined!
 	 */
-	/* #define RTW_USE_CFG80211_STA_EVENT */ /* Indecate new sta asoc through cfg80211_new_sta */
+	/* #define RTW_USE_CFG80211_STA_EVENT */ /* Indicate new sta asoc through cfg80211_new_sta */
 	#define CONFIG_CFG80211_FORCE_COMPATIBLE_2_6_37_UNDER
+
 	/* #define CONFIG_DEBUG_CFG80211 */
 	/* #define CONFIG_DRV_ISSUE_PROV_REQ */ /* IOT FOR S2 */
+
 	#define CONFIG_SET_SCAN_DENY_TIMER
 #endif
 
-#define CONFIG_AP_MODE
 #ifdef CONFIG_AP_MODE
 	#define CONFIG_NATIVEAP_MLME
 	#ifndef CONFIG_NATIVEAP_MLME
 		#define CONFIG_HOSTAPD_MLME
 	#endif
 	/* #define CONFIG_FIND_BEST_CHANNEL */
+	/* #define CONFIG_NO_WIRELESS_HANDLERS */
 	/* #define CONFIG_AUTO_AP_MODE */
 #endif
 
-#define CONFIG_P2P
 #ifdef CONFIG_P2P
-	/* Added by Albert 20110812 */
-	/* The CONFIG_WFD is for supporting the Wi-Fi display */
+	/*
+	 * Added by Albert 20110812
+	 * The CONFIG_WFD is for supporting the Wi-Fi display
+	 */
 	#define CONFIG_WFD
 
 	#define CONFIG_P2P_REMOVE_GROUP_INFO
@@ -74,39 +80,40 @@
 	/*#define CONFIG_P2P_INVITE_IOT*/
 #endif
 
-/* Added by Kurt 20110511 */
+/*
+ * Added by Kurt 20110511
+ */
 #ifdef CONFIG_TDLS
 	#define CONFIG_TDLS_DRIVER_SETUP
-/*	#ifndef CONFIG_WFD */
-/*		#define CONFIG_WFD */
-/*	#endif */
-/*	#define CONFIG_TDLS_AUTOSETUP */
+/*
+	#ifndef CONFIG_WFD
+		#define CONFIG_WFD
+	#endif
+	#define CONFIG_TDLS_AUTOSETUP
+*/
 	#define CONFIG_TDLS_AUTOCHECKALIVE
-	/* #define CONFIG_TDLS_CH_SW */	/* Enable this flag only when we confirm that TDLS CH SW is supported in FW */
+	#define CONFIG_TDLS_CH_SW		/* Enable "CONFIG_TDLS_CH_SW" by default, however limit it to only work in wifi logo test mode but not in normal mode currently */
 #endif
 
 /* #define CONFIG_CONCURRENT_MODE */	/* Set from Makefile */
 #ifdef CONFIG_CONCURRENT_MODE
 	#define CONFIG_TSF_RESET_OFFLOAD			/* For 2 PORT TSF SYNC. */
 	#define CONFIG_RUNTIME_PORT_SWITCH
-
 	/* #define DBG_RUNTIME_PORT_SWITCH */
 #endif /* CONFIG_CONCURRENT_MODE */
 
-#define CONFIG_LAYER2_ROAMING
-#define CONFIG_LAYER2_ROAMING_RESUME
-
 /*
- * Hareware/Firmware Related Config
+ * Hareware/Firmware Related Configure
  */
-/* #define CONFIG_ANTENNA_DIVERSITY */
+/* #define CONFIG_ANTENNA_DIVERSITY	 */
 /* #define SUPPORT_HW_RFOFF_DETECTED */
 
-#define CONFIG_RTW_LED
+/* #define CONFIG_RTW_LED */
 #ifdef CONFIG_RTW_LED
-	#define CONFIG_RTW_SW_LED
+	#define CONFIG_RTW_HW_LED
+	/* #define CONFIG_RTW_SW_LED */
 	#ifdef CONFIG_RTW_SW_LED
-		/* #define CONFIG_RTW_LED_HANDLED_BY_CMD_THREAD */
+		/* define CONFIG_RTW_LED_HANDLED_BY_CMD_THREAD */
 	#endif
 #endif /* CONFIG_RTW_LED */
 
@@ -122,11 +129,12 @@
 #define RTW_NOTCH_FILTER 0 /* 0:Disable, 1:Enable, */
 
 /*
- * Interface Related Config
+ * Interface Related Configure
  */
 #define CONFIG_USB_TX_AGGREGATION
 #define CONFIG_USB_RX_AGGREGATION
 
+#define USB_INTERFERENCE_ISSUE /* this should be checked in all usb interface */
 
 #define CONFIG_GLOBAL_UI_PID
 
@@ -139,13 +147,13 @@
 /* #define CONFIG_USB_INTERRUPT_IN_PIPE */
 #endif
 
-/* #define CONFIG_REDUCE_USB_TX_INT */	/* Trade-off: Improve performance, but may cause TX URBs blocked by USB Host/Bus driver on few platforms. */
+/* #define CONFIG_REDUCE_USB_TX_INT	*/ /* Trade-off: Improve performance, but may cause TX URBs blocked by USB Host/Bus driver on few platforms. */
 
 /*
  * CONFIG_USE_USB_BUFFER_ALLOC_XX uses Linux USB Buffer alloc API and is for Linux platform only now!
  */
-/* #define CONFIG_USE_USB_BUFFER_ALLOC_TX */	/* Trade-off: For TX path, improve stability on some platforms, but may cause performance degrade on other platforms. */
-/* #define CONFIG_USE_USB_BUFFER_ALLOC_RX */	/* For RX path */
+/* #define CONFIG_USE_USB_BUFFER_ALLOC_TX	*/ /* Trade-off: For TX path, improve stability on some platforms, but may cause performance degrade on other platforms. */
+/* #define CONFIG_USE_USB_BUFFER_ALLOC_RX	*/ /* For RX path */
 
 /*
  * USB VENDOR REQ BUFFER ALLOCATION METHOD
@@ -187,9 +195,11 @@
 
 #define CONFIG_LONG_DELAY_ISSUE
 
+#define CONFIG_RX_PACKET_APPEND_FCS
+
 
 /*
- * Auto Config Section
+ * Auto Configure Section
  */
 #ifdef CONFIG_MINIMAL_MEMORY_USAGE
 	#undef CONFIG_USB_TX_AGGREGATION
@@ -206,19 +216,31 @@
 #endif /* !CONFIG_MP_INCLUDED */
 
 #ifdef CONFIG_POWER_SAVING
-	#define CONFIG_IPS
-	#define CONFIG_LPS
+	#define CONFIG_IPS 1
+	#define CONFIG_LPS 1
 
-	#ifdef CONFIG_IPS
-	/* #define CONFIG_IPS_LEVEL_2	1 */ /* enable this to set default IPS mode to IPS_LEVEL_2 */
+	#if defined(CONFIG_LPS)
+	#define CONFIG_LPS_LCLK 1
 	#endif
 
-	#if defined(CONFIG_LPS) && defined(CONFIG_SUPPORT_USB_INT)
-		/* #define CONFIG_LPS_LCLK */
+	#ifdef CONFIG_LPS
+		#define CONFIG_CHECK_LEAVE_LPS
+		#define CONFIG_LPS_SLOW_TRANSITION
 	#endif
 
 	#ifdef CONFIG_LPS_LCLK
-		/* #define CONFIG_XMIT_THREAD_MODE */
+	#define CONFIG_DETECT_CPWM_BY_POLLING
+	#define CONFIG_LPS_RPWM_TIMER
+	#if defined(CONFIG_LPS_RPWM_TIMER) || defined(CONFIG_DETECT_CPWM_BY_POLLING)
+	#define LPS_RPWM_WAIT_MS 300
+	#endif
+	#define CONFIG_LPS_LCLK_WD_TIMER /* Watch Dog timer in LPS LCLK */
+	#endif
+
+	#ifdef CONFIG_IPS
+	#define CONFIG_IPS_CHECK_IN_WD /* Do IPS Check in WatchDog. */
+	/* #define CONFIG_SWLPS_IN_IPS */ /* Do SW LPS flow when entering and leaving IPS */
+	/* #define CONFIG_FWLPS_IN_IPS */ /* issue H2C command to let FW do LPS when entering IPS */
 	#endif
 #endif /* CONFIG_POWER_SAVING */
 
@@ -227,7 +249,7 @@
 	#ifndef CONFIG_LPS
 		#define CONFIG_LPS	/* download reserved page to FW */
 	#endif
-#endif /* !CONFIG_BT_COEXIST */
+#endif /* CONFIG_BT_COEXIST */
 
 #ifdef CONFIG_WOWLAN
 	/* #define CONFIG_GTK_OL */
@@ -235,7 +257,7 @@
 
 #ifdef CONFIG_GPIO_WAKEUP
 	#ifndef WAKEUP_GPIO_IDX
-		#define WAKEUP_GPIO_IDX	14	/* WIFI Chip Side */
+		#define WAKEUP_GPIO_IDX	6/* WIFI Chip Side */
 	#endif /* !WAKEUP_GPIO_IDX */
 #endif /* CONFIG_GPIO_WAKEUP */
 
@@ -264,45 +286,53 @@
 #endif
 
 #ifdef CONFIG_TX_EARLY_MODE
-#define RTL8723B_EARLY_MODE_PKT_NUM_10	0
+#define RTL8723C_EARLY_MODE_PKT_NUM_10	0
 #endif
 
 
+#ifdef CONFIG_ANTENNA_DIVERSITY
+	#define CONFIG_HW_ANTENNA_DIVERSITY
+#endif
+
 
 /*
- * Debug Related Config
+ * Debug Related Configure
  */
-#ifdef CONFIG_RTW_DEBUG
-#define DBG	1	/* for ODM & BTCOEX debug */
-#else /* !CONFIG_RTW_DEBUG */
-#define DBG	0	/* for ODM & BTCOEX debug */
-#endif /* CONFIG_RTW_DEBUG */
+#define CONFIG_DEBUG /* DBG_871X, etc... */
+#ifdef CONFIG_DEBUG
+	#define DBG	1	/* for ODM & BTCOEX debug */
+	#define DBG_PHYDM_MORE 0
+#else /* !CONFIG_DEBUG */
+	#define DBG	0	/* for ODM & BTCOEX debug */
+	#define DBG_PHYDM_MORE 0
+#endif /* CONFIG_DEBUG */
 
-/* #define DBG_CONFIG_ERROR_DETECT */
-/* #define DBG_CONFIG_ERROR_DETECT_INT */
-/* #define DBG_CONFIG_ERROR_RESET */
+/* #define CONFIG_DIS_UPHY */
 
-/* #define DBG_IO */
-/* #define DBG_DELAY_OS */
-/* #define DBG_MEM_ALLOC */
-/* #define DBG_IOCTL */
+/*
+#define DBG_CONFIG_ERROR_DETECT
+#define DBG_CONFIG_ERROR_DETECT_INT
+#define DBG_CONFIG_ERROR_RESET
 
-/* #define DBG_TX */
-/* #define DBG_XMIT_BUF */
-/* #define DBG_XMIT_BUF_EXT */
-/* #define DBG_TX_DROP_FRAME */
+#define DBG_IO
+#define DBG_DELAY_OS
+#define DBG_MEM_ALLOC
+#define DBG_IOCTL
 
-/* #define DBG_RX_DROP_FRAME */
-/* #define DBG_RX_SEQ */
-/* #define DBG_RX_SIGNAL_DISPLAY_PROCESSING */
-/* #define DBG_RX_SIGNAL_DISPLAY_SSID_MONITORED "rtw-ap" */
+#define DBG_TX
+#define DBG_XMIT_BUF
+#define DBG_XMIT_BUF_EXT
+#define DBG_TX_DROP_FRAME
 
+#define DBG_RX_DROP_FRAME
+#define DBG_RX_SEQ
+#define DBG_RX_SIGNAL_DISPLAY_PROCESSING
+#define DBG_RX_SIGNAL_DISPLAY_SSID_MONITORED "rtw-ap"
 
-/* #define DBG_SHOW_MCUFWDL_BEFORE_51_ENABLE */
-/* #define DBG_ROAMING_TEST */
+#define DBG_SHOW_MCUFWDL_BEFORE_51_ENABLE
+#define DBG_ROAMING_TEST
 
-/* #define DBG_HAL_INIT_PROFILING */
+#define DBG_HAL_INIT_PROFILING
 
-/*#define DBG_MEMORY_LEAK*/
-#define	DBG_RX_DFRAME_RAW_DATA
-/*#define CONFIG_RTW_80211R*/
+#define DBG_MEMORY_LEAK	1
+*/
