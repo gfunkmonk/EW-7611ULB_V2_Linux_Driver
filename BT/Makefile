@@ -1,16 +1,3 @@
-GREEN := [1;32m
-RED := [1;31m
-BLUE := [1;34m
-YELLOW := [1;33m
-CYAN := [1;36m
-PURPLE := [1;35m
-DKPURPLE := [0;35m
-BROWN := [0;33m
-TEAL := [2;36m
-BWHITE := [1;37m
-RESET := [0m
-NC := [0m
-
 SRC_DIR := $(shell pwd)
 MDL_DIR := /lib/modules/$(shell uname -r)
 DRV_DIR := $(MDL_DIR)/kernel/drivers/bluetooth
@@ -23,6 +10,19 @@ $(BTMOD)-y := rtk_coex.o rtk_misc.o rtk_bt.o
 
 # Compiler flags
 ccflags-y += -Wno-missing-prototypes -Wno-missing-declarations -Wno-attribute-warning
+
+GREEN := [1;32m
+RED := [1;31m
+BLUE := [1;34m
+YELLOW := [1;33m
+CYAN := [1;36m
+PURPLE := [1;35m
+DKPURPLE := [0;35m
+BROWN := [0;33m
+TEAL := [2;36m
+BWHITE := [1;37m
+RESET := [0m
+NC := [0m
 
 ##############################################################################
 
