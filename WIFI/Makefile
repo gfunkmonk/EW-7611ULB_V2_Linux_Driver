@@ -13,7 +13,7 @@ BWHITE := \033[1;37m
 RESET := \033[0m
 
 # Install location of module
-MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
+MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/
 
 # Filename of finished module
 MODULE_NAME := 8723du
