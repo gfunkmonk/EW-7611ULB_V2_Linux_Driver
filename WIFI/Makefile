@@ -649,6 +649,7 @@ install:
 		echo "$(RED)✓ Modules were successfully built!$(NC)"; \
 	fi
 	@echo "$(PURPLE)Installing $(MODULE_NAME) module...$(NC)"
+	@mkdir -p $(MODDESTDIR)
 	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
 	/sbin/depmod -a ${KVER}
 
