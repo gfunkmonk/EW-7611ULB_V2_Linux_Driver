@@ -583,5 +583,11 @@ extern struct net_device *rtw_alloc_etherdev(int sizeof_priv);
 
 #define STRUCT_PACKED __attribute__ ((packed))
 
+/* Helper for setting MAC address compatible with different kernel versions */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0))
+#define rtw_set_mac_addr(ndev, addr) eth_hw_addr_set(ndev, addr)
+#else
+#define rtw_set_mac_addr(ndev, addr) _rtw_memcpy((ndev)->dev_addr, addr, ETH_ALEN)
+#endif
 
 #endif /* __OSDEP_LINUX_SERVICE_H_ */
