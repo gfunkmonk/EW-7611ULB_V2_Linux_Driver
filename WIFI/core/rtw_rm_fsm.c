@@ -122,7 +122,6 @@ int rtw_init_rm(_adapter *padapter)
 		padapter, rm_timer_callback, padapter);
 	_set_timer(&prmpriv->rm_timer, CLOCK_UNIT);
 
-	prmpriv->meas_token = 1;
 	return _SUCCESS;
 }
 
@@ -388,7 +387,7 @@ u8 rtw_rm_post_envent_cmd(_adapter *padapter, u32 rmid, u8 evid)
 	pev->rmid = rmid;
 	pev->evid = evid;
 
-	init_h2fwcmd_w_parm_no_rsp(pcmd, pev, CMD_RM_POST_EVENT);
+	init_h2fwcmd_w_parm_no_rsp(pcmd, pev, GEN_CMD_CODE(_RM_POST_EVENT));
 	res = rtw_enqueue_cmd(pcmdpriv, pcmd);
 exit:
 	return res;
@@ -669,9 +668,8 @@ static int rm_state_do_meas(struct rm_obj *prm, enum RM_EV_ID evid)
 			switch (prm->q.m_type) {
 			case bcn_req:
 				val8 = 1; /* Enable free run counter */
-				prm->free_run_counter_valid = rtw_hal_set_hwreg(
-					padapter, HW_VAR_FREECNT, &val8);
-
+				rtw_hal_set_hwreg(padapter,
+					HW_VAR_FREECNT, &val8);
 				rm_sitesurvey(prm);
 				break;
 			case ch_load_req:
