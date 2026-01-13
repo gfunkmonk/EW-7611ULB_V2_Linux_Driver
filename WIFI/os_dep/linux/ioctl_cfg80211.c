@@ -4659,7 +4659,8 @@ static int cfg80211_rtw_get_txpower(struct wiphy *wiphy,
 		RTW_INFO(FUNC_WIPHY_FMT" total max: %d mbm\n", FUNC_WIPHY_ARG(wiphy), mbm);
 	}
 
-	*dbm = mbm / MBM_PDBM;
+	if (dbm)
+		*dbm = mbm / MBM_PDBM;
 
 	return 0;
 }
