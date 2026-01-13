@@ -11,7 +11,7 @@ CROSS_COMPILE :=
 
 ##################### Optimization Flags ##########################
 ccflags-y += $(USER_EXTRA_CFLAGS)
-ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables -fomit-frame-pointer
+ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables
 ldflags-y += --strip-all -O3
 CONFIG_STACK_VALIDATION := n
 OBJECT_FILES_NON_STANDARD := y
