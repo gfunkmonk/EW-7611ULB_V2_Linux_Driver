@@ -386,7 +386,9 @@ static void _rtw_regd_init_wiphy(struct rtw_regulatory *reg, struct wiphy *wiphy
 #endif
 
 	regd = _rtw_regdomain_select(reg);
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 11, 0))
 	wiphy_apply_custom_regulatory(wiphy, regd);
+#endif
 
 	rtw_regd_apply_flags(wiphy);
 }
@@ -411,5 +413,15 @@ int rtw_regd_init(struct wiphy *wiphy)
 	_rtw_regd_init_wiphy(NULL, wiphy);
 
 	return 0;
+}
+
+void rtw_regd_apply_regulatory(struct wiphy *wiphy)
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0))
+	const struct ieee80211_regdomain *regd;
+
+	regd = _rtw_regdomain_select(NULL);
+	wiphy_apply_custom_regulatory(wiphy, regd);
+#endif
 }
 #endif /* CONFIG_IOCTL_CFG80211 */
