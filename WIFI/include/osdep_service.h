@@ -169,7 +169,11 @@ int dbg_rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb, const enum mstat_f flag
 #ifdef CONFIG_RTW_NAPI
 int dbg_rtw_netif_receive_skb(_nic_hdl ndev, struct sk_buff *skb, const enum mstat_f flags, const char *func, int line);
 #ifdef CONFIG_RTW_GRO
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0))
+void dbg_rtw_napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb, const enum mstat_f flags, const char *func, int line);
+#else
 gro_result_t dbg_rtw_napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb, const enum mstat_f flags, const char *func, int line);
+#endif
 #endif
 #endif /* CONFIG_RTW_NAPI */
 void dbg_rtw_skb_queue_purge(struct sk_buff_head *list, enum mstat_f flags, const char *func, int line);
@@ -242,7 +246,11 @@ int _rtw_netif_rx(_nic_hdl ndev, struct sk_buff *skb);
 #ifdef CONFIG_RTW_NAPI
 int _rtw_netif_receive_skb(_nic_hdl ndev, struct sk_buff *skb);
 #ifdef CONFIG_RTW_GRO
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0))
+void _rtw_napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb);
+#else
 gro_result_t _rtw_napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb);
+#endif
 #endif
 #endif /* CONFIG_RTW_NAPI */
 void _rtw_skb_queue_purge(struct sk_buff_head *list);

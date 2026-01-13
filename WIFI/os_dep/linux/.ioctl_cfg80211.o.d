@@ -1,5 +1,5 @@
-osdep_service.o: \
- /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/os_dep/osdep_service.c \
+ioctl_cfg80211.o: \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/os_dep/linux/ioctl_cfg80211.c \
  include/linux/compiler-version.h include/linux/kconfig.h \
  include/generated/autoconf.h include/linux/compiler_types.h \
  include/linux/compiler_attributes.h include/linux/compiler-gcc.h \
@@ -482,4 +482,77 @@ osdep_service.o: \
  /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/usb_vendor_req.h \
  /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/usb_ops.h \
  /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/usb_ops_linux.h \
- /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/usb_hal.h
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/usb_hal.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/hal_data.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_precomp.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_types.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/halrf_features.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_pre_define.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_features.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_features_ce.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_dig.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_soml.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_rainfo.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_cfotracking.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_adaptivity.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_dfs.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_ccx.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/txbf/phydm_hal_txbf_api.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_psd.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_cck_pd.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_rssi_monitor.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_auto_dbg.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_math_lib.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_noisemonitor.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_api.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_beamforming.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/txbf/halcomtxbf.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/txbf/haltxbfjaguar.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/txbf/haltxbf8192e.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/txbf/haltxbf8814a.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/txbf/haltxbf8822b.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/txbf/haltxbfinterface.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_regtable.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/halrf_iqk.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/halrf_dpk.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/halrf.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/hal/phydm/halrf/halrf_psd.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/halrf_powertracking.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/halphyrf_ce.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/hal/phydm/halrf/halrf_kfree.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/hal/phydm/halrf/halrf_powertracking_ce.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_hwconfig.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_phystatus.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_debug.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_regdefine11ac.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_regdefine11n.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_interface.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/phydm_reg.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/halrf_debug.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/halhwimg8723b_mac.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/halhwimg8723b_rf.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/halhwimg8723b_bb.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/phydm_regconfig8723b.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/phydm_rtl8723b.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/hal8723breg.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/version_rtl8723b.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/halrf/rtl8723b/halrf_8723b_ce.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/../hal/phydm/rtl8723b/halhwimg8723b_mp.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_hal.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/hal_data.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_spec.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_rf.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_dm.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_recv.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_xmit.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_cmd.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtl8723b_led.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/Hal8723BPwrSeq.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/HalPwrSeqCmd.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/Hal8723BPhyReg.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/Hal8723BPhyCfg.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/hal_com.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/hal_btcoex.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/hal_btcoex_wifionly.h \
+ /home/runner/work/EW-7611ULB_V2_Linux_Driver/EW-7611ULB_V2_Linux_Driver/WIFI/include/rtw_wifi_regd.h
