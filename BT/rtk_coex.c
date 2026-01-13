@@ -775,7 +775,7 @@ static void update_profile_connection(rtk_conn_prof * phci_conn,
                 if (0 == phci_conn->profile_refcount[profile_index]) {
                         need_update = TRUE;
                         phci_conn->profile_bitmap &= ~(BIT(profile_index));
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
 			phci_conn->profile_status &= ~(BIT(profile_index));
 			rtk_check_del_timer(profile_index, phci_conn);
 #endif
@@ -2038,11 +2038,7 @@ static u8 disconn_profile(struct rtl_hci_conn *conn, u8 pfe_index)
 
                 /* if profile does not exist, status is meaningless */
                 btrtl_coex.profile_status &= ~(BIT(pfe_index));
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
-                rtk_check_timer_delete_sync(pfe_index, conn);
-#else
                 rtk_check_del_timer(pfe_index, conn);
-#endif
         }
 
         if (conn->profile_refcount[pfe_index])
@@ -2752,7 +2748,7 @@ static void rtk_handle_bt_info_control(uint8_t *p)
 
         /* Close bt info polling timer */
         if (!ctl->polling_enable && btrtl_coex.polling_enable)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
                 timer_delete_sync(&btrtl_coex.polling_timer);
 #else
                 del_timer(&btrtl_coex.polling_timer);
@@ -2895,7 +2891,7 @@ static void rtk_handle_event_from_wifi(uint8_t * msg)
                 rtkbt_coexmsg_send(leave_ack, sizeof(leave_ack));
                 if (btrtl_coex.polling_enable) {
                         btrtl_coex.polling_enable = 0;
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
                         timer_delete_sync(&btrtl_coex.polling_timer);
 #else
                         del_timer(&btrtl_coex.polling_timer);
@@ -3053,7 +3049,7 @@ void rtk_btcoex_close(void)
         /* Delete all timers */
         if (btrtl_coex.polling_enable) {
                 btrtl_coex.polling_enable = 0;
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
                 timer_delete_sync(&(btrtl_coex.polling_timer));
 #else
                 del_timer_sync(&(btrtl_coex.polling_timer));
