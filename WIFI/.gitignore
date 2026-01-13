@@ -13,4 +13,3 @@ Module.markers
 # Backup files
 *~
 *.bak
-*.ur-safe
