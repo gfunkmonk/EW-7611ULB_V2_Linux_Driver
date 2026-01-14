@@ -2,32 +2,32 @@ INSTALL_FW_PATH = $(INSTALL_MOD_PATH)/lib/firmware
 FW_DIR	:= $(INSTALL_FW_PATH)/rtl_bt
 MODDESTDIR := kernel/drivers/net/wireless/
 
+MODULE_NAME = 8723bu
+
 DEPMOD  = /sbin/depmod
 
 ccflags-y += $(USER_EXTRA_CFLAGS)
-ccflags-y += -O1
-#EXTRA_CFLAGS += -O3
-#EXTRA_CFLAGS += -Wall
-#EXTRA_CFLAGS += -Wextra
-#EXTRA_CFLAGS += -Werror
-#EXTRA_CFLAGS += -pedantic
-#EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
+ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables
+ldflags-y += --strip-all -O3
+#ccflags-y += -O3
+#ccflags-y += -Wall
+#ccflags-y += -Wextra
+#ccflags-y += -Werror
+#ccflags-y += -pedantic
+#ccflags-y += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
-ccflags-y += -Wno-unused-variable
-ccflags-y += -Wno-unused-value
-ccflags-y += -Wno-unused-label
-ccflags-y += -Wno-unused-parameter
-ccflags-y += -Wno-unused-function
-ccflags-y += -Wno-unused
-ccflags-y += -DCONFIG_CONCURRENT_MODE
+ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label
+ccflags-y += -Wno-unused-parameter -Wno-unused-function -Wno-unused
+ccflags-y += -Wno-missing-prototypes -Wno-missing-declarations
+ccflags-y += -Wno-uninitialized
+ccflags-y += -Wno-empty-body
+ccflags-y += -Wno-restrict
 
 ccflags-y += -D__CHECK_ENDIAN__
 
-#ccflags-y += -Wno-uninitialized
+src := $(PWD)
 
-ccflags-y += -g -I$(src)/include
-
-#EXTRA_LDFLAGS += --strip-debug
+ccflags-y += -g -I$(src)/include -I$(src)/platform -I$(src)/hal
 
 CONFIG_AUTOCFG_CP = n
 
@@ -36,6 +36,7 @@ CONFIG_RTL8723B = y
 ########################## Features ###########################
 CONFIG_POWER_SAVING = y
 CONFIG_USB_AUTOSUSPEND = n
+CONFIG_CONCURRENT_MODE = n
 CONFIG_HW_PWRP_DETECTION = n
 CONFIG_WIFI_TEST = n
 CONFIG_BT_COEXIST = y
@@ -66,92 +67,77 @@ CONFIG_DRVEXT_MODULE = n
 export TopDIR ?= $(shell pwd)
 
 ########### COMMON  #################################
-HCI_NAME = usb
-
-_OS_INTFS_FILES :=	os_dep/osdep_service.o \
-			os_dep/os_intfs.o \
-			os_dep/usb_intf.o \
-			os_dep/usb_ops_linux.o \
-			os_dep/ioctl_linux.o \
-			os_dep/xmit_linux.o \
-			os_dep/mlme_linux.o \
-			os_dep/recv_linux.o \
-			os_dep/ioctl_cfg80211.o \
-			os_dep/wifi_regd.o \
-			os_dep/rtw_android.o \
-			os_dep/rtw_proc.o
-
-_HAL_INTFS_FILES :=	hal/hal_intf.o \
-			hal/hal_com.o \
-			hal/hal_com_phycfg.o \
-			hal/hal_phy.o \
-			hal/hal_btcoex.o \
-			hal/hal_usb.o \
-			hal/hal_usb_led.o
-			
-_OUTSRC_FILES := hal/odm_debug.o	\
-		hal/odm_AntDiv.o\
-		hal/odm_interface.o\
-		hal/odm_HWConfig.o\
-		hal/odm.o\
-		hal/HalPhyRf.o\
-		hal/odm_EdcaTurboCheck.o\
-		hal/odm_DIG.o\
-		hal/odm_PathDiv.o\
-		hal/odm_RaInfo.o\
-		hal/odm_DynamicBBPowerSaving.o\
-		hal/odm_DynamicTxPower.o\
-		hal/odm_CfoTracking.o\
-		hal/odm_NoiseMonitor.o
-		
-ccflags-y += -I$(src)/platform
 _PLATFORM_FILES := platform/platform_ops.o
 
-ifeq ($(CONFIG_BT_COEXIST), y)
-ccflags-y += -I$(src)/hal
-_OUTSRC_FILES += hal/HalBtc8723b1Ant.o \
-		 hal/HalBtc8723b2Ant.o
-endif
 
+_OS_INTFS_FILES :=	os_dep/osdep_service.o \
+                        os_dep/os_intfs.o \
+                        os_dep/usb_intf.o \
+                        os_dep/usb_ops_linux.o \
+                        os_dep/ioctl_linux.o \
+                        os_dep/xmit_linux.o \
+                        os_dep/mlme_linux.o \
+                        os_dep/recv_linux.o \
+                        os_dep/ioctl_cfg80211.o \
+                        os_dep/wifi_regd.o \
+                        os_dep/rtw_android.o \
+                        os_dep/rtw_proc.o
 
 ########### HAL_RTL8723B #################################
 
-RTL871X = rtl8723b
-MODULE_NAME = 8723bu
+_HAL_INTFS_FILES :=	hal/hal_intf.o \
+                        hal/hal_com.o \
+                        hal/hal_com_phycfg.o \
+                        hal/hal_phy.o \
+                        hal/hal_btcoex.o \
+                        hal/hal_usb.o \
+                        hal/hal_usb_led.o \
+                        hal/HalPwrSeqCmd.o \
+                        hal/Hal8723BPwrSeq.o\
+                        hal/rtl8723b_sreset.o \
+                        hal/rtl8723b_hal_init.o \
+                        hal/rtl8723b_phycfg.o \
+                        hal/rtl8723b_rf6052.o \
+                        hal/rtl8723b_dm.o \
+                        hal/rtl8723b_rxdesc.o \
+                        hal/rtl8723b_cmd.o \
+                        hal/usb_halinit.o \
+                        hal/rtl8723bu_led.o \
+                        hal/rtl8723bu_xmit.o \
+                        hal/rtl8723bu_recv.o \
+                        hal/usb_ops.o
 
-_HAL_INTFS_FILES += hal/HalPwrSeqCmd.o \
-					hal/Hal8723BPwrSeq.o\
-					hal/$(RTL871X)_sreset.o
+_OUTSRC_FILES := hal/odm_debug.o \
+                        hal/odm_AntDiv.o \
+                        hal/odm_interface.o \
+                        hal/odm_HWConfig.o \
+                        hal/odm.o \
+                        hal/HalPhyRf.o \
+                        hal/odm_EdcaTurboCheck.o \
+                        hal/odm_DIG.o \
+                        hal/odm_PathDiv.o \
+                        hal/odm_RaInfo.o \
+                        hal/odm_DynamicBBPowerSaving.o \
+                        hal/odm_DynamicTxPower.o \
+                        hal/odm_CfoTracking.o \
+                        hal/odm_NoiseMonitor.o \
+                        hal/HalHWImg8723B_BB.o \
+                        hal/HalHWImg8723B_MAC.o \
+                        hal/HalHWImg8723B_RF.o \
+                        hal/HalHWImg8723B_FW.o \
+                        hal/odm_RegConfig8723B.o \
+                        hal/HalPhyRf_8723B.o \
+                        hal/odm_RTL8723B.o
 
-_HAL_INTFS_FILES +=	hal/$(RTL871X)_hal_init.o \
-			hal/$(RTL871X)_phycfg.o \
-			hal/$(RTL871X)_rf6052.o \
-			hal/$(RTL871X)_dm.o \
-			hal/$(RTL871X)_rxdesc.o \
-			hal/$(RTL871X)_cmd.o \
-			
+ifeq ($(CONFIG_BT_COEXIST), y)
+_OUTSRC_FILES += hal/HalBtc8723b1Ant.o \
+                        hal/HalBtc8723b2Ant.o
+endif
 
-_HAL_INTFS_FILES +=	\
-			hal/usb_halinit.o \
-			hal/rtl$(MODULE_NAME)_led.o \
-			hal/rtl$(MODULE_NAME)_xmit.o \
-			hal/rtl$(MODULE_NAME)_recv.o
+########### AUTO_CFG  ####################################
 
-_HAL_INTFS_FILES += hal/usb_ops.o
-
-_OUTSRC_FILES += hal/HalHWImg8723B_BB.o\
-			hal/HalHWImg8723B_MAC.o\
-			hal/HalHWImg8723B_RF.o\
-			hal/HalHWImg8723B_FW.o\
-			hal/odm_RegConfig8723B.o\
-			hal/HalPhyRf_8723B.o\
-			hal/odm_RTL8723B.o
-
-
-########### AUTO_CFG  #################################	
-		
 ifeq ($(CONFIG_AUTOCFG_CP), y)
-$(shell cp $(TopDIR)/autoconf_$(RTL871X)_usb_linux.h $(TopDIR)/include/autoconf.h)
+$(shell cp $(TopDIR)/autoconf_rtl8723b_usb_linux.h $(TopDIR)/include/autoconf.h)
 endif
 
 ########### END OF PATH  #################################
@@ -163,6 +149,10 @@ endif
 
 ifeq ($(CONFIG_POWER_SAVING), y)
 ccflags-y += -DCONFIG_POWER_SAVING
+endif
+
+ifeq ($(CONFIG_CONCURRENT_MODE), y)
+ccflags-y += -DCONFIG_CONCURRENT_MODE
 endif
 
 ifeq ($(CONFIG_HW_PWRP_DETECTION), y)
@@ -253,12 +243,11 @@ ifeq ($(CONFIG_GPIO_WAKEUP), y)
 ccflags-y += -DCONFIG_GPIO_WAKEUP
 endif
 
-
 ifeq ($(CONFIG_PLATFORM_I386_PC), y)
 ccflags-y += -DCONFIG_IOCTL_CFG80211
 ccflags-y += -DRTW_USE_CFG80211_STA_EVENT # only enable when kernel >= 3.2
 ccflags-y += -DCONFIG_P2P_IPS
-SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ | sed -e s/ppc/powerpc/ | sed -e s/armv.l/arm/)
+SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc/powerpc/; s/armv.l/arm/; s/aarch64/arm64/; s/riscv.*/riscv/; s/mipseb/mips/; s/loong.*64/loongarch/; s/x.6_64/x86_64/;")
 ARCH ?= $(SUBARCH)
 CROSS_COMPILE ?=
 KVER  := $(shell uname -r)
@@ -316,7 +305,7 @@ $(MODULE_NAME)-$(CONFIG_INTEL_WIDI) += core/rtw_intel_widi.o
 
 $(MODULE_NAME)-$(CONFIG_WAPI_SUPPORT) += core/rtw_wapi.o	\
 					core/rtw_wapi_sms4.o
-					
+
 $(MODULE_NAME)-y += $(_OS_INTFS_FILES)
 $(MODULE_NAME)-y += $(_HAL_INTFS_FILES)
 $(MODULE_NAME)-y += $(_OUTSRC_FILES)
