@@ -636,7 +636,7 @@ clean:
 	@cd platform && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
 	@rm -fr Module.symvers Module.markers modules.order
 	@rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
-	@rm -fr .tmp_versions
+	@rm -fr .tmp_versions .module-common.o
 	@echo "$(DKPURPLE)✓ All clean!$(NC)"
 
 help:
