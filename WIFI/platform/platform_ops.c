@@ -12,6 +12,8 @@
  * more details.
  *
  *****************************************************************************/
+#include <drv_types.h>
+
 #ifndef CONFIG_PLATFORM_OPS
 /*
  * Return:

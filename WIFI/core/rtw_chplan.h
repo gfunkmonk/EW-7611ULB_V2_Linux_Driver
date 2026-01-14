@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2018 Realtek Corporation.
+ * Copyright(c) 2007 - 2022 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -15,7 +15,12 @@
 #ifndef __RTW_CHPLAN_H__
 #define __RTW_CHPLAN_H__
 
-#define RTW_CHPLAN_UNSPECIFIED 0xFF
+#define RTW_CHPLAN_IOCTL_NULL		0xFFFE /* special value by ioctl: null(empty) chplan */
+#define RTW_CHPLAN_IOCTL_UNSPECIFIED	0xFFFF /* special value by ioctl: no change (keep original) */
+
+#define RTW_CHPLAN_NULL		0x0A
+#define RTW_CHPLAN_WORLDWIDE	0x7F
+#define RTW_CHPLAN_UNSPECIFIED 	0xFF
 
 u8 rtw_chplan_get_default_regd(u8 id);
 bool rtw_chplan_is_empty(u8 id);
@@ -78,7 +83,9 @@ enum rtw_edcca_mode {
 	RTW_EDCCA_NORMAL	= 0, /* normal */
 	RTW_EDCCA_ADAPT		= 1, /* adaptivity */
 	RTW_EDCCA_CS		= 2, /* carrier sense */
+	RTW_EDCCA_CBP		= 3, /* contention based protocol */
 	RTW_EDCCA_MODE_NUM,
+	RTW_EDCCA_DEF		= RTW_EDCCA_MODE_NUM, /* default (ref to domain code), used at country chplan map's override field */
 	RTW_EDCCA_MODE_AUTO	= 0xFF, /* folllow channel plan */
 };
 
@@ -90,6 +97,7 @@ enum rtw_dfs_regd {
 	RTW_DFS_REGD_FCC	= 1,
 	RTW_DFS_REGD_MKK	= 2,
 	RTW_DFS_REGD_ETSI	= 3,
+	RTW_DFS_REGD_KCC	= 4,
 	RTW_DFS_REGD_NUM,
 	RTW_DFS_REGD_AUTO	= 0xFF, /* follow channel plan */
 };
@@ -111,6 +119,7 @@ typedef enum _REGULATION_TXPWR_LMT {
 	TXPWR_LMT_MEXICO = 10,
 	TXPWR_LMT_CN = 11,
 	TXPWR_LMT_QATAR = 12,
+	TXPWR_LMT_UK = 13,
 	TXPWR_LMT_WW, /* smallest of all available limit, keep last */
 
 	TXPWR_LMT_NUM,
