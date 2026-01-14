@@ -3204,8 +3204,6 @@ int storeAdaptorInfoFile(char *path, u8 *efuse_data)
 int retriveAdaptorInfoFile(char *path, u8 *efuse_data)
 {
 	int ret = _SUCCESS;
-	mm_segment_t oldfs;
-	struct file *fp;
 
 	if (path && efuse_data) {
 
