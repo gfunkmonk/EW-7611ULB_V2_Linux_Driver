@@ -57,6 +57,8 @@ enum {
 	typedef	__kernel_ssize_t	SSIZE_T;
 	#define FIELD_OFFSET(s, field)	((SSIZE_T)&((s *)(0))->field)
 
+
+#define NDIS_OID uint
 #endif /*PLATFORM_LINUX*/
 
 

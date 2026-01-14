@@ -120,24 +120,6 @@ u8 mgn_rates_vht3ss[10] = {MGN_VHT3SS_MCS0, MGN_VHT3SS_MCS1, MGN_VHT3SS_MCS2, MG
 u8 mgn_rates_vht4ss[10] = {MGN_VHT4SS_MCS0, MGN_VHT4SS_MCS1, MGN_VHT4SS_MCS2, MGN_VHT4SS_MCS3, MGN_VHT4SS_MCS4
 	, MGN_VHT4SS_MCS5, MGN_VHT4SS_MCS6, MGN_VHT4SS_MCS7, MGN_VHT4SS_MCS8, MGN_VHT4SS_MCS9
 			  };
-u8 mgn_rates_he1ss[12] = {MGN_HE1SS_MCS0, MGN_HE1SS_MCS1, MGN_HE1SS_MCS2, MGN_HE1SS_MCS3, MGN_HE1SS_MCS4
-	, MGN_HE1SS_MCS5, MGN_HE1SS_MCS6, MGN_HE1SS_MCS7, MGN_HE1SS_MCS8, MGN_HE1SS_MCS9, MGN_HE1SS_MCS10, MGN_HE1SS_MCS11
-			  };
-u8 mgn_rates_he2ss[12] = {MGN_HE2SS_MCS0, MGN_HE2SS_MCS1, MGN_HE2SS_MCS2, MGN_HE2SS_MCS3, MGN_HE2SS_MCS4
-	, MGN_HE2SS_MCS5, MGN_HE2SS_MCS6, MGN_HE2SS_MCS7, MGN_HE2SS_MCS8, MGN_HE2SS_MCS9, MGN_HE2SS_MCS10, MGN_HE2SS_MCS11
-			  };
-u8 mgn_rates_he3ss[12] = {MGN_HE3SS_MCS0, MGN_HE3SS_MCS1, MGN_HE3SS_MCS2, MGN_HE3SS_MCS3, MGN_HE3SS_MCS4
-	, MGN_HE3SS_MCS5, MGN_HE3SS_MCS6, MGN_HE3SS_MCS7, MGN_HE3SS_MCS8, MGN_HE3SS_MCS9, MGN_HE3SS_MCS10, MGN_HE3SS_MCS11
-			  };
-u8 mgn_rates_he4ss[12] = {MGN_HE4SS_MCS0, MGN_HE4SS_MCS1, MGN_HE4SS_MCS2, MGN_HE4SS_MCS3, MGN_HE4SS_MCS4
-	, MGN_HE4SS_MCS5, MGN_HE4SS_MCS6, MGN_HE4SS_MCS7, MGN_HE4SS_MCS8, MGN_HE4SS_MCS9, MGN_HE4SS_MCS10, MGN_HE4SS_MCS11
-			  };
-u8 mgn_rates_dcm1ss[4] = {MGN_HE1SS_MCS0, MGN_HE1SS_MCS1, MGN_HE1SS_MCS3, MGN_HE1SS_MCS4};
-u8 mgn_rates_dcm2ss[4] = {MGN_HE2SS_MCS0, MGN_HE2SS_MCS1, MGN_HE2SS_MCS3, MGN_HE2SS_MCS4};
-u8 mgn_rates_dcm3ss[4] = {MGN_HE3SS_MCS0, MGN_HE3SS_MCS1, MGN_HE3SS_MCS3, MGN_HE3SS_MCS4};
-u8 mgn_rates_dcm4ss[4] = {MGN_HE4SS_MCS0, MGN_HE4SS_MCS1, MGN_HE4SS_MCS3, MGN_HE4SS_MCS4};
-u8 mgn_rates_offset[5] = {MGN_1M, MGN_6M, MGN_MCS0, MGN_VHT1SS_MCS0, MGN_HE1SS_MCS0};
-
 RATE_SECTION mgn_rate_to_rs(enum MGN_RATE rate)
 {
 	RATE_SECTION rs = RATE_SECTION_NUM;
@@ -205,14 +187,6 @@ struct rate_section_ent rates_by_sections[RATE_SECTION_NUM] = {
 	{RF_2TX, 10, mgn_rates_vht2ss},
 	{RF_3TX, 10, mgn_rates_vht3ss},
 	{RF_4TX, 10, mgn_rates_vht4ss},
-	{RF_1TX, 12, mgn_rates_he1ss},
-	{RF_2TX, 12, mgn_rates_he2ss},
-	{RF_3TX, 12, mgn_rates_he3ss},
-	{RF_4TX, 12, mgn_rates_he4ss},
-	{RF_1TX, 4, mgn_rates_dcm1ss},
-	{RF_2TX, 4, mgn_rates_dcm2ss},
-	{RF_3TX, 4, mgn_rates_dcm3ss},
-	{RF_4TX, 4, mgn_rates_dcm4ss},
 };
 
 int rtw_get_bit_value_from_ieee_value(u8 val)
@@ -359,23 +333,6 @@ inline u8 hal_ch_offset_to_secondary_ch_offset(u8 ch_offset)
 inline u8 *rtw_set_ie_secondary_ch_offset(u8 *buf, u32 *buf_len, u8 secondary_ch_offset)
 {
 	return rtw_set_ie(buf, WLAN_EID_SECONDARY_CHANNEL_OFFSET,  1, &secondary_ch_offset, buf_len);
-}
-
-inline u8 *rtw_set_ie_wide_bw_ch_switch(u8 *buf, u32 *buf_len,
-	u8 ch_width, u8 seg_0, u8 seg_1)
-{
-	u8 csw_data[3] = {0};
-
-	/*
-	* [0] : New Channel Width
-	* [1] : New Channel Center Frequency Segment 0
-	* [2] : New Channel Center Frequency Segment 1
-	*/
-	csw_data[0] = ch_width;
-	csw_data[1] = seg_0;
-	csw_data[2] = seg_1;
-
-	return rtw_set_ie(buf, WLAN_EID_VHT_WIDE_BW_CHSWITCH, 3, csw_data, buf_len);
 }
 
 inline u8 *rtw_set_ie_mesh_ch_switch_parm(u8 *buf, u32 *buf_len, u8 ttl,
