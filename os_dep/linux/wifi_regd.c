@@ -365,10 +365,8 @@ static int rtw_reg_notifier_return(struct wiphy *wiphy, struct regulatory_reques
 }
 #endif
 
-static void _rtw_regd_init_wiphy(struct rtw_regulatory *reg, struct wiphy *wiphy)
+static void _rtw_regd_init_wiphy_preinit(struct rtw_regulatory *reg, struct wiphy *wiphy)
 {
-	const struct ieee80211_regdomain *regd;
-
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 9, 0))
 	wiphy->reg_notifier = rtw_reg_notifier_return;
 #else
@@ -384,8 +382,13 @@ static void _rtw_regd_init_wiphy(struct rtw_regulatory *reg, struct wiphy *wiphy
 	wiphy->regulatory_flags &= ~REGULATORY_STRICT_REG;
 	wiphy->regulatory_flags &= ~REGULATORY_DISABLE_BEACON_HINTS;
 #endif
+}
 
-	regd = _rtw_regdomain_select(reg);
+void rtw_regd_apply(struct wiphy *wiphy)
+{
+	const struct ieee80211_regdomain *regd;
+
+	regd = _rtw_regdomain_select(NULL);
 	wiphy_apply_custom_regulatory(wiphy, regd);
 
 	rtw_regd_apply_flags(wiphy);
@@ -408,7 +411,7 @@ int rtw_regd_init(struct wiphy *wiphy)
 		 __func__, rtw_regd->alpha2[0], rtw_regd->alpha2[1]);
 #endif
 
-	_rtw_regd_init_wiphy(NULL, wiphy);
+	_rtw_regd_init_wiphy_preinit(NULL, wiphy);
 
 	return 0;
 }

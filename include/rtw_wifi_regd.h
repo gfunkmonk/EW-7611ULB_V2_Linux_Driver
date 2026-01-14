@@ -29,6 +29,7 @@ enum country_code_type_t {
 };
 
 void rtw_regd_apply_flags(struct wiphy *wiphy);
+void rtw_regd_apply(struct wiphy *wiphy);
 int rtw_regd_init(struct wiphy *wiphy);
 
 #endif /* __RTW_WIFI_REGD_H__ */
