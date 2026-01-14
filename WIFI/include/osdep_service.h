@@ -16,22 +16,23 @@
 #define __OSDEP_SERVICE_H_
 
 
-#define _FAIL					0
-#define _SUCCESS				1
-#define RTW_RX_HANDLED			2
-#define RTW_RFRAME_UNAVAIL		3
+#define _FAIL			0
+#define _SUCCESS		1
+#define RTW_RX_HANDLED		2
+#define RTW_RFRAME_UNAVAIL	3
 #define RTW_RFRAME_PKT_UNAVAIL	4
-#define RTW_RBUF_UNAVAIL		5
+#define RTW_RBUF_UNAVAIL	5
 #define RTW_RBUF_PKT_UNAVAIL	6
 #define RTW_SDIO_READ_PORT_FAIL	7
-#define RTW_ALREADY				8
-#define RTW_RA_RESOLVING		9
-#define RTW_BMC_NO_NEED			10
-#define RTW_XBUF_UNAVAIL		11
-#define RTW_TX_BALANCE			12
+#define RTW_ALREADY		8
+#define RTW_RA_RESOLVING	9
+#define RTW_BMC_NO_NEED		10
+#define RTW_XBUF_UNAVAIL	11
+#define RTW_TX_BALANCE		12
 #define RTW_TX_WAIT_MORE_FRAME	13
-#define RTW_QUEUE_MGMT 14
-
+#define RTW_QUEUE_MGMT 		14
+#define RTW_NOT_SUPPORT		15
+#define RTW_ABORT_LINKING	17
 /* #define RTW_STATUS_TIMEDOUT -110 */
 
 #undef _TRUE

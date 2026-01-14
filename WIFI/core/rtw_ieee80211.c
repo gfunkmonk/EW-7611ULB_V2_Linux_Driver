@@ -31,6 +31,10 @@ u8 WPA_CIPHER_SUITE_TKIP[] = { 0x00, 0x50, 0xf2, 2 };
 u8 WPA_CIPHER_SUITE_WRAP[] = { 0x00, 0x50, 0xf2, 3 };
 u8 WPA_CIPHER_SUITE_CCMP[] = { 0x00, 0x50, 0xf2, 4 };
 u8 WPA_CIPHER_SUITE_WEP104[] = { 0x00, 0x50, 0xf2, 5 };
+u8 WPA_CIPHER_SUITE_AES_CMAC[] = { 0x00, 0x50, 0xf2, 6 };
+u8 WPA_CIPHER_SUITE_GCMP[] = { 0x00, 0x50, 0xf2, 8 };
+u8 WPA_CIPHER_SUITE_GCMP_256[] = { 0x00, 0x50, 0xf2, 9 };
+u8 WPA_CIPHER_SUITE_CCMP_256[] = { 0x00, 0x50, 0xf2, 10 };
 
 u16 RSN_VERSION_BSD = 1;
 u8 RSN_CIPHER_SUITE_NONE[] = { 0x00, 0x0f, 0xac, 0 };
@@ -116,7 +120,6 @@ u8 mgn_rates_vht3ss[10] = {MGN_VHT3SS_MCS0, MGN_VHT3SS_MCS1, MGN_VHT3SS_MCS2, MG
 u8 mgn_rates_vht4ss[10] = {MGN_VHT4SS_MCS0, MGN_VHT4SS_MCS1, MGN_VHT4SS_MCS2, MGN_VHT4SS_MCS3, MGN_VHT4SS_MCS4
 	, MGN_VHT4SS_MCS5, MGN_VHT4SS_MCS6, MGN_VHT4SS_MCS7, MGN_VHT4SS_MCS8, MGN_VHT4SS_MCS9
 			  };
-
 RATE_SECTION mgn_rate_to_rs(enum MGN_RATE rate)
 {
 	RATE_SECTION rs = RATE_SECTION_NUM;
@@ -156,6 +159,14 @@ static const char *const _rate_section_str[] = {
 	"VHT_2SS",
 	"VHT_3SS",
 	"VHT_4SS",
+	"HE_1SS",
+	"HE_2SS",
+	"HE_3SS",
+	"HE_4SS",
+	"DCM_1SS",
+	"DCM_2SS",
+	"DCM_3SS",
+	"DCM_4SS",
 	"RATE_SECTION_UNKNOWN",
 };
 
@@ -413,6 +424,189 @@ u8 *rtw_get_ie_ex(const u8 *in_ie, uint in_len, u8 eid, const u8 *oui, u8 oui_le
 	return (u8 *)target_ie;
 }
 
+/**
+ * rtw_ies_update_ie - Find matching IEs and update it
+ *
+ * @ies: address of IEs to search
+ * @ies_len: address of length of ies, will update to new length
+ * @offset: the offset to start scarch
+ * @eid: element ID to match
+ * @content: new content will update to matching element
+ * @content_len: length of new content
+ * Returns: _SUCCESS: ies is updated, _FAIL: not updated
+ */
+u8 rtw_ies_update_ie(u8 *ies, uint *ies_len, uint ies_offset, u8 eid, const u8 *content, u8 content_len)
+{
+	u8 ret = _FAIL;
+	u8 *target_ie;
+	u32 target_ielen;
+	u8 *start, *remain_ies = NULL, *backup_ies = NULL;
+	uint search_len, remain_len = 0;
+	sint offset;
+
+	if (ies == NULL || *ies_len == 0 || *ies_len <= ies_offset)
+		goto exit;
+
+	start = ies + ies_offset;
+	search_len = *ies_len - ies_offset;
+
+	target_ie = rtw_get_ie(start, eid, &target_ielen, search_len);
+	if (target_ie && target_ielen) {
+		if (target_ielen != content_len) {
+			remain_ies = target_ie + 2 + target_ielen;
+			remain_len = search_len - (remain_ies - start);
+
+			backup_ies = rtw_malloc(remain_len);
+			if (!backup_ies)
+				goto exit;
+
+			_rtw_memcpy(backup_ies, remain_ies, remain_len);
+		}
+
+		_rtw_memcpy(target_ie + 2, content, content_len);
+		*(target_ie + 1) = content_len;
+		ret = _SUCCESS;
+
+		if (target_ielen != content_len) {
+			remain_ies = target_ie + 2 + content_len;
+			_rtw_memcpy(remain_ies, backup_ies, remain_len);
+			rtw_mfree(backup_ies, remain_len);
+			offset = content_len - target_ielen;
+			*ies_len = *ies_len + offset;
+		}
+	}
+exit:
+	return ret;
+}
+
+u8 rtw_ies_update_ie_ex(u8 *ies,
+		uint *ies_len,
+		uint ies_offset,
+		u8 eid_ex,
+		const u8 *content,
+		u8 content_len)
+{
+	u8 ret = _FAIL;
+	u8 *target_ie;
+	u32 target_ielen;
+	u8 *start, *remain_ies = NULL, *backup_ies = NULL;
+	uint search_len, remain_len = 0;
+	sint offset;
+
+	if (ies == NULL || *ies_len == 0 || *ies_len <= ies_offset)
+		goto exit;
+
+	start = ies + ies_offset;
+	search_len = *ies_len - ies_offset;
+
+	/* | Element ID extension | Ext. tag lendth | Ext. tag number | ... | */
+	/* | target_ie | (target_ielen-2) | eid_ex | ... | */
+	target_ie = rtw_get_ie_ex(start, search_len, WLAN_EID_EXTENSION,
+							&eid_ex, 1, NULL, &target_ielen);
+	if (target_ie && target_ielen) {
+		if (target_ielen != content_len) {
+			remain_ies = target_ie + target_ielen;
+			remain_len = search_len - (remain_ies - start);
+
+			backup_ies = rtw_malloc(remain_len);
+			if (!backup_ies)
+				goto exit;
+
+			_rtw_memcpy(backup_ies, remain_ies, remain_len);
+		}
+
+		_rtw_memcpy(target_ie, content, content_len);
+		*(target_ie + 1) = content_len - 2;
+		ret = _SUCCESS;
+
+		if (target_ielen != content_len) {
+			remain_ies = target_ie + content_len;
+			_rtw_memcpy(remain_ies, backup_ies, remain_len);
+			rtw_mfree(backup_ies, remain_len);
+			offset = content_len - target_ielen;
+			*ies_len = *ies_len + offset;
+		}
+	}
+exit:
+	return ret;
+}
+
+/**
+ * rtw_ies_add_ie - append IE to existing IEs
+ *
+ * @ies: address of IEs to search
+ * @ies_len: address of length of ies, will update to new length
+ * @offset: the offset to start scarch
+ * @eid: element ID to add
+ * @content: content will be appended before the first element ID that is
+ * greater than the @eid or overwrite the existing same element ID.
+ * @content_len: length of content
+ * Returns: _SUCCESS: ies is appended, _FAIL: not appended
+ *
+ * Notes: this api does not consider the element ID like
+ * WLAN_EID_VENDOR_SPECIFIC(221), which contains different OUIs with the same
+ * element ID or like WLAN_EID_EXTENSION(255), which contains different
+ * extention tag number with the same IE.
+ */
+u8 rtw_ies_add_ie(u8 *ies, uint *ies_len, uint ies_offset, u8 eid,
+		     const u8 *content, u8 content_len)
+{
+	u8 ret = _FAIL;
+	PNDIS_802_11_VARIABLE_IEs pIE = {0};
+	u8 *pstart = NULL, *pcurrent = NULL, *premainder_id = NULL;
+	u8 *pbackup_remainder_ie = NULL, *dst_ie = NULL;
+	uint search_len = 0, remainder_ielen = 0;
+	u32 offset = 0;
+
+	if (ies == NULL || *ies_len == 0 || *ies_len <= ies_offset)
+		goto exit;
+
+	pstart = ies + ies_offset;
+	search_len = *ies_len - ies_offset;
+
+	for (pcurrent = pstart; pcurrent - pstart <= search_len;
+	     pcurrent += (pIE->Length + 2)) {
+		pIE = (PNDIS_802_11_VARIABLE_IEs)pcurrent;
+		dst_ie = pcurrent;
+
+		if (pcurrent - pstart == search_len)
+			break;
+
+		if (pIE->ElementID > eid)
+			break;
+		else if (pIE->ElementID == eid) {
+			pcurrent += (pIE->Length + 2);
+			break;
+		}
+	}
+
+	if (dst_ie == NULL)
+		goto exit;
+
+	remainder_ielen = *ies_len - (pcurrent - ies);
+	if (remainder_ielen > 0) {
+		pbackup_remainder_ie = rtw_malloc(remainder_ielen);
+		_rtw_memcpy(pbackup_remainder_ie, pcurrent, remainder_ielen);
+	}
+
+	*dst_ie++ = eid;
+	*dst_ie++ = content_len;
+
+	_rtw_memcpy(dst_ie, content, content_len);
+	dst_ie += content_len;
+
+	/* Append remainder IE */
+	if (pbackup_remainder_ie) {
+		_rtw_memcpy(dst_ie, pbackup_remainder_ie, remainder_ielen);
+		rtw_mfree(pbackup_remainder_ie, remainder_ielen);
+	}
+
+	offset = (uint)(dst_ie - ies);
+	*ies_len = offset + remainder_ielen;
+	ret = _SUCCESS;
+exit:
+	return ret;
+}
 /**
  * rtw_ies_remove_ie - Find matching IEs and remove
  * @ies: Address of IEs to search
