@@ -218,7 +218,8 @@ bool rtw_odm_adaptivity_needed(_adapter *adapter)
 		|| regsty->adaptivity_en == RTW_ADAPTIVITY_EN_AUTO)
 		ret = _TRUE;
 
-	if (ret == _TRUE) {
+	/* Reduce log spam - these messages are too verbose for normal operation */
+	if (ret == _TRUE && GlobalDebugLevel >= _drv_info_) {
 		rtw_odm_adaptivity_en_msg(RTW_DBGDUMP, adapter);
 		rtw_odm_adaptivity_mode_msg(RTW_DBGDUMP, adapter);
 	}
