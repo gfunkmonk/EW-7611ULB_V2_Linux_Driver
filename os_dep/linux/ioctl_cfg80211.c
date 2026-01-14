@@ -9541,6 +9541,9 @@ static void rtw_cfg80211_preinit_wiphy(_adapter *adapter, struct wiphy *wiphy)
 #if (KERNEL_VERSION(3, 8, 0) <= LINUX_VERSION_CODE)
 	wiphy->features |= NL80211_FEATURE_SAE;
 #endif
+
+	/* Set wiphy->perm_addr before wiphy_register() for kernel 6.8+ compatibility */
+	_rtw_memcpy(wiphy->perm_addr, adapter_mac_addr(adapter), ETH_ALEN);
 }
 
 #ifdef CONFIG_RFKILL_POLL
