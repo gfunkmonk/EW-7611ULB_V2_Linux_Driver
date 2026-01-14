@@ -10,7 +10,7 @@ CROSS_COMPILE :=
 
 ##################### Optimization Flags ##########################
 ccflags-y += $(USER_EXTRA_CFLAGS)
-ccflags-y += -O2 -fno-pic -fno-pie -fno-jump-tables
+ccflags-y += -O3 -fno-pic -fno-pie -fno-jump-tables
 ldflags-y += --strip-all -O3
 
 ##################### Compile-time Warnings #######################
@@ -24,7 +24,7 @@ ccflags-y += -Wno-incompatible-pointer-types -Wno-misleading-indentation
 ccflags-y += -Wno-old-style-declaration -Wno-discarded-qualifiers
 ccflags-y += -Wno-cast-function-type -Wno-ignored-attributes
 ccflags-y += -Wno-sizeof-array-div -Wno-enum-conversion -Wno-uninitialized
-ccflags-y += -Wno-empty-body -Wno-attributes -Wno-date-time -Wno-address
+ccflags-y += -Wno-empty-body -Wno-attributes -Wno-address
 ccflags-y += -Wno-stringop-overread -Wno-vla -Wno-undef
 
 ############## CLANG/LLVM  #################
@@ -38,17 +38,21 @@ endif
 ################# GCC ######################
 ifeq ($(CC), gcc)
 ccflags-y += -Wframe-larger-than=1648 -Wno-enum-int-mismatch
-ccflags-y += -Wno-int-in-bool-context
+ccflags-y += -Wno-int-in-bool-context -Wno-date-time
 endif
 
 ############# SOURCE & HEADERS #############
 src := $(PWD)
-export TopDIR ?= $(shell pwd)
-ccflags-y += -I$(src)/hal/phydm -I$(src)/hal  -I$(src)/platform
-ccflags-y += -I$(src)/include -I$(src)/hal/btc
+
+ccflags-y += -I$(src)/include -I$(src)/hal -I$(src)/hal/btc
+ccflags-y += -I$(src)/hal/phydm -I$(src)/core/crypto -I$(src)/platform
 
 ########################## WIFI IC ############################
 CONFIG_RTL8723D = y
+
+ccflags-y += -DCONFIG_LITTLE_ENDIAN -DCONFIG_IOCTL_CFG80211
+ccflags-y += -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_RTL8723D
+ccflags-y += -DDM_ODM_SUPPORT_TYPE=0x04
 
 ########################## Features ###########################
 CONFIG_AP_MODE = y
@@ -66,13 +70,13 @@ CONFIG_EFUSE_CONFIG_FILE = y
 CONFIG_EXT_CLK = n
 CONFIG_TRAFFIC_PROTECT = n
 CONFIG_LOAD_PHY_PARA_FROM_FILE = y
-# CONFIG_CALIBRATE_TX_POWER_TO_MAX = n
 CONFIG_TXPWR_BY_RATE = y
 CONFIG_TXPWR_BY_RATE_EN = y
 # CONFIG_CALIBRATE_TX_POWER_BY_REGULATORY = n
+# CONFIG_CALIBRATE_TX_POWER_TO_MAX = n
 CONFIG_TXPWR_LIMIT = y
 CONFIG_TXPWR_LIMIT_EN = n
-#CONFIG_RTW_CHPLAN = 0xFF
+# CONFIG_RTW_CHPLAN = 0xFF
 CONFIG_RTW_CHPLAN = 0x7F
 CONFIG_RTW_ADAPTIVITY_EN = disable
 CONFIG_RTW_ADAPTIVITY_MODE = normal
@@ -90,23 +94,29 @@ CONFIG_RTW_NETIF_SG = y
 CONFIG_RTW_IPCAM_APPLICATION = n
 CONFIG_RTW_REPEATER_SON = n
 CONFIG_ICMP_VOQ = n
-CONFIG_IP_R_MONITOR = n  #arp VOQ and high rate
-# user priority mapping rule : tos, dscp
+CONFIG_IP_R_MONITOR = n
+# arp VOQ and high rate
 CONFIG_RTW_UP_MAPPING_RULE = tos
+# user priority mapping rule : tos, dscp
 CONFIG_RTW_MBO = n
-CONFIG_SEC_AMSDU_MODE = non-spp   # AMSDU in security network
+CONFIG_SEC_AMSDU_MODE = non-spp
+# AMSDU in security network
+
 ########################## Debug ##############################
 CONFIG_RTW_DEBUG = n
-CONFIG_RTW_LOG_LEVEL = 3 # default log level is _DRV_INFO_ = 2
-CONFIG_PROC_DEBUG = n # enable /proc/net/rtlxxxx/ interfaces
+CONFIG_RTW_LOG_LEVEL = 3
+# default log level is _DRV_INFO_ = 2
+CONFIG_PROC_DEBUG = n
+# enable /proc/net/rtlxxxx/ interfaces
+
 ######################## Wake On Lan ###########################
 CONFIG_WOWLAN = n
-#bit3: ARP enable, bit2: deauth, bit1: unicast, bit0: magic pkt.
 CONFIG_WAKEUP_TYPE = 0xf
-#CONFIG_WAKEUP_TYPE = 0x7
+# bit3: ARP enable, bit2: deauth, bit1: unicast, bit0: magic pkt.
+# CONFIG_WAKEUP_TYPE = 0x7
 CONFIG_WOW_LPS_MODE = default
-#bit0: disBBRF off, #bit1: Wireless remote controller (WRC)
 CONFIG_SUSPEND_TYPE = 0
+# bit0: disBBRF off, #bit1: Wireless remote controller (WRC)
 CONFIG_WOW_STA_MIX = n
 CONFIG_GPIO_WAKEUP = n
 CONFIG_WAKEUP_GPIO_IDX = default
@@ -116,31 +126,23 @@ CONFIG_HIGH_ACTIVE_HST2DEV = n
 CONFIG_PNO_SUPPORT = n
 CONFIG_PNO_SET_DEBUG = n
 CONFIG_AP_WOWLAN = n
-######### Notify SDIO Host Keep Power During Syspend ############
+
+######### Notify SDIO Host Keep Power During Suspend ############
 CONFIG_RTW_SDIO_PM_KEEP_POWER = y
+
 ###################### MP HW TX MODE FOR VHT ####################
 CONFIG_MP_VHT_HW_TX_MODE = n
+
 ###################### ROAMING ##################################
 CONFIG_LAYER2_ROAMING = y
-#bit0: ROAM_ON_EXPIRED, #bit1: ROAM_ON_RESUME, #bit2: ROAM_ACTIVE
 CONFIG_ROAMING_FLAG = 0x3
+#bit0: ROAM_ON_EXPIRED, #bit1: ROAM_ON_RESUME, #bit2: ROAM_ACTIVE
+
 ####################### HACKS? ##################################
-CONFIG_REGD_SRC_FROM_OS = y       # Sets (REGD) sourse to OS
-CONFIG_FORCE_SW_CHANNEL_PLAN = y  # needed to scan all channels
-###################### COMMON  ##################################
-
-SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc/powerpc/; s/armv.l/arm/; s/aarch64/arm64/; s/riscv.*/riscv/; s/mipseb/mips/; s/loong.*64/loongarch/; s/x.6_64/x86_64/;")
-ifndef ARCH
-    ARCH := $(SUBARCH)
-endif
-
-CROSS_COMPILE ?=
-
-ccflags-y += -DCONFIG_LITTLE_ENDIAN -DCONFIG_IOCTL_CFG80211
-ccflags-y += -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_RTL8723D
-
-KVER ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
-KSRC := /lib/modules/$(KVER)/build
+CONFIG_REGD_SRC_FROM_OS = y
+# Sets (REGD) sourse to OS
+CONFIG_FORCE_SW_CHANNEL_PLAN = y
+# needed to scan all channels
 
 # Color definitions
 NC := \033[0m
@@ -156,41 +158,66 @@ BWHITE := \033[1;37m
 DKPURPLE := \033[0;35m
 WHITE := \033[0;37m
 
-########### HAL_RTL8723D #################################
-_OS_INTFS_FILES := os_dep/osdep_service.o os_dep/linux/os_intfs.o \
-	os_dep/linux/usb_intf.o os_dep/linux/usb_ops_linux.o \
-	os_dep/linux/ioctl_linux.o os_dep/linux/xmit_linux.o \
-	os_dep/linux/mlme_linux.o os_dep/linux/recv_linux.o \
-	os_dep/linux/ioctl_cfg80211.o os_dep/linux/rtw_cfgvendor.o \
-	os_dep/linux/wifi_regd.o os_dep/linux/rtw_android.o \
-	os_dep/linux/rtw_proc.o os_dep/linux/nlrtw.o \
-	os_dep/linux/rtw_rhashtable.o hal/hal_intf.o hal/hal_com.o
+SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc/powerpc/; s/armv.l/arm/; s/aarch64/arm64/; s/riscv.*/riscv/; s/mipseb/mips/; s/loong.*64/loongarch/; s/x.6_64/x86_64/;")
+ifndef ARCH
+    ARCH := $(SUBARCH)
+endif
 
+CROSS_COMPILE ?=
+KVER ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
+KSRC := /lib/modules/$(KVER)/build
+
+###################### COMMON  ##################################
 _PLATFORM_FILES := platform/platform_ops.o
 
-ifeq ($(CONFIG_MP_INCLUDED), y)
-_OS_INTFS_FILES += os_dep/linux/ioctl_mp.o
-ccflags-y += -DCONFIG_MP_INCLUDED
-endif
+_OS_INTFS_FILES := os_dep/osdep_service.o os_dep/linux/os_intfs.o \
+		os_dep/linux/usb_intf.o \
+		os_dep/linux/usb_ops_linux.o \
+		os_dep/linux/ioctl_linux.o \
+		os_dep/linux/xmit_linux.o \
+		os_dep/linux/mlme_linux.o \
+		os_dep/linux/recv_linux.o \
+		os_dep/linux/ioctl_cfg80211.o \
+		os_dep/linux/rtw_cfgvendor.o \
+		os_dep/linux/wifi_regd.o \
+		os_dep/linux/rtw_android.o \
+		os_dep/linux/rtw_proc.o \
+		os_dep/linux/nlrtw.o \
+		os_dep/linux/rtw_rhashtable.o
 
-_HAL_INTFS_FILES += hal/hal_com_phycfg.o hal/hal_phy.o hal/hal_dm.o \
-          hal/hal_dm_acs.o hal/hal_btcoex_wifionly.o hal/hal_btcoex.o \
-          hal/hal_mp.o hal/hal_mcc.o hal/hal_hci/hal_usb.o hal/led/hal_led.o \
-          hal/led/hal_usb_led.o hal/HalPwrSeqCmd.o \
-          hal/rtl8723d/Hal8723DPwrSeq.o \
-          hal/rtl8723d/rtl8723d_sreset.o hal/rtl8723d/rtl8723d_hal_init.o \
-          hal/rtl8723d/rtl8723d_phycfg.o hal/rtl8723d/rtl8723d_rf6052.o \
-          hal/rtl8723d/rtl8723d_dm.o hal/rtl8723d/rtl8723d_rxdesc.o \
-          hal/rtl8723d/rtl8723d_cmd.o hal/rtl8723d/hal8723d_fw.o \
-          hal/rtl8723d/rtl8723d_lps_poff.o hal/rtl8723d/usb/usb_halinit.o \
-          hal/rtl8723d/usb/rtl8723du_led.o hal/rtl8723d/usb/rtl8723du_xmit.o \
-          hal/rtl8723d/usb/rtl8723du_recv.o \
-          hal/efuse/rtl8723d/HalEfuseMask8723D_USB.o hal/rtl8723d/usb/usb_ops.o
+########### HAL_RTL8723D #################################
+_HAL_INTFS_FILES += hal/hal_intf.o \
+		hal/hal_com.o \
+		hal/hal_com_phycfg.o \
+		hal/hal_phy.o \
+		hal/hal_dm.o \
+		hal/hal_dm_acs.o \
+		hal/hal_btcoex_wifionly.o \
+		hal/hal_btcoex.o \
+		hal/hal_mp.o \
+		hal/hal_mcc.o \
+		hal/hal_hci/hal_usb.o \
+		hal/led/hal_led.o \
+		hal/led/hal_usb_led.o \
+		hal/HalPwrSeqCmd.o \
+		hal/rtl8723d/Hal8723DPwrSeq.o \
+		hal/rtl8723d/rtl8723d_sreset.o \
+		hal/rtl8723d/rtl8723d_hal_init.o \
+		hal/rtl8723d/rtl8723d_phycfg.o \
+		hal/rtl8723d/rtl8723d_rf6052.o \
+		hal/rtl8723d/rtl8723d_dm.o \
+		hal/rtl8723d/rtl8723d_rxdesc.o \
+		hal/rtl8723d/rtl8723d_cmd.o \
+		hal/rtl8723d/hal8723d_fw.o \
+		hal/rtl8723d/rtl8723d_lps_poff.o \
+		hal/rtl8723d/usb/usb_halinit.o \
+		hal/rtl8723d/usb/rtl8723du_led.o \
+		hal/rtl8723d/usb/rtl8723du_xmit.o \
+		hal/rtl8723d/usb/rtl8723du_recv.o \
+		hal/efuse/rtl8723d/HalEfuseMask8723D_USB.o \
+		hal/rtl8723d/usb/usb_ops.o
 
-ifeq ($(CONFIG_BT_COEXIST), y)
-_BTC_FILES += hal/btc/halbtc8723d1ant.o hal/btc/halbtc8723d2ant.o
-ccflags-y += -DCONFIG_BT_COEXIST
-endif
+include $(src)/hal/phydm/phydm.mk
 
 ########### Feature Flags #################################
 ifeq ($(CONFIG_AP_MODE), y)
@@ -209,7 +236,7 @@ ccflags-y += -DCONFIG_USB_AUTOSUSPEND
 endif
 
 ifeq ($(CONFIG_MP_INCLUDED), y)
-#MODULE_NAME := $(MODULE_NAME)_mp
+_OS_INTFS_FILES += os_dep/linux/ioctl_mp.o
 ccflags-y += -DCONFIG_MP_INCLUDED
 endif
 
@@ -235,6 +262,7 @@ ccflags-y += -DCONFIG_HW_PWRP_DETECTION
 endif
 
 ifeq ($(CONFIG_BT_COEXIST), y)
+_BTC_FILES += hal/btc/halbtc8723d1ant.o hal/btc/halbtc8723d2ant.o
 ccflags-y += -DCONFIG_BT_COEXIST
 endif
 
@@ -342,18 +370,12 @@ ccflags-y += -DRTW_SUSPEND_TYPE=$(CONFIG_SUSPEND_TYPE)
 ifeq ($(CONFIG_WOW_STA_MIX), y)
 ccflags-y += -DRTW_WOW_STA_MIX
 endif
-ifeq ($(CONFIG_SDIO_HCI), y)
-ccflags-y += -DCONFIG_RTW_SDIO_PM_KEEP_POWER
-endif
 endif
 
 ifeq ($(CONFIG_AP_WOWLAN), y)
 ccflags-y += -DCONFIG_AP_WOWLAN
 ifeq ($(CONFIG_AP_MODE), n)
 ccflags-y += -DCONFIG_AP_MODE
-endif
-ifeq ($(CONFIG_SDIO_HCI), y)
-ccflags-y += -DCONFIG_RTW_SDIO_PM_KEEP_POWER
 endif
 endif
 
@@ -391,9 +413,7 @@ ccflags-y += -DWAKEUP_GPIO_IDX=$(CONFIG_WAKEUP_GPIO_IDX)
 endif
 
 ifeq ($(CONFIG_RTW_SDIO_PM_KEEP_POWER), y)
-ifeq ($(CONFIG_SDIO_HCI), y)
 ccflags-y += -DCONFIG_RTW_SDIO_PM_KEEP_POWER
-endif
 endif
 
 ifeq ($(CONFIG_REDUCE_TX_CPU_LOADING), y)
@@ -451,13 +471,6 @@ endif
 
 ifeq ($(CONFIG_MP_VHT_HW_TX_MODE), y)
 ccflags-y += -DCONFIG_MP_VHT_HW_TX_MODE
-ifeq ($(CONFIG_PLATFORM_I386_PC), y)
-## For I386 X86 ToolChain use Hardware FLOATING
-ccflags-y += -mhard-float
-else
-## For ARM ToolChain use Hardware FLOATING
-ccflags-y += -mfloat-abi=hard
-endif
 endif
 
 ifeq ($(CONFIG_APPEND_VENDOR_IE_ENABLE), y)
@@ -500,32 +513,63 @@ else ifeq ($(CONFIG_SEC_AMSDU_MODE), disable)
 ccflags-y += -DRTW_AMSDU_MODE=2
 endif
 
-ccflags-y += -DDM_ODM_SUPPORT_TYPE=0x04
-
 ########### Module Assembly ############################
-include $(src)/hal/phydm/phydm.mk
-
-rtk_core := core/rtw_cmd.o core/rtw_security.o core/rtw_debug.o \
-	core/rtw_io.o core/rtw_ioctl_query.o core/rtw_ioctl_set.o \
-	core/rtw_ieee80211.o core/rtw_mlme.o core/rtw_mlme_ext.o \
-	core/rtw_mi.o core/rtw_wlan_util.o core/rtw_vht.o \
-	core/rtw_pwrctrl.o core/rtw_rf.o core/rtw_chplan.o \
-	core/monitor/rtw_radiotap.o core/rtw_recv.o core/rtw_sta_mgt.o \
-	core/rtw_ap.o core/wds/rtw_wds.o core/mesh/rtw_mesh.o \
-	core/mesh/rtw_mesh_pathtbl.o core/mesh/rtw_mesh_hwmp.o \
-	core/rtw_xmit.o core/rtw_p2p.o core/rtw_rson.o core/rtw_tdls.o \
-	core/rtw_br_ext.o core/rtw_iol.o core/rtw_sreset.o \
-	core/rtw_btcoex_wifionly.o core/rtw_btcoex.o core/rtw_beamforming.o \
-	core/rtw_odm.o core/rtw_rm.o core/rtw_rm_fsm.o core/rtw_ft.o \
-	core/rtw_wnm.o core/rtw_mbo.o core/rtw_rm_util.o \
-	core/efuse/rtw_efuse.o core/rtw_roch.o
-
-ccflags-y += -I$(src)/core/crypto
-rtk_core += core/crypto/aes-internal.o core/crypto/aes-internal-enc.o \
-	core/crypto/aes-gcm.o core/crypto/aes-ccm.o core/crypto/aes-omac1.o \
-	core/crypto/ccmp.o core/crypto/gcmp.o core/crypto/aes-siv.o \
-	core/crypto/aes-ctr.o core/crypto/sha256-internal.o core/crypto/sha256.o \
-	core/crypto/sha256-prf.o core/crypto/rtw_crypto_wrap.o core/rtw_swcrypto.o
+rtk_core := core/rtw_cmd.o \
+		core/rtw_security.o \
+		core/rtw_debug.o \
+		core/rtw_io.o \
+		core/rtw_ioctl_query.o \
+		core/rtw_ioctl_set.o \
+		core/rtw_ieee80211.o \
+		core/rtw_mlme.o \
+		core/rtw_mlme_ext.o \
+		core/rtw_mi.o \
+		core/rtw_wlan_util.o \
+		core/rtw_vht.o \
+		core/rtw_pwrctrl.o \
+		core/rtw_rf.o \
+		core/rtw_chplan.o \
+		core/monitor/rtw_radiotap.o \
+		core/rtw_recv.o \
+		core/rtw_sta_mgt.o \
+		core/rtw_ap.o \
+		core/wds/rtw_wds.o \
+		core/mesh/rtw_mesh.o \
+		core/mesh/rtw_mesh_pathtbl.o \
+		core/mesh/rtw_mesh_hwmp.o \
+		core/rtw_xmit.o \
+		core/rtw_p2p.o \
+		core/rtw_rson.o \
+		core/rtw_tdls.o \
+		core/rtw_br_ext.o \
+		core/rtw_iol.o \
+		core/rtw_sreset.o \
+		core/rtw_btcoex_wifionly.o \
+		core/rtw_btcoex.o \
+		core/rtw_beamforming.o \
+		core/rtw_odm.o \
+		core/rtw_rm.o \
+		core/rtw_rm_fsm.o \
+		core/rtw_ft.o \
+		core/rtw_wnm.o \
+		core/rtw_mbo.o \
+		core/rtw_rm_util.o \
+		core/efuse/rtw_efuse.o \
+		core/rtw_roch.o \
+		core/crypto/aes-internal.o \
+		core/crypto/aes-internal-enc.o \
+		core/crypto/aes-gcm.o \
+		core/crypto/aes-ccm.o \
+		core/crypto/aes-omac1.o \
+		core/crypto/ccmp.o \
+		core/crypto/gcmp.o \
+		core/crypto/aes-siv.o \
+		core/crypto/aes-ctr.o \
+		core/crypto/sha256-internal.o \
+		core/crypto/sha256.o \
+		core/crypto/sha256-prf.o \
+		core/crypto/rtw_crypto_wrap.o \
+		core/rtw_swcrypto.o
 
 $(MODULE_NAME)-y += $(rtk_core)
 
