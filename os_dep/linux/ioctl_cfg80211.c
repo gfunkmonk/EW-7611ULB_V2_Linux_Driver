@@ -9347,8 +9347,7 @@ void rtw_cfg80211_init_wiphy(_adapter *padapter)
 	}
 #endif
 
-	/* copy mac_addr to wiphy */
-	_rtw_memcpy(wiphy->perm_addr, adapter_mac_addr(padapter), ETH_ALEN);
+	/* perm_addr is now set in rtw_cfg80211_preinit_wiphy() before wiphy_register() */
 
 }
 
