@@ -542,17 +542,7 @@
 	#error "CONFIG_IFACE_NUMBER cound not be 0 !!"
 #endif
 
-#if defined(CONFIG_RTL8188E) || defined(CONFIG_RTL8192E) || defined(CONFIG_RTL8188F) || \
-defined(CONFIG_RTL8188GTV) || defined(CONFIG_RTL8192F) || \
-defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8821A) || defined(CONFIG_RTL8710B) || \
-defined(CONFIG_RTL8723B) || defined(CONFIG_RTL8703B) || defined(CONFIG_RTL8723D)
 #define CONFIG_HWMPCAP_GEN1
-#elif defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822C) || \
-defined(CONFIG_RTL8723F) /*|| defined(CONFIG_RTL8814A)*/
-#define CONFIG_HWMPCAP_GEN2
-#elif defined(CONFIG_RTL8814B) /*Address CAM - 128*/
-#define CONFIG_HWMPCAP_GEN3
-#endif
 
 #if defined(CONFIG_HWMPCAP_GEN1) && (CONFIG_IFACE_NUMBER > 2) 
 	#ifdef CONFIG_POWER_SAVING

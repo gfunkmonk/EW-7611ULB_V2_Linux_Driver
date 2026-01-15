@@ -239,7 +239,55 @@ _HAL_INTFS_FILES += hal/hal_intf.o \
 		hal/efuse/rtl8723d/HalEfuseMask8723D_USB.o \
 		hal/rtl8723d/usb/usb_ops.o
 
-include $(src)/hal/phydm/phydm.mk
+_PHYDM_FILES := hal/phydm/phydm_debug.o \
+		hal/phydm/phydm_antdiv.o \
+		hal/phydm/phydm_soml.o \
+		hal/phydm/phydm_smt_ant.o \
+		hal/phydm/phydm_antdect.o \
+		hal/phydm/phydm_interface.o \
+		hal/phydm/phydm_phystatus.o \
+		hal/phydm/phydm_hwconfig.o \
+		hal/phydm/phydm.o \
+		hal/phydm/phydm_dig.o \
+		hal/phydm/phydm_pathdiv.o \
+		hal/phydm/phydm_rainfo.o \
+		hal/phydm/phydm_dynamictxpower.o \
+		hal/phydm/phydm_adaptivity.o \
+		hal/phydm/phydm_cfotracking.o \
+		hal/phydm/phydm_noisemonitor.o \
+		hal/phydm/phydm_beamforming.o \
+		hal/phydm/phydm_direct_bf.o \
+		hal/phydm/phydm_dfs.o \
+		hal/phydm/txbf/halcomtxbf.o \
+		hal/phydm/txbf/haltxbfinterface.o \
+		hal/phydm/txbf/phydm_hal_txbf_api.o \
+		hal/phydm/phydm_adc_sampling.o \
+		hal/phydm/phydm_ccx.o \
+		hal/phydm/phydm_psd.o \
+		hal/phydm/phydm_primary_cca.o \
+		hal/phydm/phydm_cck_pd.o \
+		hal/phydm/phydm_rssi_monitor.o \
+		hal/phydm/phydm_auto_dbg.o \
+		hal/phydm/phydm_math_lib.o \
+		hal/phydm/phydm_api.o \
+		hal/phydm/phydm_pow_train.o \
+		hal/phydm/phydm_lna_sat.o \
+		hal/phydm/phydm_pmac_tx_setting.o \
+		hal/phydm/phydm_mp.o \
+		hal/phydm/phydm_cck_rx_pathdiv.o \
+		hal/phydm/halrf/halrf.o \
+		hal/phydm/halrf/halrf_debug.o \
+		hal/phydm/halrf/halphyrf_ce.o \
+		hal/phydm/halrf/halrf_powertracking_ce.o \
+		hal/phydm/halrf/halrf_powertracking.o \
+		hal/phydm/halrf/halrf_kfree.o \
+		hal/phydm/halrf/halrf_psd.o \
+		hal/phydm/rtl8723d/halhwimg8723d_bb.o \
+		hal/phydm/rtl8723d/halhwimg8723d_mac.o \
+		hal/phydm/rtl8723d/halhwimg8723d_rf.o \
+		hal/phydm/rtl8723d/phydm_regconfig8723d.o \
+		hal/phydm/rtl8723d/phydm_rtl8723d.o \
+		hal/phydm/halrf/rtl8723d/halrf_8723d.o
 
 ########### Feature Flags #################################
 ifeq ($(CONFIG_AP_MODE), y)

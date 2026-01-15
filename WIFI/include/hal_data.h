@@ -475,13 +475,8 @@ typedef struct hal_com_data {
 #ifdef CONFIG_RTL8814A
 	u32	BackUp_BB_REG_4_2nd_CCA[3];
 #endif
-#if defined(CONFIG_RTL8723B) || defined(CONFIG_RTL8703B) || \
-	defined(CONFIG_RTL8723D) || \
-	defined(CONFIG_RTL8192F)
-
 	u8	adjuseVoltageVal;
 	u8	need_restore;
-#endif
 	u8	EfuseUsedPercentage;
 	u16	EfuseUsedBytes;
 	/*u8		EfuseMap[2][HWSET_MAX_SIZE_JAGUAR];*/
@@ -759,15 +754,6 @@ typedef struct hal_com_data {
 	/* For bluetooth co-existance */
 	BT_COEXIST		bt_coexist;
 #endif /* CONFIG_BT_COEXIST */
-
-#if defined(CONFIG_RTL8723B) || defined(CONFIG_RTL8703B) \
-	|| defined(CONFIG_RTL8188F) || defined(CONFIG_RTL8188GTV) || defined(CONFIG_RTL8723D)|| defined(CONFIG_RTL8192F)
-#ifndef CONFIG_PCI_HCI	/* mutual exclusive with PCI -- so they're SDIO and GSPI */
-	/* Interrupt relatd register information. */
-	u32			SysIntrStatus;
-	u32			SysIntrMask;
-#endif
-#endif /*endif CONFIG_RTL8723B	*/
 
 #ifdef CONFIG_LOAD_PHY_PARA_FROM_FILE
 	char	para_file_buf[MAX_PARA_FILE_BUF_LEN];

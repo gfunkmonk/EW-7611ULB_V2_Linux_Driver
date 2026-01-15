@@ -13202,22 +13202,7 @@ u64 rtw_hal_get_tsftr_by_port(_adapter *adapter, u8 port)
 		break;
 	}
 #endif
-#if defined(CONFIG_RTL8188E) || defined(CONFIG_RTL8188F) || defined(CONFIG_RTL8188GTV) \
-		|| defined(CONFIG_RTL8192E) || defined(CONFIG_RTL8192F) \
-		|| defined(CONFIG_RTL8723B) || defined(CONFIG_RTL8703B) || defined(CONFIG_RTL8723D) \
-		|| defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8821A) \
-		|| defined(CONFIG_RTL8710B)
-	case RTL8188E:
-	case RTL8188F:
-	case RTL8188GTV:
-	case RTL8192E:
-	case RTL8192F:
-	case RTL8723B:
-	case RTL8703B:
 	case RTL8723D:
-	case RTL8812:
-	case RTL8821:
-	case RTL8710B:
 	{
 		u32 addr;
 
@@ -13236,7 +13221,7 @@ u64 rtw_hal_get_tsftr_by_port(_adapter *adapter, u8 port)
 
 		break;
 	}
-#endif
+
 	default:
 		RTW_ERR("%s unknow chip type\n", __func__);
 	}

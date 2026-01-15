@@ -11434,67 +11434,10 @@ static int rtw_tdls_get(struct net_device *dev,
 
 #ifdef CONFIG_MAC_LOOPBACK_DRIVER
 
-#if defined(CONFIG_RTL8188E)
-#include <rtl8188e_hal.h>
-extern void rtl8188e_cal_txdesc_chksum(struct tx_desc *ptxdesc);
-#define cal_txdesc_chksum(padapter, desc) rtl8188e_cal_txdesc_chksum(desc)
-#ifdef CONFIG_SDIO_HCI || defined(CONFIG_GSPI_HCI)
-extern void rtl8188es_fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf);
-#define fill_default_txdesc rtl8188es_fill_default_txdesc
-#endif /* CONFIG_SDIO_HCI */
-#endif /* CONFIG_RTL8188E */
-#if defined(CONFIG_RTL8723B)
-extern void rtl8723b_cal_txdesc_chksum(struct tx_desc *ptxdesc);
-#define cal_txdesc_chksum(padapter, desc) rtl8723b_cal_txdesc_chksum(desc)
-extern void rtl8723b_fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf);
-#define fill_default_txdesc rtl8723b_fill_default_txdesc
-#endif /* CONFIG_RTL8723B */
-
-#if defined(CONFIG_RTL8703B)
-/* extern void rtl8703b_cal_txdesc_chksum(struct tx_desc *ptxdesc); */
-#define cal_txdesc_chksum(padapter, desc) rtl8703b_cal_txdesc_chksum(desc)
-/* extern void rtl8703b_fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf); */
-#define fill_default_txdesc rtl8703b_fill_default_txdesc
-#endif /* CONFIG_RTL8703B */
-
-#if defined(CONFIG_RTL8723D)
 /* extern void rtl8723d_cal_txdesc_chksum(struct tx_desc *ptxdesc); */
 #define cal_txdesc_chksum(padapter, desc) rtl8723d_cal_txdesc_chksum(desc)
 /* extern void rtl8723d_fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf); */
 #define fill_default_txdesc rtl8723d_fill_default_txdesc
-#endif /* CONFIG_RTL8723D */
-
-#if defined(CONFIG_RTL8710B)
-#define cal_txdesc_chksum(padapter, desc) rtl8710b_cal_txdesc_chksum(desc)
-#define fill_default_txdesc rtl8710b_fill_default_txdesc
-#endif /* CONFIG_RTL8710B */
-
-#if defined(CONFIG_RTL8192E)
-extern void rtl8192e_cal_txdesc_chksum(struct tx_desc *ptxdesc);
-#define cal_txdesc_chksum(padapter, desc) rtl8192e_cal_txdesc_chksum(desc)
-#ifdef CONFIG_SDIO_HCI || defined(CONFIG_GSPI_HCI)
-extern void rtl8192es_fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf);
-#define fill_default_txdesc rtl8192es_fill_default_txdesc
-#endif /* CONFIG_SDIO_HCI */
-#endif /* CONFIG_RTL8192E */
-
-#if defined(CONFIG_RTL8192F)
-/* extern void rtl8192f_cal_txdesc_chksum(struct tx_desc *ptxdesc); */
-#define cal_txdesc_chksum(padapter, desc) rtl8192f_cal_txdesc_chksum(desc)
-/* extern void rtl8192f_fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf); */
-#define fill_default_txdesc rtl8192f_fill_default_txdesc
-#endif /* CONFIG_RTL8192F */
-
-#ifdef CONFIG_RTL8723F
-#include <../../hal/rtl8723f/rtl8723f.h>
-
-#define REG_LOOPBACK_ENABLE 0x0103
-#define LOOKBACK_ENABLE_VALUE 0x0b
-#define cal_txdesc_chksum(padapter, desc) rtl8723f_cal_txdesc_chksum(padapter, desc)
-#define dump_txdesc_data(padapter, desc) rtl8723f_dbg_dump_tx_desc(padapter, DATA_FRAMETAG, desc);
-#define get_rx_desc(rx_desc, rxbuf) rtl8723f_rxdesc2attribute(rx_desc, rxbuf)
-#define hal_init rtl8723f_hal_init
-#endif /* CONFIG_RTL8723F */
 
 void dbg_dump_pkt(char *s, u8 *buf, u8 len)
 {
