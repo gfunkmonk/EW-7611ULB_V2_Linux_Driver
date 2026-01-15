@@ -26,6 +26,7 @@ ccflags-y += -Wno-cast-function-type -Wno-ignored-attributes
 ccflags-y += -Wno-sizeof-array-div -Wno-enum-conversion -Wno-uninitialized
 ccflags-y += -Wno-empty-body -Wno-attributes -Wno-address
 ccflags-y += -Wno-stringop-overread -Wno-vla -Wno-undef
+ccflags-y += -Wno-date-time
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
