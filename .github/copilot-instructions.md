@@ -16,3 +16,4 @@ This repository contains out-of-kernel drivers for Realtek's 8723d usb chipset.
 4. When merging code do not remove guards like '#if (LINUX_VERSION_CODE > KERNEL_VERSION' unless completly needed
 5. Do not remove 'CONFIG' variables from Makefiles
 6. Optimize and streamline code where applicable
+7. Do not remove -Wno- flags from Makefiles* - keep all warning suppression flags, unless removing duplicates.
