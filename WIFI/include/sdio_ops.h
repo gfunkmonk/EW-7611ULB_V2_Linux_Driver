@@ -116,7 +116,6 @@ extern void ClearInterrupt8703BSdio(PADAPTER padapter);
 #endif /* CONFIG_WOWLAN */
 #endif
 
-#ifdef CONFIG_RTL8723D
 extern void InitInterrupt8723DSdio(PADAPTER padapter);
 extern void InitSysInterrupt8723DSdio(PADAPTER padapter);
 extern void EnableInterrupt8723DSdio(PADAPTER padapter);
@@ -125,8 +124,7 @@ extern u8 HalQueryTxBufferStatus8723DSdio(PADAPTER padapter);
 extern u8 HalQueryTxOQTBufferStatus8723DSdio(PADAPTER padapter);
 #if defined(CONFIG_WOWLAN) || defined(CONFIG_AP_WOWLAN)
 extern void DisableInterruptButCpwm28723dSdio(PADAPTER padapter);
-extern void ClearInterrupt8723DSdio(PADAPTER padapter);
-#endif /* CONFIG_WOWLAN */
+extern void ClearInterrupt8723DSdio(PADAPTER padapter); /* CONFIG_WOWLAN */
 #endif
 
 #ifdef CONFIG_RTL8192F

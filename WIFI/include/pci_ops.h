@@ -74,7 +74,6 @@
 	void	rtl8723be_unmap_beacon_icf(PADAPTER Adapter);
 #endif
 
-#ifdef CONFIG_RTL8723D
 	u32	rtl8723de_init_desc_ring(_adapter *padapter);
 	u32	rtl8723de_free_desc_ring(_adapter *padapter);
 	void	rtl8723de_reset_desc_ring(_adapter *padapter);
@@ -84,7 +83,6 @@
 	void	rtl8723de_set_intf_ops(struct _io_ops	*pops);
 	u8 check_tx_desc_resource(_adapter *padapter, int prio);
 	void 	rtl8723de_unmap_beacon_icf(PADAPTER Adapter);
-#endif
 
 #ifdef CONFIG_RTL8814A
 	u32	rtl8814ae_init_desc_ring(_adapter *padapter);

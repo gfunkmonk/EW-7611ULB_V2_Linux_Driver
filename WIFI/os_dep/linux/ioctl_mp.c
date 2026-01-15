@@ -1358,9 +1358,7 @@ int rtw_mp_thermal(struct net_device *dev,
 #ifdef CONFIG_RTL8703B
 	ther_path_addr[0] = EEPROM_THERMAL_METER_8703B;
 #endif
-#ifdef CONFIG_RTL8723D
 	ther_path_addr[0] = EEPROM_THERMAL_METER_8723D;
-#endif
 #ifdef CONFIG_RTL8188F
 	ther_path_addr[0] = EEPROM_THERMAL_METER_8188F;
 #endif

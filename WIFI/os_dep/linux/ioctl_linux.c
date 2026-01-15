@@ -8822,10 +8822,8 @@ static int rtw_mp_efuse_get(struct net_device *dev,
 #endif
 #endif /* CONFIG_RTL8703B */
 
-#ifdef CONFIG_RTL8723D
 #ifdef CONFIG_USB_HCI
-		addr = EEPROM_VID_8723DU;
-#endif /* CONFIG_USB_HCI */
+		addr = EEPROM_VID_8723DU; /* CONFIG_USB_HCI */
 #endif /* CONFIG_RTL8723D */
 
 		cnts = 4;
@@ -9482,10 +9480,8 @@ static int rtw_mp_efuse_set(struct net_device *dev,
 #endif /* CONFIG_USB_HCI */
 #endif /* CONFIG_RTL8703B */
 
-#ifdef CONFIG_RTL8723D
 #ifdef CONFIG_USB_HCI
-		addr = EEPROM_VID_8723DU;
-#endif /* CONFIG_USB_HCI */
+		addr = EEPROM_VID_8723DU; /* CONFIG_USB_HCI */
 #endif /* CONFIG_RTL8723D */
 
 		cnts = strlen(tmp[1]);

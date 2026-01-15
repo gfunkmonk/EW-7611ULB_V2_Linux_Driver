@@ -39,8 +39,7 @@
 	#ifdef CONFIG_RTL8703B
 		#include <rtl8703b_hal.h>
 	#endif
-	#ifdef CONFIG_RTL8723D
-		#include <rtl8723d_hal.h>
+			#include <rtl8723d_hal.h>
 	#endif
 	#ifdef CONFIG_RTL8710B
 		#include <rtl8710b_hal.h>
@@ -53,8 +52,7 @@
 	#endif
 	#ifdef CONFIG_RTL8192F
 		#include <rtl8192f_hal.h>
-	#endif
-#endif /* !RTW_HALMAC */
+	#endif /* !RTW_HALMAC */
 
 
 u8 MgntQuery_NssTxRate(u16 Rate)
@@ -1257,7 +1255,6 @@ void mpt_SetRFPath_8703B(PADAPTER pAdapter)
 }
 #endif
 
-#ifdef CONFIG_RTL8723D
 void mpt_SetRFPath_8723D(PADAPTER pAdapter)
 {
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(pAdapter);
@@ -1294,7 +1291,6 @@ void mpt_SetRFPath_8723D(PADAPTER pAdapter)
 		break;
 	}
 }
-#endif
 
 void mpt_SetRFPath_819X(PADAPTER	pAdapter)
 {
@@ -1622,12 +1618,10 @@ void hal_mpt_SetAntenna(PADAPTER	pAdapter)
 	}
 #endif
 
-#ifdef CONFIG_RTL8723D
 	if (IS_HARDWARE_TYPE_8723D(pAdapter)) {
 		mpt_SetRFPath_8723D(pAdapter);
 		return;
 	}
-#endif
 
 #ifdef CONFIG_RTL8192F
 		if (IS_HARDWARE_TYPE_8192F(pAdapter)) {

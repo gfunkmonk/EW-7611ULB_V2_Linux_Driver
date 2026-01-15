@@ -14529,7 +14529,6 @@ int hal_efuse_macaddr_offset(_adapter *adapter)
 			addr_offset = EEPROM_MAC_ADDR_8703BS;
 		break;
 #endif
-#ifdef CONFIG_RTL8723D
 	case RTL8723D:
 		if (interface_type == RTW_USB)
 			addr_offset = EEPROM_MAC_ADDR_8723DU;
@@ -14538,7 +14537,6 @@ int hal_efuse_macaddr_offset(_adapter *adapter)
 		else if (interface_type == RTW_PCIE)
 			addr_offset = EEPROM_MAC_ADDR_8723DE;
 		break;
-#endif
 
 #ifdef CONFIG_RTL8188E
 	case RTL8188E:
@@ -15838,11 +15836,9 @@ int hal_spec_init(_adapter *adapter)
 		init_hal_spec_8703b(adapter);
 		break;
 #endif
-#ifdef CONFIG_RTL8723D
 	case RTL8723D:
 		init_hal_spec_8723d(adapter);
 		break;
-#endif
 #ifdef CONFIG_RTL8188E
 	case RTL8188E:
 		init_hal_spec_8188e(adapter);

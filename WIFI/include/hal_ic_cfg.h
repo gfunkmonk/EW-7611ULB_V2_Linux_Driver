@@ -64,7 +64,6 @@
 
 
 
-#ifdef CONFIG_RTL8723D
 	#undef RTL8723D_SUPPORT
 	#define RTL8723D_SUPPORT				1
 	#ifndef CONFIG_FW_C2H_PKT
@@ -81,7 +80,6 @@
 	#ifndef CONFIG_TXPWR_PG_WITH_PWR_IDX
 	#define CONFIG_TXPWR_PG_WITH_PWR_IDX
 	#endif
-#endif
 
 #ifdef CONFIG_RTL8814A
 	#undef RTL8814A_SUPPORT
