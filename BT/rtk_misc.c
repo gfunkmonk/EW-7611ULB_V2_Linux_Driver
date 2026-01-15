@@ -611,8 +611,8 @@ static void line_process(char *buf, int len)
 
 static void config_process(u8 *buff, int len)
 {
-        char *head = (void *)buff;
-        char *ptr = (void *)buff;
+        char *head = buff;
+        char *ptr = buff;
 
         while ((ptr = strsep(&head, "\n\r")) != NULL) {
                 if (!ptr[0])

@@ -717,7 +717,7 @@ static void update_profile_state(rtk_conn_prof * phci_conn,
         } else {
 		if ((phci_conn->profile_status & BIT(profile_index)) > 0) {
                         need_update = TRUE;
-			phci_conn->profile_status &= ~(BIT(profile_index));
+			phci_conn->profile_status &= ~BIT(profile_index);
                 }
         }
 
@@ -769,31 +769,28 @@ static void update_profile_connection(rtk_conn_prof * phci_conn,
                                 btrtl_coex.profile_refcount[profile_index]);
                 if (btrtl_coex.profile_refcount[profile_index] == 0) {
                         need_update = TRUE;
-                        btrtl_coex.profile_bitmap &= ~(BIT(profile_index));
+                        btrtl_coex.profile_bitmap &= ~BIT(profile_index);
 
                         /* if profile does not exist, status is meaningless */
-                        btrtl_coex.profile_status &= ~(BIT(profile_index));
+                        btrtl_coex.profile_status &= ~BIT(profile_index);
                 }
 
                 phci_conn->profile_refcount[profile_index]--;
                 if (0 == phci_conn->profile_refcount[profile_index]) {
                         need_update = TRUE;
-                        phci_conn->profile_bitmap &= ~(BIT(profile_index));
+                        phci_conn->profile_bitmap &= ~BIT(profile_index);
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
-			phci_conn->profile_status &= ~(BIT(profile_index));
+			phci_conn->profile_status &= ~BIT(profile_index);
 			rtk_check_timer_delete_sync(profile_index, phci_conn);
 #else
-			phci_conn->profile_status &= ~(BIT(profile_index));
+			phci_conn->profile_status &= ~BIT(profile_index);
 			rtk_check_del_timer(profile_index, phci_conn);
 #endif
                         /* clear profile_hid_interval if need */
                         if ((profile_hid == profile_index)
-                            && (phci_conn->
-                                profile_bitmap & (BIT(profile_hid_interval)))) {
-                                phci_conn->profile_bitmap &=
-                                    ~(BIT(profile_hid_interval));
-				phci_conn->
-                                    profile_refcount[profile_hid_interval]--;
+                            && (phci_conn->profile_bitmap & BIT(profile_hid_interval))) {
+                                phci_conn->profile_bitmap &= ~BIT(profile_hid_interval);
+				phci_conn->profile_refcount[profile_hid_interval]--;
                         }
                 }
         }
@@ -819,34 +816,28 @@ static void update_hid_active_state(uint16_t handle, uint16_t interval)
                 return;
 
         RTKBT_DBG("%s: handle 0x%04x, interval %u", __func__, handle, interval);
-        if (((phci_conn->profile_bitmap) & (BIT(profile_hid))) == 0) {
+        if ((phci_conn->profile_bitmap & BIT(profile_hid)) == 0) {
                 RTKBT_DBG("HID not connected, nothing to be down");
                 return;
         }
 
         if (interval < 60) {
-                if ((phci_conn->profile_bitmap & (BIT(profile_hid_interval))) ==
-                    0) {
+                if ((phci_conn->profile_bitmap & BIT(profile_hid_interval)) == 0) {
                         need_update = 1;
                         phci_conn->profile_bitmap |= BIT(profile_hid_interval);
 
 			phci_conn->profile_refcount[profile_hid_interval]++;
-			if (phci_conn->
-                            profile_refcount[profile_hid_interval] == 1)
-				phci_conn->profile_status |=
-                                    BIT(profile_hid);
+			if (phci_conn->profile_refcount[profile_hid_interval] == 1)
+				phci_conn->profile_status |= BIT(profile_hid);
                 }
         } else {
-                if ((phci_conn->profile_bitmap & (BIT(profile_hid_interval)))) {
+                if (phci_conn->profile_bitmap & BIT(profile_hid_interval)) {
                         need_update = 1;
-                        phci_conn->profile_bitmap &=
-                            ~(BIT(profile_hid_interval));
+                        phci_conn->profile_bitmap &= ~BIT(profile_hid_interval);
 
 			phci_conn->profile_refcount[profile_hid_interval]--;
-			if (phci_conn->
-                            profile_refcount[profile_hid_interval] == 0)
-				phci_conn->profile_status &=
-                                    ~(BIT(profile_hid));
+			if (phci_conn->profile_refcount[profile_hid_interval] == 0)
+				phci_conn->profile_status &= ~BIT(profile_hid);
                 }
         }
 
@@ -2041,10 +2032,10 @@ static u8 disconn_profile(struct rtl_hci_conn *conn, u8 pfe_index)
 
         if (!btrtl_coex.profile_refcount[pfe_index]) {
                 need_update = 1;
-                btrtl_coex.profile_bitmap &= ~(BIT(pfe_index));
+                btrtl_coex.profile_bitmap &= ~BIT(pfe_index);
 
                 /* if profile does not exist, status is meaningless */
-                btrtl_coex.profile_status &= ~(BIT(pfe_index));
+                btrtl_coex.profile_status &= ~BIT(pfe_index);
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
                 rtk_check_timer_delete_sync(pfe_index, conn);
 #else
@@ -2059,12 +2050,12 @@ static u8 disconn_profile(struct rtl_hci_conn *conn, u8 pfe_index)
                            conn->profile_refcount[pfe_index]);
         if (!conn->profile_refcount[pfe_index]) {
                 need_update = 1;
-                conn->profile_bitmap &= ~(BIT(pfe_index));
+                conn->profile_bitmap &= ~BIT(pfe_index);
 
                 /* clear profile_hid_interval if need */
                 if ((profile_hid == pfe_index) &&
-                    (conn->profile_bitmap & (BIT(profile_hid_interval)))) {
-                        conn->profile_bitmap &= ~(BIT(profile_hid_interval));
+                    (conn->profile_bitmap & BIT(profile_hid_interval))) {
+                        conn->profile_bitmap &= ~BIT(profile_hid_interval);
                         if (btrtl_coex.profile_refcount[profile_hid_interval])
                                 btrtl_coex.profile_refcount[profile_hid_interval]--;
                 }
