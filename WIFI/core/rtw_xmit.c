@@ -30,9 +30,7 @@ static void _init_txservq(struct tx_servq *ptxservq)
 
 void	_rtw_init_sta_xmit_priv(struct sta_xmit_priv *psta_xmitpriv)
 {
-
-
-	_rtw_memset((unsigned char *)psta_xmitpriv, 0, sizeof(struct sta_xmit_priv));
+	/* Memory already zeroed by caller's memset of parent sta_info struct */
 
 	_rtw_spinlock_init(&psta_xmitpriv->lock);
 
@@ -2106,6 +2104,7 @@ s32 rtw_make_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattrib)
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct qos_priv *pqospriv = &pmlmepriv->qospriv;
 	u8 qos_option = _FALSE;
+	u8 *bssid;  /* Cache BSSID to avoid repeated lookups */
 	sint res = _SUCCESS;
 	u16 *fctrl = &pwlanhdr->frame_ctl;
 
@@ -2139,6 +2138,8 @@ s32 rtw_make_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattrib)
 
 	set_frame_sub_type(fctrl, pattrib->subtype);
 
+	bssid = get_bssid(pmlmepriv);  /* Cache once instead of multiple calls */
+
 	if (pattrib->subtype & WIFI_DATA_TYPE) {
 		if ((check_fwstate(pmlmepriv,  WIFI_STATION_STATE) == _TRUE)) {
 #ifdef CONFIG_TDLS
@@ -2146,7 +2147,7 @@ s32 rtw_make_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattrib)
 				/* TDLS data transfer, ToDS=0, FrDs=0 */
 				_rtw_memcpy(pwlanhdr->addr1, pattrib->dst, ETH_ALEN);
 				_rtw_memcpy(pwlanhdr->addr2, pattrib->src, ETH_ALEN);
-				_rtw_memcpy(pwlanhdr->addr3, get_bssid(pmlmepriv), ETH_ALEN);
+				_rtw_memcpy(pwlanhdr->addr3, bssid, ETH_ALEN);
 
 				if (pattrib->qos_en)
 					qos_option = _TRUE;
@@ -2168,7 +2169,7 @@ s32 rtw_make_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattrib)
 					/* 1.Data transfer to AP */
 					/* 2.Arp pkt will relayed by AP */
 					SetToDs(fctrl);
-					_rtw_memcpy(pwlanhdr->addr1, get_bssid(pmlmepriv), ETH_ALEN);
+					_rtw_memcpy(pwlanhdr->addr1, bssid, ETH_ALEN);
 					_rtw_memcpy(pwlanhdr->addr2, pattrib->ta, ETH_ALEN);
 					_rtw_memcpy(pwlanhdr->addr3, pattrib->dst, ETH_ALEN);
 				}
@@ -2191,7 +2192,7 @@ s32 rtw_make_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattrib)
 				/* to_ds = 0, fr_ds = 1; */
 				SetFrDs(fctrl);
 				_rtw_memcpy(pwlanhdr->addr1, pattrib->dst, ETH_ALEN);
-				_rtw_memcpy(pwlanhdr->addr2, get_bssid(pmlmepriv), ETH_ALEN);
+				_rtw_memcpy(pwlanhdr->addr2, bssid, ETH_ALEN);
 				_rtw_memcpy(pwlanhdr->addr3, pattrib->src, ETH_ALEN);
 			}
 
@@ -2201,7 +2202,7 @@ s32 rtw_make_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattrib)
 			(check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE) == _TRUE)) {
 			_rtw_memcpy(pwlanhdr->addr1, pattrib->dst, ETH_ALEN);
 			_rtw_memcpy(pwlanhdr->addr2, pattrib->ta, ETH_ALEN);
-			_rtw_memcpy(pwlanhdr->addr3, get_bssid(pmlmepriv), ETH_ALEN);
+			_rtw_memcpy(pwlanhdr->addr3, bssid, ETH_ALEN);
 
 			if (pattrib->qos_en)
 				qos_option = _TRUE;
@@ -2473,6 +2474,7 @@ s32 rtw_make_tdls_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattr
 	struct sta_priv	*pstapriv = &padapter->stapriv;
 	struct sta_info *psta = NULL, *ptdls_sta = NULL;
 	u8 tdls_seq = 0, baddr[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+	u8 *bssid;  /* Cache BSSID to avoid repeated lookups */
 
 	sint res = _SUCCESS;
 	u16 *fctrl = &pwlanhdr->frame_ctl;
@@ -2481,6 +2483,8 @@ s32 rtw_make_tdls_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattr
 	_rtw_memset(hdr, 0, WLANHDR_OFFSET);
 
 	set_frame_sub_type(fctrl, pattrib->subtype);
+
+	bssid = get_bssid(pmlmepriv);  /* Cache once instead of multiple calls */
 
 	switch (ptxmgmt->action_code) {
 	case TDLS_SETUP_REQUEST:
@@ -2492,7 +2496,7 @@ s32 rtw_make_tdls_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattr
 	case TUNNELED_PROBE_RSP:
 	case TDLS_DISCOVERY_REQUEST:
 		SetToDs(fctrl);
-		_rtw_memcpy(pwlanhdr->addr1, get_bssid(pmlmepriv), ETH_ALEN);
+		_rtw_memcpy(pwlanhdr->addr1, bssid, ETH_ALEN);
 		_rtw_memcpy(pwlanhdr->addr2, pattrib->src, ETH_ALEN);
 		_rtw_memcpy(pwlanhdr->addr3, pattrib->dst, ETH_ALEN);
 		break;
@@ -2502,18 +2506,18 @@ s32 rtw_make_tdls_wlanhdr(_adapter *padapter , u8 *hdr, struct pkt_attrib *pattr
 	case TDLS_PEER_TRAFFIC_RESPONSE:
 		_rtw_memcpy(pwlanhdr->addr1, pattrib->dst, ETH_ALEN);
 		_rtw_memcpy(pwlanhdr->addr2, pattrib->src, ETH_ALEN);
-		_rtw_memcpy(pwlanhdr->addr3, get_bssid(pmlmepriv), ETH_ALEN);
+		_rtw_memcpy(pwlanhdr->addr3, bssid, ETH_ALEN);
 		tdls_seq = 1;
 		break;
 	case TDLS_TEARDOWN:
 		if (ptxmgmt->status_code == _RSON_TDLS_TEAR_UN_RSN_) {
 			_rtw_memcpy(pwlanhdr->addr1, pattrib->dst, ETH_ALEN);
 			_rtw_memcpy(pwlanhdr->addr2, pattrib->src, ETH_ALEN);
-			_rtw_memcpy(pwlanhdr->addr3, get_bssid(pmlmepriv), ETH_ALEN);
+			_rtw_memcpy(pwlanhdr->addr3, bssid, ETH_ALEN);
 			tdls_seq = 1;
 		} else {
 			SetToDs(fctrl);
-			_rtw_memcpy(pwlanhdr->addr1, get_bssid(pmlmepriv), ETH_ALEN);
+			_rtw_memcpy(pwlanhdr->addr1, bssid, ETH_ALEN);
 			_rtw_memcpy(pwlanhdr->addr2, pattrib->src, ETH_ALEN);
 			_rtw_memcpy(pwlanhdr->addr3, pattrib->dst, ETH_ALEN);
 		}
@@ -6509,14 +6513,9 @@ void rtw_tx_desc_backup(_adapter *padapter, struct xmit_frame *pxmitframe, u8 de
 
 void rtw_tx_desc_backup_reset(void)
 {
-	int i, j;
-
-	for (i = 0; i < HW_QUEUE_ENTRY; i++) {
-		for (j = 0; j < TX_BAK_FRMAE_CNT; j++)
-			_rtw_memset(&tx_backup[i][j], 0, sizeof(struct rtw_tx_desc_backup));
-
-		backup_idx[i] = 0;
-	}
+	/* Optimize: single memset instead of nested loop */
+	_rtw_memset(tx_backup, 0, sizeof(tx_backup));
+	_rtw_memset(backup_idx, 0, sizeof(backup_idx));
 }
 
 u8 rtw_get_tx_desc_backup(_adapter *padapter, u8 hwq, struct rtw_tx_desc_backup **pbak)
