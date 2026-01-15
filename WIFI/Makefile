@@ -42,7 +42,7 @@ ccflags-y += -Wno-int-in-bool-context -Wno-date-time
 endif
 
 ############# SOURCE & HEADERS #############
-src := $(shell pwd)
+src := $(PWD)
 
 ccflags-y += -I$(src)/include -I$(src)/hal -I$(src)/hal/btc
 ccflags-y += -I$(src)/hal/phydm -I$(src)/core/crypto -I$(src)/platform

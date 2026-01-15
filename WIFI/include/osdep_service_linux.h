@@ -24,27 +24,17 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/namei.h>
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 5))
-	#include <linux/kref.h>
-#endif
+#include <linux/kref.h>
 /* #include <linux/smp_lock.h> */
 #include <linux/netdevice.h>
 #include <linux/inetdevice.h>
 #include <linux/skbuff.h>
 #include <linux/circ_buf.h>
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 12, 0))
-	#include <linux/uaccess.h>
-#else
-	#include <asm/uaccess.h>
-#endif
+#include <linux/uaccess.h>
 #include <asm/byteorder.h>
 #include <asm/atomic.h>
 #include <asm/io.h>
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26))
-	#include <asm/semaphore.h>
-#else
-	#include <linux/semaphore.h>
-#endif
+#include <linux/semaphore.h>
 #include <linux/sem.h>
 #include <linux/sched.h>
 #include <linux/etherdevice.h>
