@@ -115,9 +115,7 @@
 	#if defined(CONFIG_RTL8822B)
 		#include "rtl8822b/HalEfuseMask8822B_PCIE.h"
 	#endif
-	#if defined(CONFIG_RTL8723D)
-		#include "rtl8723d/HalEfuseMask8723D_PCIE.h"
-	#endif
+
 	#if defined(CONFIG_RTL8821C)
 		#include "rtl8821c/HalEfuseMask8821C_PCIE.h"
 	#endif
@@ -153,9 +151,7 @@
 		#include "rtl8188gtv/HalEfuseMask8188GTV_SDIO.h"
 	#endif
 
-	#if defined(CONFIG_RTL8723D)
-		#include "rtl8723d/HalEfuseMask8723D_SDIO.h"
-	#endif
+
 
 	#if defined(CONFIG_RTL8192E)
 		#include "rtl8192e/HalEfuseMask8192E_SDIO.h"
