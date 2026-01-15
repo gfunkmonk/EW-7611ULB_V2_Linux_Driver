@@ -40,18 +40,9 @@
 #endif
 
 #include <linux/interrupt.h>
-#include <linux/module.h>
-#include <linux/slab.h>
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/skbuff.h>
-#include <linux/errno.h>
-#include <linux/usb.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/poll.h>
-
-#include <linux/version.h>
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32)
 #include <linux/pm_runtime.h>
@@ -74,7 +65,7 @@ struct cfg_list_item {
         struct list_head list;
         u16 offset;
         u8 len;
-        u8 data[0];
+        u8 data[];
 };
 
 static struct list_head list_configs;
@@ -283,13 +274,13 @@ static const u8 cfg_magic[4] = { 0x55, 0xab, 0x23, 0x87 };
 struct rtk_bt_vendor_config_entry {
 	__le16 offset;
         uint8_t entry_len;
-        uint8_t entry_data[0];
+        uint8_t entry_data[];
 } __attribute__ ((packed));
 
 struct rtk_bt_vendor_config {
 	__le32 signature;
 	__le16 data_len;
-        struct rtk_bt_vendor_config_entry entry[0];
+        struct rtk_bt_vendor_config_entry entry[];
 } __attribute__ ((packed));
 #define BT_CONFIG_HDRLEN                sizeof(struct rtk_bt_vendor_config)
 
@@ -1707,7 +1698,7 @@ static u8 *load_config(dev_data *dev_entry, int *length)
                 case 0x0044:
                         if (is_mac(chip_type, n->offset) && n->len == 6) {
                                 char s[18];
-                                sprintf(s, "%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X",
+                                snprintf(s, sizeof(s), "%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X",
                                         n->data[5], n->data[4],
                                         n->data[3], n->data[2],
                                         n->data[1], n->data[0]);
