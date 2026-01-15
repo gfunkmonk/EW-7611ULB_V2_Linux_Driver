@@ -96,12 +96,7 @@ static struct list_head list_extracfgs;
 #define HCI_VENDOR_READ_LMP_VERISION        0x1001
 
 #define ROM_LMP_NONE                0x0000
-#define ROM_LMP_8723a               0x1200
 #define ROM_LMP_8723b               0x8723
-#define ROM_LMP_8821a               0X8821
-#define ROM_LMP_8761a               0X8761
-#define ROM_LMP_8822b               0X8822
-#define ROM_LMP_8852a               0x8852
 
 #define PATCH_SNIPPETS		0x01
 #define PATCH_DUMMY_HEADER	0x02
