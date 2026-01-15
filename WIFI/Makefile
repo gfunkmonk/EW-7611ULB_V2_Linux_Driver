@@ -1,5 +1,5 @@
 # Install location of module
-MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/
+DESTDIR := drivers/net/wireless/
 
 # Filename of finished module
 MODULE_NAME := 8723du
@@ -42,7 +42,7 @@ ccflags-y += -Wno-int-in-bool-context -Wno-date-time
 endif
 
 ############# SOURCE & HEADERS #############
-src := $(PWD)
+src := $(shell pwd)
 
 ccflags-y += -I$(src)/include -I$(src)/hal -I$(src)/hal/btc
 ccflags-y += -I$(src)/hal/phydm -I$(src)/core/crypto -I$(src)/platform
@@ -157,6 +157,26 @@ TEAL := \033[2;36m
 BWHITE := \033[1;37m
 DKPURPLE := \033[0;35m
 WHITE := \033[0;37m
+LIME := \033[38;2;204;255;0m
+JUNEBUD := \033[38;2;189;218;87m
+CORAL := \033[38;2;255;127;80m
+PINK := \033[38;2;255;45;192m
+HOTPINK := \033[38;2;255;105;180m
+ORANGE := \033[38;2;255;165;0m
+PEACH := \033[38;2;246;161;146m
+GOLD := \033[38;2;255;215;0m
+NAVAJO := \033[38;2;255;222;173m
+LEMON := \033[38;2;255;244;79m
+CANARY := \033[38;2;255;255;153m
+KHAKI := \033[38;2;226;214;167m
+CRIMSON := \033[38;2;220;20;60m
+TAWNY := \033[38;2;204;78;0m
+ORCHID := \033[38;2;218;112;214m
+HELIOTROPE := \033[38;2;223;115;255m
+SLATE := \033[38;2;109;129;150m
+LAGOON := \033[38;2;142;235;236m
+PLUM := \033[38;2;142;69;133m
+VIOLET := \033[38;2;143;0;255m
 
 SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc/powerpc/; s/armv.l/arm/; s/aarch64/arm64/; s/riscv.*/riscv/; s/mipseb/mips/; s/loong.*64/loongarch/; s/x.6_64/x86_64/;")
 ifndef ARCH
@@ -166,6 +186,7 @@ endif
 CROSS_COMPILE ?=
 KVER ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
 KSRC := /lib/modules/$(KVER)/build
+MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/$(DESTDIR)
 
 ###################### COMMON  ##################################
 _PLATFORM_FILES := platform/platform_ops.o
@@ -596,74 +617,66 @@ build:
 		exit 1; \
 	fi
 	@if [ ! -f $(MODULE_NAME).ko ]; then \
-		echo "$(YELLOW)Building $(MODULE_NAME) module...$(NC)"; \
+		echo "$(CORAL)Building $(MODULE_NAME) module...$(NC)"; \
 		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules || exit 1; \
-		echo "$(TEAL)✓ Module successfully built!$(NC)"; \
+		echo "$(HOTPINK)✓ Module successfully built!$(NC)"; \
 	else \
 		echo "$(BROWN)Module $(MODULE_NAME).ko already exists, skipping compilation.$(NC)"; \
 	fi
 
 install:
 	@if [ ! -f $(MODULE_NAME).ko ]; then \
-		echo "$(BLUE)Building $(MODULE_NAME) module...$(NC)"; \
+		echo "$(LAGOON)Building $(MODULE_NAME) module...$(NC)"; \
 		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules || exit 1; \
 		echo "$(TEAL)✓ Module successfully built!$(NC)"; \
 	fi
-	@echo "$(PURPLE)Installing $(MODULE_NAME) module...$(NC)"
+	@echo "$(VIOLET)Installing $(MODULE_NAME) module...$(NC)"
 	@-rmmod $(MODULE_NAME) 2>/dev/null || true
 	@mkdir -p $(MODDESTDIR)
-	@install -p -m 644 $(MODULE_NAME).ko $(MODDESTDIR)
-	@/sbin/depmod -a $(KVER)
+	#@install -p -m 644 $(MODULE_NAME).ko $(MODDESTDIR)
+	#@/sbin/depmod -a $(KVER)
+	$(MAKE) INSTALL_MOD_DIR=$(DESTDIR) -C $(KSRC) M=$(shell pwd) modules_install || exit 1
 	@echo "$(GREEN)✓ Module installed successfully!$(NC)"
 
 uninstall:
 	@echo "$(CYAN)Uninstalling $(MODULE_NAME) module...$(NC)"
 	@-rmmod $(MODULE_NAME) 2>/dev/null || true
-	@rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
+	@rm -f $(MODDESTDIR)/$(MODULE_NAME).ko*
 	@/sbin/depmod -a $(KVER)
 	@echo "$(GREEN)✓ Module uninstalled successfully!$(NC)"
 
 clean:
-	@cd hal && rm -fr */*/*/*.mod.c */*/*/*.mod */*/*/*.o */*/*/.*.cmd */*/*/*.ko
-	@cd hal && rm -fr */*/*.mod.c */*/*.mod */*/*.o */*/.*.cmd */*/*.ko
-	@cd hal && rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-	@cd hal && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	@cd core && rm -fr */*.mod.c */*.mod */*.o */.*.cmd */*.ko
-	@cd core && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	@cd os_dep/linux && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	@cd os_dep && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	@cd platform && rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	@rm -fr Module.symvers Module.markers modules.order
-	@rm -fr *.mod.c *.mod *.o .*.cmd *.ko *~
-	@rm -fr .tmp_versions .module-common.o
-	@echo "$(DKPURPLE)✓ All clean!$(NC)"
+	@find hal core os_dep platform -type f \( -name '*.mod.c' -o -name '*.mod' -o -name '*.o' -o -name '.*.o.d' -o -name '.*.cmd' -o -name '*.ko' \) -delete 2>/dev/null || true
+	@rm -f Module.symvers Module.markers modules.order *.mod.c *.mod *.o *.o.d .*.cmd *.ko *~
+	@rm -rf .tmp_versions .module-common.o
+	@echo "$(LEMON)✓ All clean!$(NC)"
 
 help:
-	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
-	@echo "$(BLUE)  RTL8723DU WiFi USB Driver Build System$(NC)"
-	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
-	@echo "$(GREEN)Available targets:$(NC)"
-	@echo "  $(YELLOW)build$(NC)      $(BWHITE)- Compile the kernel module$(NC)"
-	@echo "  $(YELLOW)install$(NC)    $(BWHITE)- Build and install module$(NC)"
-	@echo "  $(YELLOW)uninstall$(NC)  $(BWHITE)- Remove installed module$(NC)"
-	@echo "  $(YELLOW)clean$(NC)      $(BWHITE)- Remove build artifacts$(NC)"
-	@echo "  $(YELLOW)all$(NC)        $(BWHITE)- Build and install (default)$(NC)"
-	@echo "  $(YELLOW)config$(NC)     $(BWHITE)- Show current configuration$(NC)"
-	@echo "  $(YELLOW)help$(NC)       $(BWHITE)- Show this help message$(NC)"
-	@echo "$(BLUE)═══════════════════════════════════════════════════════$(NC)"
+	@echo "$(CORAL)═══════════════════════════════════════════════════════$(NC)"
+	@echo "$(CORAL)  RTL8723DU WiFi USB Driver Build System$(NC)"
+	@echo "$(CORAL)═══════════════════════════════════════════════════════$(NC)"
+	@echo "$(BWHITE)Available targets:$(NC)"
+	@echo "  $(HELIOTROPE)build$(NC)      $(LEMON)- Compile the kernel module$(NC)"
+	@echo "  $(HELIOTROPE)install$(NC)    $(LEMON)- Build and install module$(NC)"
+	@echo "  $(HELIOTROPE)uninstall$(NC)  $(LEMON)- Remove installed module$(NC)"
+	@echo "  $(HELIOTROPE)clean$(NC)      $(LEMON)- Remove build artifacts$(NC)"
+	@echo "  $(HELIOTROPE)all$(NC)        $(LEMON)- Build and install (default)$(NC)"
+	@echo "  $(HELIOTROPE)config$(NC)     $(LEMON)- Show current configuration$(NC)"
+	@echo "  $(HELIOTROPE)help$(NC)       $(LEMON)- Show this help message$(NC)"
+	@echo "$(CORAL)═══════════════════════════════════════════════════════$(NC)"
 
 config:
-	@echo "$(BLUE)Current Configuration:$(NC)"
-	@echo "$(RED)  Module:$(BWHITE) $(MODULE_NAME)$(NC)"
-	@echo "$(RED)  Kernel:$(BWHITE) $(KVER)$(NC)"
-	@echo "$(RED)  Architecture:$(BWHITE) $(ARCH)$(NC)"
-	@echo "$(RED)  Install Dir:$(BWHITE) $(MODDESTDIR)$(NC)"
-	@echo "$(RED)  AP Mode:$(BWHITE) $(CONFIG_AP_MODE)$(NC)"
-	@echo "$(RED)  P2P:$(BWHITE) $(CONFIG_P2P)$(NC)"
-	@echo "$(RED)  Power Saving:$(BWHITE) $(CONFIG_POWER_SAVING)$(NC)"
-	@echo "$(RED)  BT Coexist:$(BWHITE) $(CONFIG_BT_COEXIST)$(NC)"
-	@echo "$(RED)  Concurrent Mode:$(BWHITE) $(CONFIG_CONCURRENT_MODE)$(NC)"
-	@echo "$(RED)  Wakeup Type:$(BWHITE) $(CONFIG_WAKEUP_TYPE)$(NC)"
-	@echo "$(RED)  Channel Plan:$(BWHITE) $(CONFIG_RTW_CHPLAN)$(NC)"
-	@echo "$(RED)  REGD source from OS:$(BWHITE) $(CONFIG_REGD_SRC_FROM_OS)$(NC)"
-	@echo "$(RED)  Force SW Channel Plan:$(BWHITE) $(CONFIG_FORCE_SW_CHANNEL_PLAN)$(NC)"
+	@echo "$(LAGOON)Current Configuration:$(NC)"
+	@echo "$(HOTPINK)  Module:$(NAVAJO) $(MODULE_NAME)$(NC)"
+	@echo "$(HOTPINK)  Kernel:$(NAVAJO) $(KVER)$(NC)"
+	@echo "$(HOTPINK)  Architecture:$(NAVAJO) $(ARCH)$(NC)"
+	@echo "$(HOTPINK)  Install Dir:$(NAVAJO) $(MODDESTDIR)$(NC)"
+	@echo "$(HOTPINK)  AP Mode:$(NAVAJO) $(CONFIG_AP_MODE)$(NC)"
+	@echo "$(HOTPINK)  P2P:$(NAVAJO) $(CONFIG_P2P)$(NC)"
+	@echo "$(HOTPINK)  Power Saving:$(NAVAJO) $(CONFIG_POWER_SAVING)$(NC)"
+	@echo "$(HOTPINK)  BT Coexist:$(NAVAJO) $(CONFIG_BT_COEXIST)$(NC)"
+	@echo "$(HOTPINK)  Concurrent Mode:$(NAVAJO) $(CONFIG_CONCURRENT_MODE)$(NC)"
+	@echo "$(HOTPINK)  Wakeup Type:$(NAVAJO) $(CONFIG_WAKEUP_TYPE)$(NC)"
+	@echo "$(HOTPINK)  Channel Plan:$(NAVAJO) $(CONFIG_RTW_CHPLAN)$(NC)"
+	@echo "$(HOTPINK)  REGD source from OS:$(NAVAJO) $(CONFIG_REGD_SRC_FROM_OS)$(NC)"
+	@echo "$(HOTPINK)  Force SW Channel Plan:$(NAVAJO) $(CONFIG_FORCE_SW_CHANNEL_PLAN)$(NC)"
