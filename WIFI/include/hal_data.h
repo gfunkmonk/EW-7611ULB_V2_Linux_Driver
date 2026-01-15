@@ -128,9 +128,7 @@ typedef enum _RX_AGG_MODE {
 #ifdef CONFIG_RTL8703B
 	#define EFUSE_MAP_SIZE	512
 #endif
-#ifdef CONFIG_RTL8723D
 	#define EFUSE_MAP_SIZE	512
-#endif
 #ifdef CONFIG_RTL8188F
 	#define EFUSE_MAP_SIZE	512
 #endif

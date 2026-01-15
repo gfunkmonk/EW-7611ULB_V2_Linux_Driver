@@ -13,8 +13,6 @@
 *
 ******************************************************************************/
 
-#ifdef CONFIG_RTL8723D
-
 #ifndef _FW_HEADER_8723D_H
 #define _FW_HEADER_8723D_H
 
@@ -22,7 +20,6 @@
 #if (defined(CONFIG_AP_WOWLAN) || (DM_ODM_SUPPORT_TYPE & (ODM_AP)))
 extern u8 array_mp_8723d_fw_ap[25882];
 extern u32 array_length_mp_8723d_fw_ap;
-#endif
 
 #if (DM_ODM_SUPPORT_TYPE & (ODM_WIN)) || (DM_ODM_SUPPORT_TYPE & (ODM_CE))
 extern u8 array_mp_8723d_fw_nic[29262];

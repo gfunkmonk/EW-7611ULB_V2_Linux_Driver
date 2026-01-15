@@ -455,9 +455,7 @@ static u8 PHY_QueryRFPathSwitch(PADAPTER padapter)
 		bmain = PHY_QueryRFPathSwitch_8822B(padapter);
 #endif
 	} else if (IS_HARDWARE_TYPE_8723D(padapter)) {
-#ifdef CONFIG_RTL8723D
 		bmain = PHY_QueryRFPathSwitch_8723D(padapter);
-#endif
 	} else
 */
 
@@ -512,9 +510,7 @@ static void  PHY_SetRFPathSwitch(PADAPTER padapter , BOOLEAN bMain) {
 		phy_set_rf_path_switch_8822b(phydm, bMain);
 #endif
 	} else if (IS_HARDWARE_TYPE_8723D(padapter)) {
-#ifdef CONFIG_RTL8723D
 		phy_set_rf_path_switch_8723d(phydm, bMain);
-#endif
 	} else if (IS_HARDWARE_TYPE_8821C(padapter)) {
 #ifdef CONFIG_RTL8821C
 		phy_set_rf_path_switch_8821c(phydm, bMain);
@@ -972,9 +968,7 @@ s32 mp_start_test(PADAPTER padapter)
 #ifdef CONFIG_RTL8188E
 	rtl8188e_InitHalDm(padapter);
 #endif
-#ifdef CONFIG_RTL8723D
-	rtl8723d_InitHalDm(padapter);
-#endif /* CONFIG_RTL8723D */
+	rtl8723d_InitHalDm(padapter); /* CONFIG_RTL8723D */
 
 #ifdef CONFIG_PCI_HCI
 	hal = GET_HAL_DATA(padapter);
@@ -1077,9 +1071,7 @@ end_of_mp_stop_test:
 #ifdef CONFIG_RTL8188GTV
 		rtl8188gtv_InitHalDm(padapter);
 #endif
-#ifdef CONFIG_RTL8723D
 		rtl8723d_InitHalDm(padapter);
-#endif
 	}
 }
 /*---------------------------hal\rtl8192c\MPT_Phy.c---------------------------*/

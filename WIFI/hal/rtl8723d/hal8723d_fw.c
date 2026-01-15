@@ -13,8 +13,6 @@
 *
 ******************************************************************************/
 
-#ifdef CONFIG_RTL8723D
-
 #include "drv_types.h"
 
 #ifdef LOAD_FW_HEADER_FROM_DRIVER
@@ -3261,8 +3259,7 @@ u8 array_mp_8723d_fw_ap[] = {
 };
 
 u32 array_length_mp_8723d_fw_ap = 25882;
-
-#endif /*defined(CONFIG_AP_WOWLAN) || (DM_ODM_SUPPORT_TYPE & (ODM_AP))*/
+ /*defined(CONFIG_AP_WOWLAN) || (DM_ODM_SUPPORT_TYPE & (ODM_AP))*/
 
 #if (DM_ODM_SUPPORT_TYPE & (ODM_WIN)) || (DM_ODM_SUPPORT_TYPE & (ODM_CE))
 

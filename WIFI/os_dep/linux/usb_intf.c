@@ -260,11 +260,9 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
 	{USB_DEVICE_AND_INTERFACE_INFO(0x13b1, 0x0043, 0xff, 0xff, 0xff), .driver_info = RTL8822B}, /* Alpha - Alpha*/
 #endif /* CONFIG_RTL8822B */
 
-#ifdef CONFIG_RTL8723D
 	/*=== Realtek demoboard ===*/
 	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDER_ID_REALTEK, 0xD723, 0xff, 0xff, 0xff), .driver_info = RTL8723D}, /* 8723DU 1*1 */
 	{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDOR_ID_EDIMAX, 0xd611, 0xff, 0xff, 0xff), .driver_info = RTL8723D}, /* Edimax - Edimax */
-#endif
 
 #ifdef CONFIG_RTL8192F
 	/*=== Realtek demoboard ===*/
@@ -486,10 +484,8 @@ static void rtw_decide_chip_type_by_usb_info(struct dvobj_priv *pdvobjpriv, cons
 		rtl8822bu_set_hw_type(pdvobjpriv);
 #endif /* CONFIG_RTL8822B */
 
-#ifdef CONFIG_RTL8723D
 	if (pdvobjpriv->chip_type == RTL8723D)
-		rtl8723du_set_hw_type(pdvobjpriv);
-#endif /* CONFIG_RTL8723D */
+		rtl8723du_set_hw_type(pdvobjpriv); /* CONFIG_RTL8723D */
 
 #ifdef CONFIG_RTL8821C
 	if (pdvobjpriv->chip_type == RTL8821C)
@@ -763,10 +759,8 @@ u8 rtw_set_hal_ops(_adapter *padapter)
 		rtl8822bu_set_hal_ops(padapter);
 #endif /* CONFIG_RTL8822B */
 
-#ifdef CONFIG_RTL8723D
 	if (rtw_get_chip_type(padapter) == RTL8723D)
-		rtl8723du_set_hal_ops(padapter);
-#endif /* CONFIG_RTL8723D */
+		rtl8723du_set_hal_ops(padapter); /* CONFIG_RTL8723D */
 
 
 #ifdef CONFIG_RTL8821C

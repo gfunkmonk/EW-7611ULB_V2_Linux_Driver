@@ -70,10 +70,8 @@ extern u4Byte GLBtcDbgType[];
 struct wifi_only_cfg;
 struct btc_coexist;
 
-#ifdef CONFIG_RTL8723D
 #include "halbtc8723d1ant.h"
 #include "halbtc8723d2ant.h"
-#endif
 
 #include "halbtcoutsrc.h"
 
