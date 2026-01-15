@@ -26,6 +26,7 @@ ccflags-y += -Wno-cast-function-type -Wno-ignored-attributes
 ccflags-y += -Wno-sizeof-array-div -Wno-enum-conversion -Wno-uninitialized
 ccflags-y += -Wno-empty-body -Wno-attributes -Wno-address
 ccflags-y += -Wno-stringop-overread -Wno-vla -Wno-undef
+ccflags-y += -Wno-date-time
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
@@ -42,7 +43,7 @@ ccflags-y += -Wno-int-in-bool-context -Wno-date-time
 endif
 
 ############# SOURCE & HEADERS #############
-src := $(shell pwd)
+src := $(PWD)
 
 ccflags-y += -I$(src)/include -I$(src)/hal -I$(src)/hal/btc
 ccflags-y += -I$(src)/hal/phydm -I$(src)/core/crypto -I$(src)/platform

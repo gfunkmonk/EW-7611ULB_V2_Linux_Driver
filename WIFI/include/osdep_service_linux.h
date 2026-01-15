@@ -24,27 +24,17 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/namei.h>
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 5))
-	#include <linux/kref.h>
-#endif
+#include <linux/kref.h>
 /* #include <linux/smp_lock.h> */
 #include <linux/netdevice.h>
 #include <linux/inetdevice.h>
 #include <linux/skbuff.h>
 #include <linux/circ_buf.h>
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 12, 0))
-	#include <linux/uaccess.h>
-#else
-	#include <asm/uaccess.h>
-#endif
+#include <linux/uaccess.h>
 #include <asm/byteorder.h>
 #include <asm/atomic.h>
 #include <asm/io.h>
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 26))
-	#include <asm/semaphore.h>
-#else
-	#include <linux/semaphore.h>
-#endif
+#include <linux/semaphore.h>
 #include <linux/sem.h>
 #include <linux/sched.h>
 #include <linux/etherdevice.h>
@@ -76,9 +66,7 @@
 #endif
 
 #ifdef RTK_DMP_PLATFORM
-	#if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 12))
-		#include <linux/pageremap.h>
-	#endif
+	#include <linux/pageremap.h>
 	#include <asm/io.h>
 #endif
 
@@ -89,14 +77,7 @@
 /* Monitor mode */
 #include <net/ieee80211_radiotap.h>
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24))
-	#include <linux/ieee80211.h>
-#endif
-
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25) && \
-	 LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 29))
-	#define CONFIG_IEEE80211_HT_ADDT_INFO
-#endif
+#include <linux/ieee80211.h>
 
 #ifdef CONFIG_IOCTL_CFG80211
 	/*	#include <linux/ieee80211.h> */
@@ -118,11 +99,7 @@
 
 #ifdef CONFIG_USB_HCI
 	#include <linux/usb.h>
-	#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 21))
-		#include <linux/usb_ch9.h>
-	#else
-		#include <linux/usb/ch9.h>
-	#endif
+	#include <linux/usb/ch9.h>
 #endif
 
 #ifdef CONFIG_BT_COEXIST_SOCKET_TRX
@@ -143,28 +120,9 @@
 
 #endif
 
-
-#if (KERNEL_VERSION(2, 6, 29) > LINUX_VERSION_CODE && defined(CONFIG_RTW_NAPI))
-
-	#undef CONFIG_RTW_NAPI
-	/*#warning "Linux Kernel version too old to support NAPI (should newer than 2.6.29)\n"*/
-
-#endif
-
-#if (KERNEL_VERSION(2, 6, 33) > LINUX_VERSION_CODE && defined(CONFIG_RTW_GRO))
-
-	#undef CONFIG_RTW_GRO
-	/*#warning "Linux Kernel version too old to support GRO(should newer than 2.6.33)\n"*/
-
-#endif
-
 typedef struct	semaphore _sema;
 typedef	spinlock_t	_lock;
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37))
-	typedef struct mutex		_mutex;
-#else
-	typedef struct semaphore	_mutex;
-#endif
+typedef struct mutex		_mutex;
 struct rtw_timer_list {
 	struct timer_list timer;
 	void (*function)(void *);
@@ -215,42 +173,11 @@ typedef void	*thread_context;
 typedef void timer_hdl_return;
 typedef void *timer_hdl_context;
 
-#if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 5, 41))
-	typedef struct work_struct _workitem;
-#else
-	typedef struct tq_struct _workitem;
-#endif
-
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24))
-	#define DMA_BIT_MASK(n) (((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
-#endif
+typedef struct work_struct _workitem;
 
 typedef unsigned long systime;
 typedef ktime_t sysptime;
 typedef struct tasklet_struct _tasklet;
-
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 22))
-/* Porting from linux kernel, for compatible with old kernel. */
-static inline unsigned char *skb_tail_pointer(const struct sk_buff *skb)
-{
-	return skb->tail;
-}
-
-static inline void skb_reset_tail_pointer(struct sk_buff *skb)
-{
-	skb->tail = skb->data;
-}
-
-static inline void skb_set_tail_pointer(struct sk_buff *skb, const int offset)
-{
-	skb->tail = skb->data + offset;
-}
-
-static inline unsigned char *skb_end_pointer(const struct sk_buff *skb)
-{
-	return skb->end;
-}
-#endif
 
 __inline static void rtw_list_delete(_list *plist)
 {
@@ -270,13 +197,8 @@ __inline static _list *get_next(_list	*list)
 #define rtw_hlist_for_each_entry(pos, head, member) hlist_for_each_entry(pos, head, member)
 #define rtw_hlist_for_each_safe(pos, n, head) hlist_for_each_safe(pos, n, head)
 #define rtw_hlist_entry(ptr, type, member) hlist_entry(ptr, type, member)
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 9, 0))
 #define rtw_hlist_for_each_entry_safe(pos, np, n, head, member) hlist_for_each_entry_safe(pos, n, head, member)
 #define rtw_hlist_for_each_entry_rcu(pos, node, head, member) hlist_for_each_entry_rcu(pos, head, member)
-#else
-#define rtw_hlist_for_each_entry_safe(pos, np, n, head, member) hlist_for_each_entry_safe(pos, np, n, head, member)
-#define rtw_hlist_for_each_entry_rcu(pos, node, head, member) hlist_for_each_entry_rcu(pos, node, head, member)
-#endif
 
 __inline static void _enter_critical(_lock *plock, _irqL *pirqL)
 {
