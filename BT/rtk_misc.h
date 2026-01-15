@@ -45,15 +45,15 @@
 /* #define RTKBT_TV_POWERON_WHITELIST */
 
 #if 1
-#define RTKBT_DBG(fmt, arg...) printk(KERN_INFO "rtk_btusb: " fmt "\n" , ## arg)
-#define RTKBT_INFO(fmt, arg...) printk(KERN_INFO "rtk_btusb: " fmt "\n" , ## arg)
-#define RTKBT_WARN(fmt, arg...) printk(KERN_WARNING "rtk_btusb: " fmt "\n", ## arg)
+#define RTKBT_DBG(fmt, arg...) pr_info("rtk_btusb: " fmt "\n" , ## arg)
+#define RTKBT_INFO(fmt, arg...) pr_info("rtk_btusb: " fmt "\n" , ## arg)
+#define RTKBT_WARN(fmt, arg...) pr_warn("rtk_btusb: " fmt "\n", ## arg)
 #else
 #define RTKBT_DBG(fmt, arg...)
 #endif
 
 #if 1
-#define RTKBT_ERR(fmt, arg...) printk(KERN_ERR "rtk_btusb: " fmt "\n" , ## arg)
+#define RTKBT_ERR(fmt, arg...) pr_err("rtk_btusb: " fmt "\n" , ## arg)
 #else
 #define RTKBT_ERR(fmt, arg...)
 #endif
