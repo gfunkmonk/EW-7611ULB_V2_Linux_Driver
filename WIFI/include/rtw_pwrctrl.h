@@ -612,10 +612,6 @@ struct pwrctrl_priv {
 #endif
 #ifdef CONFIG_LPS_PG
 	struct rsvd_page_cache_t lpspg_info;
-#ifdef CONFIG_RTL8822C
-	struct rsvd_page_cache_t lpspg_dpk_info;
-	struct rsvd_page_cache_t lpspg_iqk_info;
-#endif
 #endif
 	u8 current_lps_hw_port_id;
 

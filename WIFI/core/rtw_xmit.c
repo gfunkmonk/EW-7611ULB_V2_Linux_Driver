@@ -1602,12 +1602,6 @@ inline u8 rtw_get_hwseq_no(_adapter *padapter)
 	u8 hwseq_num = 0;
 
 #ifdef CONFIG_CONCURRENT_MODE
-	#if defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822C) || defined(CONFIG_RTL8814B) \
-	    || defined(CONFIG_RTL8723F)
-	hwseq_num = padapter->iface_id;
-	if (hwseq_num > 3)
-		hwseq_num = 3;
-	#else
 	if (!is_primary_adapter(padapter))
 		hwseq_num = 1;
 	#endif

@@ -237,59 +237,16 @@ void rtw_phydm_fill_desc_dpt(void *dm, u8 *desc, u8 dpt_lv)
 
 	switch (rtw_get_chip_type(adapter)) {
 /*
-	#ifdef CONFIG_RTL8188F
-	case RTL8188F:
-		break;
-	#endif
 
-	#ifdef CONFIG_RTL8723B
-	case RTL8723B :
-		break;
-	#endif
 
-	#ifdef CONFIG_RTL8703B
-	case RTL8703B :
-		break;
-	#endif
 
-	#ifdef CONFIG_RTL8812A
-	case RTL8812 :
-		break;
-	#endif
 
-	#ifdef CONFIG_RTL8821A
-	case RTL8821:
-		break;
-	#endif
 
-	#ifdef CONFIG_RTL8814A
-	case RTL8814A :
-		break;
-	#endif
 
-	#ifdef CONFIG_RTL8192F
-	case RTL8192F :
-		break;
-	#endif
 */
 /*
-	#ifdef CONFIG_RTL8192E
-	case RTL8192E :
-		SET_TX_DESC_TX_POWER_0_PSET_92E(desc, dpt_lv);
-		break;
-	#endif
 */
-	#ifdef CONFIG_RTL8822B
-	case RTL8822B :
-		SET_TX_DESC_TXPWR_OFSET_8822B(desc, dpt_lv);
-	break;
-	#endif
 
-	#ifdef CONFIG_RTL8821C
-	case RTL8821C :
-		SET_TX_DESC_TXPWR_OFSET_8821C(desc, dpt_lv);
-	break;
-	#endif
 
 	default :
 		RTW_ERR("%s IC not support dynamic tx power\n", __func__);
@@ -489,10 +446,6 @@ void Init_ODM_ComInfo(_adapter *adapter)
 	odm_cmn_info_hook(pDM_Odm, ODM_CMNINFO_TX_TP, &(dvobj->traffic_stat.cur_tx_tp));
 	odm_cmn_info_hook(pDM_Odm, ODM_CMNINFO_RX_TP, &(dvobj->traffic_stat.cur_rx_tp));
 	odm_cmn_info_hook(pDM_Odm, ODM_CMNINFO_ANT_TEST, &(pHalData->antenna_test));
-#ifdef CONFIG_RTL8723B
-	odm_cmn_info_hook(pDM_Odm, ODM_CMNINFO_IS1ANTENNA, &pHalData->EEPROMBluetoothAntNum);
-	odm_cmn_info_hook(pDM_Odm, ODM_CMNINFO_RFDEFAULTPATH, &pHalData->ant_path);
-#endif /*CONFIG_RTL8723B*/
 #ifdef CONFIG_USB_HCI
 	odm_cmn_info_hook(pDM_Odm, ODM_CMNINFO_HUBUSBMODE, &(dvobj->usb_speed));
 #endif
@@ -1458,68 +1411,6 @@ u8 rtw_hal_runtime_trx_path_decision(_adapter *adapter)
 	tx_path_nss_set_default(hal_data->txpath_nss, hal_data->txpath_num_nss
 		, GET_HAL_TX_PATH_BMP(adapter));
 
-#if defined(CONFIG_RTL8192F) || defined(CONFIG_RTL8822B) ||defined(CONFIG_RTL8822C)
-{
-	enum bb_path txpath_1ss;
-
-	if (txpath == BB_PATH_AB) {
-		switch (hal_data->max_tx_cnt) {
-		case 2:
-			#ifdef CONFIG_RTW_TX_NPATH_EN
-			if (adapter->registrypriv.tx_npath == 1)
-				txpath_1ss = BB_PATH_AB;
-			else
-			#endif
-			#ifdef CONFIG_RTW_PATH_DIV
-			if (adapter->registrypriv.path_div == 1) /* path diversity, support 2sts TX */
-				txpath_1ss = BB_PATH_AUTO;
-			else
-			#endif
-				txpath_1ss = BB_PATH_A;
-			break;
-		case 1:
-			#ifdef CONFIG_RTW_PATH_DIV
-			if (adapter->registrypriv.path_div == 1) /* path diversity, no support 2sts TX */
-				txpath = txpath_1ss = BB_PATH_AUTO;
-			else
-			#endif
-				txpath = txpath_1ss = BB_PATH_A;
-			break;
-		default:
-			RTW_ERR("%s invalid max_tx_cnt:%u\n", __func__
-				, hal_data->max_tx_cnt);
-			rtw_warn_on(1);
-			goto exit;
-		}
-	} else 
-		txpath_1ss = txpath;
-
-	if (hal_data->txpath_nss[0] != txpath_1ss) {
-		hal_data->txpath_nss[0] = txpath_1ss;
-		if (txpath_1ss == BB_PATH_AUTO)
-			hal_data->txpath_num_nss[0] = 1;
-		else {
-			hal_data->txpath_num_nss[0] = 0;
-			for (i = 0; i < RF_PATH_MAX; i++) {
-				if (txpath_1ss & BIT(i))
-					hal_data->txpath_num_nss[0]++;
-			}
-		}
-	}
-}
-#elif defined(CONFIG_RTL8814B)
-{
-	/* 8814B is always full-TX */
-	tx_path_nss_set_full_tx(hal_data->txpath_nss, hal_data->txpath_num_nss, txpath);
-}
-#elif defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8192E)
-{
-	#ifdef CONFIG_RTW_TX_NPATH_EN
-	if (adapter->registrypriv.tx_npath == 1)
-		tx_path_nss_set_full_tx(hal_data->txpath_nss, hal_data->txpath_num_nss, txpath);
-	#endif
-}
-#endif
 
 	hal_data->txpath = txpath;
 	hal_data->rxpath = rxpath;
@@ -1540,47 +1431,6 @@ static u8 rtw_phydm_config_trx_path(_adapter *adapter)
 {
 	u8 rst = _SUCCESS;
 
-#if defined(CONFIG_RTL8192F) || defined(CONFIG_RTL8822B) ||defined(CONFIG_RTL8822C)
-{
-	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
-	enum bb_path txpath = hal_data->txpath;
-	enum bb_path rxpath = hal_data->rxpath;
-	enum bb_path txpath_1ss = hal_data->txpath_nss[0];
-
-	if (phydm_api_trx_mode(adapter_to_phydm(adapter), txpath, rxpath, txpath_1ss) == FALSE) {
-		RTW_ERR("%s txpath=0x%x, rxpath=0x%x, txpath_1ss=0x%x fail\n", __func__
-			, txpath, rxpath, txpath_1ss);
-		rtw_warn_on(1);
-		rst = _FAIL;
-	}
-}
-#elif defined(CONFIG_RTL8814B)
-{
-	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
-	enum bb_path txpath = hal_data->txpath;
-	enum bb_path rxpath = hal_data->rxpath;
-
-	if (txpath == BB_PATH_ABCD && rxpath == BB_PATH_ABCD)
-		rst = config_phydm_trx_mode_8814b(adapter_to_phydm(adapter), txpath, rxpath);
-	else
-		rst = config_phydm_trx_mode_ext_8814b(adapter_to_phydm(adapter), txpath,
-						      rxpath,
-						      txpath, txpath, txpath);
-	if (rst == FALSE) {
-		RTW_ERR("%s txpath=0x%x, rxpath=0x%x fail\n", __func__
-			, txpath, rxpath);
-		rtw_warn_on(1);
-		rst = _FAIL;
-	}
-}
-#elif defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8192E)
-{
-	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
-
-	if (hal_data->txpath_num_nss[0] == 2)
-		phydm_tx_2path(adapter_to_phydm(adapter));
-}
-#endif
 
 	return rst;
 }

@@ -53,9 +53,6 @@ enum _EFUSE_DEF_TYPE {
 /*RTL8822B 8821C BT EFUSE Define 1 BANK 128 size logical map 1024*/
 #ifdef RTW_HALMAC
 #define BANK_NUM		1
-#if defined(CONFIG_RTL8723F)
-#define EFUSE_BT_REAL_BANK_CONTENT_LEN		512
-#else
 #define EFUSE_BT_REAL_BANK_CONTENT_LEN		128
 #endif
 
@@ -63,11 +60,6 @@ enum _EFUSE_DEF_TYPE {
 #define EFUSE_BT_MAP_LEN				1024	/* 1k bytes */
 #define EFUSE_BT_MAX_SECTION			(EFUSE_BT_MAP_LEN / 8)
 
-#if defined(CONFIG_RTL8822C)
-#define EFUSE_PROTECT_BYTES_BANK		54
-#elif defined(CONFIG_RTL8723F)
-#define EFUSE_PROTECT_BYTES_BANK		40
-#else
 #define EFUSE_PROTECT_BYTES_BANK		16
 #endif
 #define AVAILABLE_EFUSE_ADDR(addr)	(addr < EFUSE_BT_REAL_CONTENT_LEN - EFUSE_PROTECT_BYTES_BANK)
@@ -219,9 +211,6 @@ u8	rtw_efuse_map_read(PADAPTER padapter, u16 addr, u16 cnts, u8 *data);
 u8	rtw_efuse_map_write(PADAPTER padapter, u16 addr, u16 cnts, u8 *data);
 u8	rtw_BT_efuse_map_read(PADAPTER padapter, u16 addr, u16 cnts, u8 *data);
 u8	rtw_BT_efuse_map_write(PADAPTER padapter, u16 addr, u16 cnts, u8 *data);
-#ifdef CONFIG_RTL8822C
-void	rtw_pre_bt_efuse(PADAPTER padapter);
-#endif
 u16	Efuse_GetCurrentSize(PADAPTER pAdapter, u8 efuseType, BOOLEAN bPseudoTest);
 u8	Efuse_CalculateWordCnts(u8 word_en);
 void	ReadEFuseByte(PADAPTER Adapter, u16 _offset, u8 *pbuf, BOOLEAN bPseudoTest) ;

@@ -110,37 +110,10 @@ typedef enum _RX_AGG_MODE {
 #endif /* RTW_RX_AGGREGATION */
 
 /* E-Fuse */
-#ifdef CONFIG_RTL8188E
-	#define EFUSE_MAP_SIZE	512
-#endif
 #if defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8821A) || defined(CONFIG_RTL8814A)
 	#define EFUSE_MAP_SIZE	512
 #endif
-#ifdef CONFIG_RTL8192E
 	#define EFUSE_MAP_SIZE	512
-#endif
-#ifdef CONFIG_RTL8723B
-	#define EFUSE_MAP_SIZE	512
-#endif
-#ifdef CONFIG_RTL8814A
-	#define EFUSE_MAP_SIZE	512
-#endif
-#ifdef CONFIG_RTL8703B
-	#define EFUSE_MAP_SIZE	512
-#endif
-	#define EFUSE_MAP_SIZE	512
-#ifdef CONFIG_RTL8188F
-	#define EFUSE_MAP_SIZE	512
-#endif
-#ifdef CONFIG_RTL8188GTV
-	#define EFUSE_MAP_SIZE	512
-#endif
-#ifdef CONFIG_RTL8710B
-	#define EFUSE_MAP_SIZE	512
-#endif
-#ifdef CONFIG_RTL8192F
-	#define EFUSE_MAP_SIZE	512
-#endif
 
 #if defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8814B)
 	#define EFUSE_MAX_SIZE	1024
@@ -163,13 +136,6 @@ typedef enum _RX_AGG_MODE {
 #define Mac_DropPacket		0xA0000000
 
 #ifdef CONFIG_RF_POWER_TRIM
-#if defined(CONFIG_RTL8723B)
-	#define REG_RF_BB_GAIN_OFFSET	0x7f
-	#define RF_GAIN_OFFSET_MASK		0xfffff
-#elif defined(CONFIG_RTL8188E)
-	#define REG_RF_BB_GAIN_OFFSET	0x55
-	#define RF_GAIN_OFFSET_MASK		0xfffff
-#else
 	#define REG_RF_BB_GAIN_OFFSET	0x55
 	#define RF_GAIN_OFFSET_MASK		0xfffff
 #endif /* CONFIG_RTL8723B */
@@ -472,9 +438,6 @@ typedef struct hal_com_data {
 	struct kfree_data_t kfree_data;
 #endif /*CONFIG_RF_POWER_TRIM*/
 
-#ifdef CONFIG_RTL8814A
-	u32	BackUp_BB_REG_4_2nd_CCA[3];
-#endif
 	u8	adjuseVoltageVal;
 	u8	need_restore;
 	u8	EfuseUsedPercentage;
@@ -646,9 +609,6 @@ typedef struct hal_com_data {
 	/* SDIO Tx FIFO related. */
 	/*  */
 	/* HIQ, MID, LOW, PUB free pages; padapter->xmitpriv.free_txpg */
-#ifdef CONFIG_RTL8192F
-	u16			SdioTxFIFOFreePage[SDIO_TX_FREE_PG_QUEUE];
-#else
 	u8			SdioTxFIFOFreePage[SDIO_TX_FREE_PG_QUEUE];
 #endif/*CONFIG_RTL8192F*/
 #ifdef CONFIG_SDIO_TX_ENABLE_AVAL_INT
@@ -674,24 +634,6 @@ typedef struct hal_com_data {
 #ifndef RTW_HALMAC
 	u32			sdio_tx_max_len[SDIO_MAX_TX_QUEUE];/* H, N, L, used for sdio tx aggregation max length per queue */
 #else
-#ifdef CONFIG_RTL8821C
-	u16			tx_high_page;
-	u16			tx_low_page;
-	u16			tx_normal_page;
-	u16			tx_extra_page;
-	u16			tx_pub_page;
-	u8			max_oqt_size;
-	#ifdef XMIT_BUF_SIZE
-	u32			max_xmit_size_vovi;
-	u32			max_xmit_size_bebk;
-	#endif /*XMIT_BUF_SIZE*/
-	u16			max_xmit_page;
-	u16			max_xmit_page_vo;
-	u16			max_xmit_page_vi;
-	u16			max_xmit_page_be;
-	u16			max_xmit_page_bk;
-
-#endif /*#ifdef CONFIG_RTL8821C*/
 #endif /* !RTW_HALMAC */
 #endif /* CONFIG_SDIO_HCI */
 
@@ -793,10 +735,6 @@ typedef struct hal_com_data {
 #if defined(CONFIG_PCI_HCI) && defined(RTL8814AE_SW_BCN)
 	BOOLEAN bCorrectBCN;
 #endif
-#ifdef CONFIG_RTL8814A
-	u32 RxGainOffset[4]; /*{2G, 5G_Low, 5G_Middle, G_High}*/
-	u8 BackUp_IG_REG_4_Chnl_Section[4]; /*{A,B,C,D}*/
-#endif
 	struct hal_iqk_reg_backup iqk_reg_backup[MAX_IQK_INFO_BACKUP_CHNL_NUM];
 
 #ifdef RTW_HALMAC
@@ -821,9 +759,6 @@ typedef struct hal_com_data {
 	/* for multi channel case (ex: MCC/TDLS) */
 	u8 multi_ch_switch_mode;
 	
-#ifdef CONFIG_RTL8814B
-	u8 dma_ch_map[32];	/* TXDESC qsel maximum size */
-#endif
 
 #ifndef RTW_HALMAC /* for SIFS initial value */
 	u16 init_reg_0x428;

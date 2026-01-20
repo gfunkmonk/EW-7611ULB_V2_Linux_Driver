@@ -41,12 +41,6 @@
 #endif
 
 
-#if defined(CONFIG_RTL8821C) && defined(CONFIG_SDIO_HCI) && defined(CONFIG_RECV_THREAD_MODE)
-	#ifdef NR_RECVBUFF
-	#undef NR_RECVBUFF
-	#define NR_RECVBUFF (32)
-	#endif
-#endif
 
 #define NR_RECVFRAME 256
 

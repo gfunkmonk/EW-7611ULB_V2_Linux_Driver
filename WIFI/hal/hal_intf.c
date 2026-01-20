@@ -290,26 +290,12 @@ void _dump_rf_path(void *sel, _adapter *adapter)
 		, rf_type_to_rfpath_str(hal_data->rf_type), hal_data->NumTotalRFPath);
 }
 
-#ifdef CONFIG_RTL8814A
-extern enum rf_type rtl8814a_rfpath_decision(_adapter *adapter);
-#endif
 
 u8 rtw_hal_rfpath_init(_adapter *adapter)
 {
 	HAL_DATA_TYPE *hal_data = GET_HAL_DATA(adapter);
 	struct hal_spec_t *hal_spec = GET_HAL_SPEC(adapter);
 
-#ifdef CONFIG_RTL8814A
-if (IS_HARDWARE_TYPE_8814A(adapter)) {
-	enum bb_path tx_bmp, rx_bmp;
-	hal_data->rf_type = rtl8814a_rfpath_decision(adapter);
-	rf_type_to_default_trx_bmp(hal_data->rf_type, &tx_bmp, &rx_bmp);
-	hal_data->trx_path_bmp = (tx_bmp << 4) | rx_bmp;
-	hal_data->NumTotalRFPath = 4;
-	hal_data->max_tx_cnt = hal_spec->max_tx_cnt;
-	hal_data->max_tx_cnt = rtw_min(hal_data->max_tx_cnt, rf_type_to_rf_tx_cnt(hal_data->rf_type));
-} else
-#endif
 {
 	struct registry_priv *regsty = adapter_to_regsty(adapter);
 	u8 trx_path_bmp;
@@ -1288,9 +1274,6 @@ exit:
 }
 #endif /* CONFIG_FW_C2H_PKT */
 
-#if defined(CONFIG_MP_INCLUDED) && defined(CONFIG_RTL8723B)
-#include <rtw_bt_mp.h> /* for MPTBT_FwC2hBtMpCtrl */
-#endif
 s32 c2h_handler(_adapter *adapter, u8 id, u8 seq, u8 plen, u8 *payload)
 {
 	u8 sub_id = 0;
@@ -1306,9 +1289,6 @@ s32 c2h_handler(_adapter *adapter, u8 id, u8 seq, u8 plen, u8 *payload)
 		rtw_btcoex_BtInfoNotify(adapter, plen, payload);
 		break;
 	case C2H_BT_MP_INFO:
-		#if defined(CONFIG_MP_INCLUDED) && defined(CONFIG_RTL8723B)
-		MPTBT_FwC2hBtMpCtrl(adapter, payload, plen);
-		#endif
 		rtw_btcoex_BtMpRptNotify(adapter, plen, payload);
 		break;
 	case C2H_MAILBOX_STATUS:

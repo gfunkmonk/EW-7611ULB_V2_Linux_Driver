@@ -27,12 +27,6 @@
 
 
 
-#ifdef CONFIG_RTL8812A
-	#undef RTL8812A_SUPPORT
-	#define RTL8812A_SUPPORT				1
-	#ifndef CONFIG_FW_C2H_PKT
-		#define CONFIG_FW_C2H_PKT
-	#endif
 	#ifdef CONFIG_BEAMFORMING
 		#define CONFIG_BEAMFORMER_FW_NDPA
 		#define BEAMFORMING_SUPPORT		1	/*for phydm beamforming*/
@@ -47,12 +41,6 @@
 
 
 
-#ifdef CONFIG_RTL8192E
-	#undef RTL8192E_SUPPORT
-	#define RTL8192E_SUPPORT				1
-	#ifndef CONFIG_FW_C2H_PKT
-		#define CONFIG_FW_C2H_PKT
-	#endif
 	#define CONFIG_RTS_FULL_BW
 
 	#ifndef CONFIG_TXPWR_PG_WITH_PWR_IDX
@@ -81,12 +69,6 @@
 	#define CONFIG_TXPWR_PG_WITH_PWR_IDX
 	#endif
 
-#ifdef CONFIG_RTL8814A
-	#undef RTL8814A_SUPPORT
-	#define RTL8814A_SUPPORT				1
-	#ifndef CONFIG_FW_C2H_PKT
-		#define CONFIG_FW_C2H_PKT
-	#endif
 	#define CONFIG_FW_CORRECT_BCN
 	#ifdef CONFIG_BEAMFORMING
 		#define BEAMFORMING_SUPPORT		1	/*for phydm beamforming*/
@@ -109,12 +91,6 @@
 
 
 
-#ifdef CONFIG_RTL8710B
-	#undef RTL8710B_SUPPORT
-	#define RTL8710B_SUPPORT				1
-	#ifndef CONFIG_FW_C2H_PKT
-		#define CONFIG_FW_C2H_PKT
-	#endif
 	#define CONFIG_RTS_FULL_BW
 
 	#ifndef CONFIG_TXPWR_PG_WITH_PWR_IDX
@@ -122,12 +98,6 @@
 	#endif
 #endif
 
-#ifdef CONFIG_RTL8814B
-	#undef RTL8814B_SUPPORT
-	#define RTL8814B_SUPPORT				1
-	#ifndef CONFIG_FW_C2H_PKT
-		#define CONFIG_FW_C2H_PKT
-	#endif /* CONFIG_FW_C2H_PKT */
 	#define RTW_TX_PA_BIAS	/* Adjust TX PA Bias from eFuse */
 	#define RTW_AMPDU_AGG_RETRY_AND_NEW
 

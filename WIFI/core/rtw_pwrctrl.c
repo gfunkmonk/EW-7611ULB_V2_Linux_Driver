@@ -2271,10 +2271,6 @@ void rtw_init_pwrctrl_priv(PADAPTER padapter)
 
 #ifdef CONFIG_LPS_PG
 	pwrctrlpriv->lpspg_info.name = "LPSPG_INFO";
-	#ifdef CONFIG_RTL8822C
-	pwrctrlpriv->lpspg_dpk_info.name = "LPSPG_DPK_INFO";
-	pwrctrlpriv->lpspg_iqk_info.name = "LPSPG_IQK_INFO";
-	#endif
 #endif
 
 	rtw_init_timer(&pwrctrlpriv->pwr_state_check_timer, padapter, pwr_state_check_handler, padapter);
@@ -2425,10 +2421,6 @@ void rtw_free_pwrctrl_priv(PADAPTER adapter)
 
 #ifdef CONFIG_LPS_PG
 	rsvd_page_cache_free(&pwrctrlpriv->lpspg_info);
-	#ifdef CONFIG_RTL8822C
-	rsvd_page_cache_free(&pwrctrlpriv->lpspg_dpk_info);
-	rsvd_page_cache_free(&pwrctrlpriv->lpspg_iqk_info);
-	#endif
 #endif
 
 #ifdef CONFIG_WOWLAN

@@ -2704,13 +2704,6 @@ int rtw_halmac_poweron(struct dvobj_priv *d)
 	struct halmac_api *api;
 	enum halmac_ret_status status;
 	int err = -1;
-#if defined(CONFIG_PCI_HCI) && defined(CONFIG_RTL8822B)
-	struct _ADAPTER *a;
-	u8 v8;
-	u32 addr;
-
-	a = dvobj_get_primary_adapter(d);
-#endif
 
 	halmac = dvobj_to_halmac(d);
 	if (!halmac)
@@ -2728,42 +2721,10 @@ int rtw_halmac_poweron(struct dvobj_priv *d)
 		goto out;
 #endif /* CONFIG_SDIO_HCI */
 
-#if defined(CONFIG_PCI_HCI) && defined(CONFIG_RTL8822B)
-	addr = 0x3F3;
-	v8 = rtw_read8(a, addr);
-	RTW_PRINT("%s: 0x%X = 0x%02x\n", __FUNCTION__, addr, v8);
-	/* are we in pcie debug mode? */
-	if (!(v8 & BIT(2))) {
-		RTW_PRINT("%s: Enable pcie debug mode\n", __FUNCTION__);
-		v8 |= BIT(2);
-		v8 = rtw_write8(a, addr, v8);
-	}
-#endif
 
 	status = _power_switch(halmac, api, HALMAC_MAC_POWER_ON);
 	if (HALMAC_RET_PWR_UNCHANGE == status) {
 
-#if defined(CONFIG_PCI_HCI) && defined(CONFIG_RTL8822B)
-		addr = 0x3F3;
-		v8 = rtw_read8(a, addr);
-		RTW_PRINT("%s: 0x%X = 0x%02x\n", __FUNCTION__, addr, v8);
-		
-		/* are we in pcie debug mode? */
-		if (!(v8 & BIT(2))) {
-			RTW_PRINT("%s: Enable pcie debug mode\n", __FUNCTION__);
-			v8 |= BIT(2);
-			v8 = rtw_write8(a, addr, v8);
-		} else if (v8 & BIT(0)) {
-			/* DMA stuck */
-			addr = 0x1350;
-			v8 = rtw_read8(a, addr);
-			RTW_PRINT("%s: 0x%X = 0x%02x\n", __FUNCTION__, addr, v8);
-			RTW_PRINT("%s: recover DMA stuck\n", __FUNCTION__);
-			v8 |= BIT(6);
-			v8 = rtw_write8(a, addr, v8);
-			RTW_PRINT("%s: 0x%X = 0x%02x\n", __FUNCTION__, addr, v8);
-		}
-#endif
 		/*
 		 * Work around for warm reboot but device not power off,
 		 * but it would also fall into this case when auto power on is enabled.
@@ -3238,19 +3199,6 @@ static enum halmac_ret_status _enter_cpu_sleep_mode(struct dvobj_priv *d)
 	mac = dvobj_to_halmac(d);
 	api = HALMAC_GET_API(mac);
 
-#ifdef CONFIG_RTL8822B
-	/* Support after firmware version 21 */
-	if (hal->firmware_version < 21)
-		return HALMAC_RET_NOT_SUPPORT;
-#elif defined(CONFIG_RTL8821C)
-	/* Support after firmware version 13.6 or 16 */
-	if (hal->firmware_version == 13) {
-		if (hal->firmware_sub_version < 6)
-			return HALMAC_RET_NOT_SUPPORT;
-	} else if (hal->firmware_version < 16) {
-		return HALMAC_RET_NOT_SUPPORT;
-	}
-#endif
 
 	return api->halmac_enter_cpu_sleep_mode(mac);
 }
@@ -5214,28 +5162,6 @@ static enum halmac_gpio_func _gpio_to_func_for_rfe_ctrl(u8 gpio)
 	enum halmac_gpio_func f = HALMAC_GPIO_FUNC_UNDEFINE;
 
 
-#ifdef CONFIG_RTL8822C
-	switch (gpio) {
-	case 1:
-		f = HALMAC_GPIO_FUNC_ANTSWB;
-		break;
-	case 2:
-		f = HALMAC_GPIO_FUNC_S1_TRSW;
-		break;
-	case 3:
-		f = HALMAC_GPIO_FUNC_S0_TRSW;
-		break;
-	case 6:
-		f = HALMAC_GPIO_FUNC_S0_PAPE;
-		break;
-	case 7:
-		f = HALMAC_GPIO_FUNC_S0_TRSWB;
-		break;
-	case 13:
-		f = HALMAC_GPIO_FUNC_ANTSW;
-		break;
-	}
-#endif /* CONFIG_RTL8822C */
 
 	return f;
 }

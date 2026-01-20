@@ -1273,11 +1273,6 @@ u8 rtw_hal_dl_mcc_fw_rsvd_page(_adapter *adapter, u8 *pframe, u16 *index,
 	struct hal_com_data *hal = GET_HAL_DATA(adapter);
 	struct hal_spec_t *hal_spec = GET_HAL_SPEC(adapter);
 	struct mcc_adapter_priv *mccadapriv = NULL;
-#if defined(CONFIG_RTL8822C)
-	struct dm_struct *phydm = adapter_to_phydm(adapter);
-	struct txagc_table_8822c tab;
-	u8 agc_buff[2][NUM_RATE_AC_2SS]; /* tatol 0x40 rate index for PATH A/B */
-#endif
 	
 	u8 ret = _SUCCESS, i = 0, j  =0, order = 0, CurtPktPageNum = 0;
 	u8 *start = NULL;
@@ -2311,14 +2306,6 @@ static void rtw_hal_mcc_start_prehdl(PADAPTER padapter)
 		mccadapriv->role = MCC_ROLE_MAX;
 	}
 
-#ifdef CONFIG_RTL8822C
-	if (IS_HARDWARE_TYPE_8822C(padapter)) {
-		HAL_DATA_TYPE *hal = GET_HAL_DATA(padapter);
-		struct dm_struct *dm = &hal->odmpriv;
-		
-		odm_cmn_info_update(dm, ODM_CMNINFO_IS_DOWNLOAD_FW, hal->bFWReady);
-	}
-#endif
 }
 
 static u8 rtw_hal_set_mcc_start_setting(PADAPTER padapter, u8 status)
@@ -2485,14 +2472,6 @@ static void rtw_hal_mcc_stop_posthdl(PADAPTER padapter)
 	rtw_hal_mcc_cfg_phydm(padapter, MCC_CFG_PHYDM_STOP, NULL);
 	#endif
 
-#ifdef CONFIG_RTL8822C
-	if (IS_HARDWARE_TYPE_8822C(padapter)) {
-		HAL_DATA_TYPE *hal = GET_HAL_DATA(padapter);
-		struct dm_struct *dm = &hal->odmpriv;
-		
-		odm_cmn_info_update(dm, ODM_CMNINFO_IS_DOWNLOAD_FW, _FALSE);
-	}
-#endif
 }
 
 static void rtw_hal_mcc_start_posthdl(PADAPTER padapter)
@@ -2764,9 +2743,6 @@ static u8 mcc_get_reg_hdl(PADAPTER adapter, const u8 *val)
 	_adapter *cur_iface = NULL;
 	u8 ret = _SUCCESS;
 	u8 cur_order = 0;
-	#ifdef CONFIG_RTL8822C
-	u16 dbg_reg[DBG_MCC_REG_NUM] = {0x4d4,0x522,0x1d70};
-	#else
 	u16 dbg_reg[DBG_MCC_REG_NUM] = {0x4d4,0x522,0xc50,0xe50};
 	#endif
 	u16 dbg_rf_reg[DBG_MCC_RF_REG_NUM] = {0x18};

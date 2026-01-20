@@ -194,12 +194,6 @@ int rtw_uapsd_max_sp = NO_LIMIT;
 int rtw_uapsd_ac_enable = 0x0;
 #endif /* CONFIG_WMMPS_STA */
 
-#if defined(CONFIG_RTL8814A)
-	int rtw_pwrtrim_enable = 2; /* disable kfree , rename to power trim disable */
-#elif defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8822C)
-	/*PHYDM API, must enable by default*/
-	int rtw_pwrtrim_enable = 1;
-#else
 	int rtw_pwrtrim_enable = 0; /* Default Enalbe  power trim by efuse config */
 #endif
 
@@ -296,9 +290,6 @@ int rtw_short_gi = 0xf;
 /* BIT0: Enable VHT LDPC Rx, BIT1: Enable VHT LDPC Tx, BIT4: Enable HT LDPC Rx, BIT5: Enable HT LDPC Tx */
 int rtw_ldpc_cap = 0x33;
 /* BIT0: Enable VHT STBC Rx, BIT1: Enable VHT STBC Tx, BIT4: Enable HT STBC Rx, BIT5: Enable HT STBC Tx */
-#ifdef CONFIG_RTL8192F
-int rtw_stbc_cap = 0x30;
-#else
 int rtw_stbc_cap = 0x13;
 #endif
 module_param(rtw_stbc_cap, int, 0644);
@@ -1029,10 +1020,6 @@ MODULE_PARM_DESC(rtw_scan_interval_thr, "Threshold used to judge if scan " \
 		 "request comes from scan UI, unit is ms.");
 #endif /* RTW_BUSY_DENY_SCAN */
 
-#ifdef CONFIG_RTL8822C_XCAP_NEW_POLICY
-uint rtw_8822c_xcap_overwrite = 1;
-module_param(rtw_8822c_xcap_overwrite, uint, 0644);
-#endif
 
 #ifdef CONFIG_RTW_MULTI_AP
 static int rtw_unassoc_sta_mode_of_stype[UNASOC_STA_SRC_NUM] = CONFIG_RTW_UNASOC_STA_MODE_OF_STYPE;
@@ -1564,9 +1551,6 @@ uint loadparam(_adapter *padapter)
 	registry_par->scan_interval_thr = rtw_scan_interval_thr;
 #endif
 
-#ifdef CONFIG_RTL8822C_XCAP_NEW_POLICY
-	registry_par->rtw_8822c_xcap_overwrite = (u8)rtw_8822c_xcap_overwrite;
-#endif
 
 #ifdef CONFIG_RTW_MULTI_AP
 	rtw_regsty_init_unassoc_sta_param(registry_par);

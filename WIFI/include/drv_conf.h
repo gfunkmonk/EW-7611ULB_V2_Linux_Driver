@@ -587,18 +587,6 @@
 
 		#define CONFIG_SWTIMER_BASED_TXBCN
 
-		#ifdef CONFIG_HWMPCAP_GEN2 /*CONFIG_RTL8822B/CONFIG_RTL8821C/CONFIG_RTL8822C*/
-		#define CONFIG_FW_HANDLE_TXBCN
-
-		#ifdef CONFIG_FW_HANDLE_TXBCN
-			#ifdef CONFIG_SWTIMER_BASED_TXBCN
-				#undef CONFIG_SWTIMER_BASED_TXBCN
-			#endif
-			#undef CONFIG_LIMITED_AP_NUM
-			#define CONFIG_LIMITED_AP_NUM	4
-		#endif
-
-		#endif /*CONFIG_HWMPCAP_GEN2*/
 
 		#ifdef CONFIG_HWMPCAP_GEN3
 			#define CONFIG_PORT_BASED_TXBCN
@@ -612,37 +600,6 @@
 		#endif
 	#endif /*CONFIG_AP_MODE*/
 
-	#ifdef CONFIG_HWMPCAP_GEN2 /*CONFIG_RTL8822B/CONFIG_RTL8821C/CONFIG_RTL8822C*/
-	#define CONFIG_CLIENT_PORT_CFG
-	#define CONFIG_NEW_NETDEV_HDL
-	#endif/*CONFIG_HWMPCAP_GEN2*/
-#endif/*(CONFIG_IFACE_NUMBER > 2)*/
-
-#if defined(CONFIG_MI_UNIQUE_MACADDR_BIT)
-	#if !defined(CONFIG_MI_WITH_MBSSID_CAM)
-		#error "CONFIG_MI_UNIQUE_MACADDR_BIT should not be used without multiple interface !!"
-	#endif
-	#if (CONFIG_MI_UNIQUE_MACADDR_BIT < 24) || ( 47 < CONFIG_MI_UNIQUE_MACADDR_BIT)
-		#error "CONFIG_MI_UNIQUE_MACADDR_BIT should be the bit in NIC specific mac address(BIT[24:47] !!"
-	#endif
-#endif
-
-#define MACID_NUM_SW_LIMIT 32
-#define SEC_CAM_ENT_NUM_SW_LIMIT 32
-
-#ifdef SEC_DEFAULT_KEY_SEARCH
-	#if (CONFIG_IFACE_NUMBER >= 2)
-		#error "Default Key Search only work with only one interface case!"
-	#endif
-#endif
-
-#if defined(CONFIG_WOWLAN) && (defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8822C) || defined(CONFIG_RTL8814B))
-	#define CONFIG_WOW_PATTERN_HW_CAM
-#endif
-
-#ifndef CONFIG_TSF_UPDATE_PAUSE_FACTOR
-#define CONFIG_TSF_UPDATE_PAUSE_FACTOR 200
-#endif
 
 #ifndef CONFIG_TSF_UPDATE_RESTORE_FACTOR
 #define CONFIG_TSF_UPDATE_RESTORE_FACTOR 5

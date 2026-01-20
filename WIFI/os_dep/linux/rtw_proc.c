@@ -1108,18 +1108,6 @@ static ssize_t proc_set_backop_flags_mesh(struct file *file, const char __user *
 
 #endif /* CONFIG_SCAN_BACKOP */
 
-#if defined(CONFIG_LPS_PG) && defined(CONFIG_RTL8822C)
-static int proc_get_lps_pg_debug(struct seq_file *m, void *v)
-{
-	struct net_device *dev = m->private;
-	_adapter *adapter = rtw_netdev_priv(dev);
-	struct dm_struct *dm = adapter_to_phydm(adapter);
-
-	rtw_run_in_thread_cmd(adapter, ((void *)(odm_lps_pg_debug_8822c)), dm);
-
-	return 0;
-}
-#endif
 
 /* gpio setting */
 #ifdef CONFIG_GPIO_API
@@ -5446,9 +5434,6 @@ const struct rtw_proc_hdl adapter_proc_hdls[] = {
 	RTW_PROC_HDL_SSEQ("tx_info_msg", proc_get_tx_info_msg, NULL),
 	RTW_PROC_HDL_SSEQ("rx_info_msg", proc_get_rx_info_msg, proc_set_rx_info_msg),
 
-#if defined(CONFIG_LPS_PG) && defined(CONFIG_RTL8822C)
-	RTW_PROC_HDL_SSEQ("lps_pg_debug", proc_get_lps_pg_debug, NULL),
-#endif
 
 #ifdef CONFIG_GPIO_API
 	RTW_PROC_HDL_SSEQ("gpio_info", proc_get_gpio, proc_set_gpio),

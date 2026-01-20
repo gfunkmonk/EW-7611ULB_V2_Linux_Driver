@@ -702,9 +702,6 @@ void rtw_hal_beamforming_config_csirate(PADAPTER adapter);
 u8 phy_get_capable_tx_num(_adapter *adapter, enum MGN_RATE rate);
 u8 phy_get_current_tx_num(_adapter *adapter, enum MGN_RATE rate);
 
-#ifdef CONFIG_RTL8812A
-u8 * rtw_hal_set_8812a_vendor_ie(_adapter *padapter , u8 *pframe ,uint *frlen );
-#endif
 
 #ifdef CONFIG_PROTSEL_PORT
 void rtw_enter_protsel_port(_adapter *padapter, u8 port_sel);
