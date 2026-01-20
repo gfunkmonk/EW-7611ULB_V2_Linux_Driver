@@ -1302,10 +1302,8 @@ void SetPacketTx(PADAPTER padapter)
 
 
 
-#if defined(CONFIG_RTL8723D)
 	if (IS_HARDWARE_TYPE_8723D(padapter))
 		fill_tx_desc_8723d(padapter);
-#endif
 
 
 
