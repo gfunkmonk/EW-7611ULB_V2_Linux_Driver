@@ -259,17 +259,6 @@ struct tx_buf_desc {
 #endif
 	unsigned int dword[TX_BUFFER_SEG_SIZE * (2 << TX_BUFFER_SEG_NUM)];
 } __packed;
-#else /* non-PCI HCI */
-struct tx_desc {
-	unsigned int txdw0;
-	unsigned int txdw1;
-	unsigned int txdw2;
-	unsigned int txdw3;
-	unsigned int txdw4;
-	unsigned int txdw5;
-	unsigned int txdw6;
-	unsigned int txdw7;
-};
 #else
 struct tx_desc {
 	unsigned int txdw0;
