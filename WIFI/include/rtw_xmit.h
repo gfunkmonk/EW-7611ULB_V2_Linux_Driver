@@ -18,15 +18,7 @@
 
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 	#ifdef CONFIG_TX_AGGREGATION
-		#ifdef CONFIG_RTL8822C
-			#ifdef CONFIG_SDIO_TX_FORMAT_DUMMY_AUTO
-				#define MAX_XMITBUF_SZ	(51200)
-			#else
-				#define MAX_XMITBUF_SZ	(32764)
-			#endif
-		#else
-			#define MAX_XMITBUF_SZ	(20480)	/* 20k */
-		#endif
+		#define MAX_XMITBUF_SZ	(20480)	/* 20k */
 		/* #define SDIO_TX_AGG_MAX	5 */
 	#else
 		#define MAX_XMITBUF_SZ (1664)
@@ -94,12 +86,8 @@
 	#define NR_XMIT_EXTBUFF	(32)
 #endif
 
-#ifdef CONFIG_RTL8812A
-	#define MAX_CMDBUF_SZ	(512 * 18)
-#elif defined(CONFIG_RTL8723D) && defined(CONFIG_LPS_POFF)
+#if defined(CONFIG_RTL8723D) && defined(CONFIG_LPS_POFF)
 	#define MAX_CMDBUF_SZ	(128*70) /*(8960)*/
-#elif defined(CONFIG_RTL8822C) && defined(CONFIG_WAR_OFFLOAD)
-	#define MAX_CMDBUF_SZ	(128*128) /*(16k) */
 #else
 	#define MAX_CMDBUF_SZ	(5120)	/* (4096) */
 #endif
@@ -207,18 +195,8 @@
 #endif
 
 #if defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8821A) ||\
-	defined(CONFIG_RTL8723B) || defined(CONFIG_RTL8192E) ||\
-	defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8703B) ||\
-	defined(CONFIG_RTL8188F) || defined(CONFIG_RTL8188GTV) || defined(CONFIG_RTL8723D) ||\
-	defined(CONFIG_RTL8710B) || defined(CONFIG_RTL8192F) ||\
-	defined(CONFIG_RTL8723F)
+	defined(CONFIG_RTL8723D)
 	#define TXDESC_SIZE 40
-#elif defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8822C)
-	#define TXDESC_SIZE 48		/* HALMAC_TX_DESC_SIZE_8822B */
-#elif defined(CONFIG_RTL8821C)
-	#define TXDESC_SIZE 48		/* HALMAC_TX_DESC_SIZE_8821C */
-#elif defined(CONFIG_RTL8814B)
-	#define TXDESC_SIZE (16 + 32)
 #else
 	#define TXDESC_SIZE 32 /* old IC (ex: 8188E) */
 #endif
@@ -242,7 +220,7 @@
 #endif
 
 #ifdef CONFIG_PCI_HCI
-	#if defined(CONFIG_RTL8192E) || defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822C) || defined(CONFIG_TRX_BD_ARCH)
+	#ifdef CONFIG_TRX_BD_ARCH
 		/* this section is defined for buffer descriptor ring architecture */
 		#define TX_WIFI_INFO_SIZE (TXDESC_SIZE) /* it may add 802.11 hdr or others... */
 		/* tx desc and payload are in the same buf */
@@ -281,8 +259,7 @@ struct tx_buf_desc {
 #endif
 	unsigned int dword[TX_BUFFER_SEG_SIZE * (2 << TX_BUFFER_SEG_NUM)];
 } __packed;
-#elif (defined(CONFIG_RTL8192E) || defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8822C)) && defined(CONFIG_PCI_HCI) /* 8192ee or 8814ae */
-/* 8192EE_TODO */
+#else /* non-PCI HCI */
 struct tx_desc {
 	unsigned int txdw0;
 	unsigned int txdw1;
@@ -878,21 +855,7 @@ extern struct xmit_frame *__rtw_alloc_cmdxmitframe(struct xmit_priv *pxmitpriv,
 extern struct xmit_frame *__rtw_alloc_cmdxmitframe_8192ee(struct xmit_priv *pxmitpriv,
 		enum cmdbuf_type buf_type);
 #define rtw_alloc_bcnxmitframe(p) __rtw_alloc_cmdxmitframe_8192ee(p, CMDBUF_BEACON)
-#elif defined(CONFIG_RTL8822B) && defined(CONFIG_PCI_HCI)
-extern struct xmit_frame *__rtw_alloc_cmdxmitframe_8822be(struct xmit_priv *pxmitpriv,
-		enum cmdbuf_type buf_type);
-#define rtw_alloc_bcnxmitframe(p) __rtw_alloc_cmdxmitframe_8822be(p, CMDBUF_BEACON)
-#elif defined(CONFIG_RTL8822C) && defined(CONFIG_PCI_HCI)
-extern struct xmit_frame *__rtw_alloc_cmdxmitframe_8822ce(struct xmit_priv *pxmitpriv,
-		enum cmdbuf_type buf_type);
-#define rtw_alloc_bcnxmitframe(p) __rtw_alloc_cmdxmitframe_8822ce(p, CMDBUF_BEACON)
-#elif defined(CONFIG_RTL8821C) && defined(CONFIG_PCI_HCI)
-extern struct xmit_frame *__rtw_alloc_cmdxmitframe_8821ce(struct xmit_priv *pxmitpriv,
-		enum cmdbuf_type buf_type);
-#define rtw_alloc_bcnxmitframe(p) __rtw_alloc_cmdxmitframe_8821ce(p, CMDBUF_BEACON)
-#elif defined(CONFIG_RTL8192F) && defined(CONFIG_PCI_HCI)
-extern struct xmit_frame *__rtw_alloc_cmdxmitframe_8192fe(struct xmit_priv *pxmitpriv,
-		enum cmdbuf_type buf_type);
+#elif defined(CONFIG_RTL8723D)
 #define rtw_alloc_bcnxmitframe(p) __rtw_alloc_cmdxmitframe_8192fe(p, CMDBUF_BEACON)
 #elif defined(CONFIG_RTL8812A) && defined(CONFIG_PCI_HCI)
 extern struct xmit_frame *__rtw_alloc_cmdxmitframe_8812ae(struct xmit_priv *pxmitpriv,

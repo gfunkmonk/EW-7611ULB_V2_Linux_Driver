@@ -1378,7 +1378,6 @@ u8 rtw_hal_dl_mcc_fw_rsvd_page(_adapter *adapter, u8 *pframe, u16 *index,
 			i, pmccobjpriv->mcc_pwr_idx_rsvd_page[i]);
 
 		total_rate_offset = start;
-#if !defined(CONFIG_RTL8822C)			
 		for (path = RF_PATH_A; path < hal_spec->rf_reg_path_num; ++path) {
 			total_rate = 0;
 			/* PATH A for 0~63 byte, PATH B for 64~127 byte*/
@@ -1640,91 +1639,6 @@ u8 rtw_hal_dl_mcc_fw_rsvd_page(_adapter *adapter, u8 *pframe, u16 *index,
 			*total_page_num += CurtPktPageNum;
 			*index += (CurtPktPageNum * page_size);
 			RSVD_PAGE_CFG("mcc_pwr_idx_rsvd_page", CurtPktPageNum, *total_page_num, *index);
-#else /* 8822C */
-			for (path = RF_PATH_A; path < hal_spec->rf_reg_path_num; ++path) {
-				/* CCK */
-				if (ch <= 14) {
-					rate_array_sz = rates_by_sections[CCK].rate_num;
-					rates = rates_by_sections[CCK].rates;
-					for (j = 0; j < rate_array_sz; ++j) {
-						power_index = phy_get_tx_power_index_ex(iface, path, CCK, rates[j], bw, band, center_ch, ch);
-						rate = phy_get_rate_idx_of_txpwr_by_rate(rates[j]);
-						agc_buff[path][rate] = power_index;
-					}
-				}
-
-				/* OFDM */
-				rate_array_sz = rates_by_sections[OFDM].rate_num;
-				rates = rates_by_sections[OFDM].rates;
-				for (j = 0; j < rate_array_sz; ++j) {
-					power_index = phy_get_tx_power_index_ex(iface, path, OFDM, rates[j], bw, band, center_ch, ch);
-					rate = phy_get_rate_idx_of_txpwr_by_rate(rates[j]);
-					agc_buff[path][rate] = power_index;
-				}
-				/* HT */
-				rate_array_sz = rates_by_sections[HT_MCS0_MCS7].rate_num;
-				rates = rates_by_sections[HT_MCS0_MCS7].rates;
-				for (j = 0; j < rate_array_sz; ++j) {
-					power_index = phy_get_tx_power_index_ex(iface, path, HT_1SS, rates[j], bw, band, center_ch, ch);
-					rate = phy_get_rate_idx_of_txpwr_by_rate(rates[j]);
-					agc_buff[path][rate] = power_index;
-				}
-
-				rate_array_sz = rates_by_sections[HT_MCS8_MCS15].rate_num;
-				rates = rates_by_sections[HT_MCS8_MCS15].rates;
-				for (j = 0; j < rate_array_sz; ++j) {
-					power_index = phy_get_tx_power_index_ex(iface, path, HT_2SS, rates[j], bw, band, center_ch, ch);
-					rate = phy_get_rate_idx_of_txpwr_by_rate(rates[j]);
-					agc_buff[path][rate] = power_index;
-				}
-				/* VHT */
-				rate_array_sz = rates_by_sections[VHT_1SSMCS0_1SSMCS9].rate_num;
-				rates = rates_by_sections[VHT_1SSMCS0_1SSMCS9].rates;
-				for (j = 0; j < rate_array_sz; ++j) {
-					power_index = phy_get_tx_power_index_ex(iface, path, VHT_1SS, rates[j], bw, band, center_ch, ch);
-					rate = phy_get_rate_idx_of_txpwr_by_rate(rates[j]);
-					agc_buff[path][rate] = power_index;
-				}
-
-				rate_array_sz = rates_by_sections[VHT_2SSMCS0_2SSMCS9].rate_num;
-				rates = rates_by_sections[VHT_2SSMCS0_2SSMCS9].rates;
-				for (j = 0; j < rate_array_sz; ++j) {
-					power_index = phy_get_tx_power_index_ex(iface, path, VHT_2SS, rates[j], bw, band, center_ch, ch);
-					rate = phy_get_rate_idx_of_txpwr_by_rate(rates[j]);
-					agc_buff[path][rate] = power_index;
-				}
-			}
-			phydm_get_txagc_ref_and_diff_8822c(phydm, agc_buff, NUM_RATE_AC_2SS, &tab);
-			*start = tab.ref_pow_cck[0];
-			start++;
-			*start = tab.ref_pow_cck[1];
-			start++;
-			*start = tab.ref_pow_ofdm[0];
-			start++;
-			*start = tab.ref_pow_ofdm[1];
-			start++;
-			_rtw_memcpy(start, tab.diff_t, sizeof(tab.diff_t));
-			CurtPktPageNum = 1;
-			*total_page_num += CurtPktPageNum;
-			*index += (CurtPktPageNum * page_size);
-			RSVD_PAGE_CFG("mcc_pwr_idx_rsvd_page", CurtPktPageNum, *total_page_num, *index);
-			#ifdef DBG_PWR_IDX_RSVD_PAGE
-			if (1) {
-				u8 path_idx;
-				for (path_idx = 0; path_idx < 2; path_idx++) {
-					for (j = 0; j < NUM_RATE_AC_2SS; j++) 
-						RTW_INFO("agc_buff[%d][%d]=%x\n", i, j, agc_buff[i][j]);
-				}
-				RTW_INFO("tab->ref_pow_cck[0]=%x\n", tab.ref_pow_cck[0]);
-				RTW_INFO("tab->ref_pow_cck[1]=%x\n", tab.ref_pow_cck[1]);
-				RTW_INFO("tab->ref_pow_ofdm[0]=%x\n", tab.ref_pow_ofdm[0]);
-				RTW_INFO("tab->ref_pow_ofdm[1]=%x\n", tab.ref_pow_ofdm[1]);
-				RTW_INFO_DUMP("diff_t ", tab.diff_t, NUM_RATE_AC_2SS);
-				RTW_INFO_DUMP("tab ", (u8 *)&tab, sizeof(tab));
-			}
-			#endif
-			
-#endif
 		}
 
 exit:
