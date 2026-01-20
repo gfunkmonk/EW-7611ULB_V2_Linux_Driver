@@ -552,9 +552,6 @@ struct registry_priv {
 	u32 scan_interval_thr;
 #endif
 
-#ifdef CONFIG_RTL8822C_XCAP_NEW_POLICY
-	u8 rtw_8822c_xcap_overwrite;
-#endif
 #ifdef CONFIG_RTW_MULTI_AP
 	u8 unassoc_sta_mode_of_stype[UNASOC_STA_SRC_NUM];
 	u16 max_unassoc_sta_cnt;
@@ -1195,12 +1192,6 @@ struct protsel {
 	u32 sel;		/* save the last sel port */
 };
 
-#ifdef CONFIG_RTL8814B
-#define MAX_BULKOUT_NUM 7
-#ifdef CONFIG_USB_HCI
-#define MAX_ENDPOINT_NUM 8
-#endif
-#else
 #define MAX_BULKOUT_NUM 4
 #ifdef CONFIG_USB_HCI
 #define MAX_ENDPOINT_NUM 6
