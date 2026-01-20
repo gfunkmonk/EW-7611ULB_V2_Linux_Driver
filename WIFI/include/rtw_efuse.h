@@ -61,9 +61,7 @@ enum _EFUSE_DEF_TYPE {
 #define EFUSE_BT_MAX_SECTION			(EFUSE_BT_MAP_LEN / 8)
 
 #define EFUSE_PROTECT_BYTES_BANK		16
-#endif
 #define AVAILABLE_EFUSE_ADDR(addr)	(addr < EFUSE_BT_REAL_CONTENT_LEN - EFUSE_PROTECT_BYTES_BANK)
-#endif /* #ifdef RTW_HALMAC */
 
 #define EXT_HEADER(header) ((header & 0x1F) == 0x0F)
 #define ALL_WORDS_DISABLED(wde)	((wde & 0x0F) == 0x0F)

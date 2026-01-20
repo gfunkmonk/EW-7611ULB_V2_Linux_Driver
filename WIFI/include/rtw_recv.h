@@ -228,6 +228,7 @@ struct rx_pkt_attrib	{
 
 #ifdef CONFIG_TRX_BD_ARCH
 	#define RX_WIFI_INFO_SIZE	24
+#endif
 
 #define RXDESC_SIZE	24
 #define RXDESC_OFFSET RXDESC_SIZE
@@ -251,6 +252,9 @@ struct recv_stat {
 
 	unsigned int rxdw1;
 
+	unsigned int rxdw2;
+
+	unsigned int rxdw3;
 
 #ifndef BUF_DESC_ARCH
 	unsigned int rxdw4;
