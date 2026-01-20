@@ -798,15 +798,12 @@ struct halmac_platform_api rtw_halmac_platform_api = {
 	.SDIO_CMD53_WRITE_32 = _halmac_sdio_reg_write_32,
 	.SDIO_CMD52_CIA_READ = _halmac_sdio_read_cia,
 #endif /* CONFIG_SDIO_HCI */
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_PCI_HCI)
 	.REG_READ_8 = _halmac_reg_read_8,
 	.REG_READ_16 = _halmac_reg_read_16,
 	.REG_READ_32 = _halmac_reg_read_32,
 	.REG_WRITE_8 = _halmac_reg_write_8,
 	.REG_WRITE_16 = _halmac_reg_write_16,
 	.REG_WRITE_32 = _halmac_reg_write_32,
-#endif /* CONFIG_USB_HCI || CONFIG_PCI_HCI */
-
 #ifdef DBG_IO
 	.READ_MONITOR = _halmac_reg_read_monitor,
 	.WRITE_MONITOR = _halmac_reg_write_monitor,
@@ -1094,7 +1091,6 @@ static int init_write_rsvd_page_size(struct dvobj_priv *d)
 	int err = 0;
 
 
-#ifdef CONFIG_USB_HCI
 	/* for USB do not exceed MAX_CMDBUF_SZ */
 	size = 0x1000;
 #elif defined(CONFIG_PCI_HCI)
@@ -1104,7 +1100,6 @@ static int init_write_rsvd_page_size(struct dvobj_priv *d)
 #else
 	/* Use HALMAC default setting and don't call any function */
 	return 0;
-#endif
 #if 0	/* Fail to pass coverity DEADCODE check */
 	/* If size==0, use HALMAC default setting and don't call any function */
 	if (!size)
@@ -3439,11 +3434,9 @@ static int init_mac_flow(struct dvobj_priv *d)
 	if (err)
 		goto out;
 
-#ifdef CONFIG_USB_HCI
 	status = api->halmac_set_bulkout_num(halmac, d->RtNumOutPipes);
 	if (status != HALMAC_RET_SUCCESS)
 		goto out;
-#endif /* CONFIG_USB_HCI */
 
 	trx_mode = _choose_trx_mode(d);
 	status = api->halmac_init_mac_cfg(halmac, trx_mode);
@@ -5599,7 +5592,6 @@ int rtw_halmac_sdio_set_tx_format(struct dvobj_priv *d, enum halmac_sdio_tx_form
 }
 #endif /* CONFIG_SDIO_HCI */
 
-#ifdef CONFIG_USB_HCI
 u8 rtw_halmac_usb_get_bulkout_id(struct dvobj_priv *d, u8 *buf, u32 size)
 {
 	struct halmac_adapter *mac;
@@ -5685,7 +5677,6 @@ u8 rtw_halmac_switch_usb_mode(struct dvobj_priv *d, enum RTW_USB_SPEED usb_mode)
 
 	return _SUCCESS;
 }
-#endif /* CONFIG_USB_HCI */
 
 #ifdef CONFIG_BEAMFORMING
 #ifdef RTW_BEAMFORMING_VERSION_2

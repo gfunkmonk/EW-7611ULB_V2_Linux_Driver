@@ -1193,10 +1193,7 @@ struct protsel {
 };
 
 #define MAX_BULKOUT_NUM 4
-#ifdef CONFIG_USB_HCI
 #define MAX_ENDPOINT_NUM 6
-#endif
-#endif
 
 struct dvobj_priv {
 	/*-------- below is common data --------*/
@@ -1357,7 +1354,6 @@ struct dvobj_priv {
 
 	/*-------- below is for USB INTERFACE --------*/
 
-#ifdef CONFIG_USB_HCI
 
 	u8	usb_speed; /* 1.1, 2.0 or 3.0 */
 	u8	nr_endpoint;
@@ -1388,7 +1384,6 @@ struct dvobj_priv {
 	struct usb_device *pusbdev;
 #endif/* PLATFORM_FREEBSD */
 
-#endif/* CONFIG_USB_HCI */
 
 	/*-------- below is for PCIE INTERFACE --------*/
 
@@ -1524,9 +1519,7 @@ static inline struct device *dvobj_to_dev(struct dvobj_priv *dvobj)
 #ifdef RTW_DVOBJ_CHIP_HW_TYPE
 #endif
 
-#ifdef CONFIG_USB_HCI
 	return &dvobj->pusbintf->dev;
-#endif
 #ifdef CONFIG_SDIO_HCI
 	return &dvobj->intf_data.func->dev;
 #endif
@@ -2010,11 +2003,9 @@ int rtw_suspend_free_assoc_resource(_adapter *padapter);
 #endif
 
 /* HCI Related header file */
-#ifdef CONFIG_USB_HCI
 	#include <usb_osintf.h>
 	#include <usb_ops.h>
 	#include <usb_hal.h>
-#endif
 
 #ifdef CONFIG_SDIO_HCI
 	#include <sdio_osintf.h>

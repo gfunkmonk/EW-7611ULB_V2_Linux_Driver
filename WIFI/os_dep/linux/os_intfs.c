@@ -55,11 +55,9 @@ int rtw_scan_mode = 1;/* active, passive */
 #if (RTW_LPS_MODE > 0)
 	int rtw_power_mgnt = PS_MODE_MAX;
 
-	#ifdef CONFIG_USB_HCI
 		int rtw_lps_level = LPS_NORMAL; /*USB default LPS level*/
 	#else /*SDIO,PCIE*/
 		int rtw_lps_level = (RTW_LPS_MODE - 1);
-	#endif/*CONFIG_USB_HCI*/
 #else
 	int rtw_power_mgnt = PS_MODE_ACTIVE;
 	int rtw_lps_level = LPS_NORMAL;
@@ -417,11 +415,9 @@ int rtw_hwpwrp_detect = 1;
 int rtw_hwpwrp_detect = 0; /* HW power  ping detect 0:disable , 1:enable */
 #endif
 
-#ifdef CONFIG_USB_HCI
 int rtw_hw_wps_pbc = 1;
 #else
 int rtw_hw_wps_pbc = 0;
-#endif
 
 #ifdef CONFIG_80211D
 int rtw_80211d = 0;

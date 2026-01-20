@@ -168,7 +168,6 @@ extern uint rtw_recvbuf_nr;
 	RTW_PRINT_SEL(sel, "CONFIG_RTW_TPT_MODE\n");
 #endif 
 
-#ifdef CONFIG_USB_HCI
 #ifdef CONFIG_SUPPORT_USB_INT
 	RTW_PRINT_SEL(sel, "CONFIG_SUPPORT_USB_INT\n");
 #endif
@@ -193,7 +192,6 @@ extern uint rtw_recvbuf_nr;
 #ifdef CONFIG_FIX_NR_BULKIN_BUFFER
 	RTW_PRINT_SEL(sel, "CONFIG_FIX_NR_BULKIN_BUFFER\n");
 #endif
-#endif /*CONFIG_USB_HCI*/
 
 #ifdef CONFIG_SDIO_HCI
 #ifdef CONFIG_TX_AGGREGATION
@@ -2497,9 +2495,7 @@ int proc_get_trx_info(struct seq_file *m, void *v)
 
 	rtw_hal_get_hwreg(padapter, HW_VAR_DUMP_MAC_TXFIFO, (u8 *)m);
 
-#ifdef CONFIG_USB_HCI
 	RTW_PRINT_SEL(m, "rx_urb_pending_cn=%d\n", ATOMIC_READ(&(precvpriv->rx_pending_cnt)));
-#endif
 
 	dump_rx_bh_tk(m, &GET_PRIMARY_ADAPTER(padapter)->recvpriv);
 
@@ -4636,14 +4632,12 @@ int proc_get_all_sta_info(struct seq_file *m, void *v)
 #ifdef CONFIG_PREALLOC_RX_SKB_BUFFER
 int proc_get_rtkm_info(struct seq_file *m, void *v)
 {
-#ifdef CONFIG_USB_HCI
 	struct net_device *dev = m->private;
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(dev);
 	struct recv_priv	*precvpriv = &padapter->recvpriv;
 	struct recv_buf *precvbuf;
 
 	precvbuf = (struct recv_buf *)precvpriv->precv_buf;
-#endif /* CONFIG_USB_HCI */
 
 	RTW_PRINT_SEL(m, "============[RTKM Info]============\n");
 	RTW_PRINT_SEL(m, "MAX_RTKM_NR_PREALLOC_RECV_SKB: %d\n", rtw_rtkm_get_nr_recv_skb());
@@ -4651,11 +4645,9 @@ int proc_get_rtkm_info(struct seq_file *m, void *v)
 
 	RTW_PRINT_SEL(m, "============[Driver Info]============\n");
 	RTW_PRINT_SEL(m, "NR_PREALLOC_RECV_SKB: %d\n", NR_PREALLOC_RECV_SKB);
-#ifdef CONFIG_USB_HCI
 	RTW_PRINT_SEL(m, "MAX_RECVBUF_SZ: %d\n", precvbuf->alloc_sz);
 #else /* !CONFIG_USB_HCI */
 	RTW_PRINT_SEL(m, "MAX_RECVBUF_SZ: %d\n", MAX_RECVBUF_SZ);
-#endif /* !CONFIG_USB_HCI */
 
 	return 0;
 }

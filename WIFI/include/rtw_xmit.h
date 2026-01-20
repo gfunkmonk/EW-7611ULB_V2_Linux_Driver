@@ -210,14 +210,12 @@
 	#define TXDESC_OFFSET TXDESC_SIZE
 #endif
 
-#ifdef CONFIG_USB_HCI
 	#ifdef USB_PACKET_OFFSET_SZ
 		#define PACKET_OFFSET_SZ (USB_PACKET_OFFSET_SZ)
 	#else
 		#define PACKET_OFFSET_SZ (8)
 	#endif
 	#define TXDESC_OFFSET (TXDESC_SIZE + PACKET_OFFSET_SZ)
-#endif
 
 #ifdef CONFIG_PCI_HCI
 	#ifdef CONFIG_TRX_BD_ARCH
@@ -544,7 +542,6 @@ struct xmit_buf {
 
 	struct submit_ctx *sctx;
 
-#ifdef CONFIG_USB_HCI
 
 	/* u32 sz[8]; */
 	u32	ff_hwaddr;
@@ -559,7 +556,6 @@ struct xmit_buf {
 
 	sint last[8];
 
-#endif
 
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 	u8 *phead;
@@ -607,12 +603,10 @@ struct xmit_frame {
 	u8	agg_num;
 #endif
 
-#ifdef CONFIG_USB_HCI
 #ifdef CONFIG_USB_TX_AGGREGATION
 	u8	agg_num;
 #endif
 	s8	pkt_offset;
-#endif
 
 #ifdef CONFIG_XMIT_ACK
 	u8 ack_report;
@@ -736,7 +730,6 @@ struct	xmit_priv	{
 
 	u8	wmm_para_seq[4];/* sequence for wmm ac parameter strength from large to small. it's value is 0->vo, 1->vi, 2->be, 3->bk. */
 
-#ifdef CONFIG_USB_HCI
 	_sema	tx_retevt;/* all tx return event; */
 	u8		txirp_cnt;
 
@@ -748,7 +741,6 @@ struct	xmit_priv	{
 	int viq_cnt;
 	int voq_cnt;
 
-#endif
 
 #ifdef CONFIG_PCI_HCI
 	/* Tx */

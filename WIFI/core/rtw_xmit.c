@@ -303,7 +303,6 @@ s32	_rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, _adapter *padapter)
 	for (i = 0; i < 4; i++)
 		pxmitpriv->wmm_para_seq[i] = i;
 
-#ifdef CONFIG_USB_HCI
 	pxmitpriv->txirp_cnt = 1;
 
 	_rtw_init_sema(&(pxmitpriv->tx_retevt), 0);
@@ -313,7 +312,6 @@ s32	_rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, _adapter *padapter)
 	pxmitpriv->bkq_cnt = 0;
 	pxmitpriv->viq_cnt = 0;
 	pxmitpriv->voq_cnt = 0;
-#endif
 
 
 #ifdef CONFIG_XMIT_ACK
@@ -3887,7 +3885,6 @@ void rtw_init_xmitframe(struct xmit_frame *pxframe)
 
 		pxframe->frame_tag = DATA_FRAMETAG;
 
-#ifdef CONFIG_USB_HCI
 		pxframe->pkt = NULL;
 #ifdef USB_PACKET_OFFSET_SZ
 		pxframe->pkt_offset = (PACKET_OFFSET_SZ / 8);
@@ -3899,7 +3896,6 @@ void rtw_init_xmitframe(struct xmit_frame *pxframe)
 		pxframe->agg_num = 1;
 #endif
 
-#endif /* #ifdef CONFIG_USB_HCI */
 
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 		pxframe->pg_num = 1;
@@ -4385,11 +4381,8 @@ struct xmit_frame *rtw_dequeue_xframe(struct xmit_priv *pxmitpriv, struct hw_xmi
 		}
 #endif
 
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI) || defined(CONFIG_PCI_HCI)
 		for (j = 0; j < 4; j++)
 			inx[j] = pxmitpriv->wmm_para_seq[j];
-#endif
-	}
 
 	_enter_critical_bh(&pxmitpriv->lock, &irqL0);
 
@@ -6272,12 +6265,10 @@ bool rtw_xmit_ac_blocked(_adapter *adapter)
 	int i;
 #ifdef DBG_CONFIG_ERROR_DETECT
 #ifdef DBG_CONFIG_ERROR_RESET
-#ifdef CONFIG_USB_HCI
 	if (rtw_hal_sreset_inprogress(adapter) == _TRUE) {
 		blocked = _TRUE;
 		goto exit;
 	}
-#endif/* #ifdef CONFIG_USB_HCI */
 #endif/* #ifdef DBG_CONFIG_ERROR_RESET */
 #endif/* #ifdef DBG_CONFIG_ERROR_DETECT */
 

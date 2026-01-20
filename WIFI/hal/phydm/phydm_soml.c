@@ -1227,8 +1227,7 @@ void phydm_soml_bytes_acq(void *dm_void, u8 rate_id, u32 length)
 	}
 }
 
-#if defined(CONFIG_RTL_TRIBAND_SUPPORT) && defined(CONFIG_USB_HCI)
-static void pre_phydm_adaptive_soml_callback(unsigned long task_dm)
+#if defined(CONFIG_RTL_TRIBAND_SUPPORT) static void pre_phydm_adaptive_soml_callback(unsigned long task_dm)
 {
 	struct dm_struct *dm = (struct dm_struct *)task_dm;
 	struct rtl8192cd_priv *priv = dm->priv;
@@ -1276,8 +1275,7 @@ void phydm_adaptive_soml_timers(void *dm_void, u8 state)
 	if (!(dm->support_ic_type & PHYDM_ADAPTIVE_SOML_IC))
 		return;
 
-#if defined(CONFIG_RTL_TRIBAND_SUPPORT) && defined(CONFIG_USB_HCI)
-	struct rtl8192cd_priv *priv = dm->priv;
+#if defined(CONFIG_RTL_TRIBAND_SUPPORT) 	struct rtl8192cd_priv *priv = dm->priv;
 
 	if (priv->hci_type == RTL_HCI_USB) {
 		phydm_adaptive_soml_timers_usb(dm_void, state);

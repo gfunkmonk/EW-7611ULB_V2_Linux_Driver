@@ -61,7 +61,6 @@ _FWDownloadEnable(
 	}
 }
 
-#ifdef CONFIG_USB_HCI
 static int _BlockWrite(struct _ADAPTER *padapter, void *buffer, u32 buffSize)
 {
 	int ret = _SUCCESS;
@@ -186,7 +185,6 @@ static int _BlockWrite(struct _ADAPTER *padapter, void *buffer, u32 buffSize)
 exit:
 	return ret;
 }
-#endif /* !CONFIG_USB_HCI */
 
 static int
 _PageWrite(
@@ -3015,13 +3013,11 @@ void rtl8723d_fill_fake_txdesc(
 		}
 	}
 
-#if defined(CONFIG_USB_HCI)
 	/*
 	 * USB interface drop packet if the checksum of descriptor isn't correct.
 	 * Using this checksum can let hardware recovery from packet bulk out error (e.g. Cancel URC, Bulk out error.).
 	 */
 	rtl8723d_cal_txdesc_chksum((struct tx_desc *)pDesc);
-#endif
 }
 
 void rtl8723d_InitAntenna_Selection(PADAPTER padapter)
@@ -3197,7 +3193,6 @@ s32 rtl8723d_InitLLTTable(PADAPTER padapter)
 	return ret;
 }
 
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 void _DisableGPIO(PADAPTER	padapter)
 {
 	/***************************************
@@ -3499,8 +3494,6 @@ s32 CardDisableWithoutHWSM(PADAPTER padapter)
 
 	return rtStatus;
 }
-#endif /* CONFIG_USB_HCI || CONFIG_SDIO_HCI || CONFIG_GSPI_HCI */
-
 void
 Hal_InitPGData(
 	PADAPTER	padapter,
@@ -4216,10 +4209,8 @@ static void rtl8723d_fill_default_txdesc(
 
 		pkt_offset = 0;
 		offset = TXDESC_SIZE;
-#ifdef CONFIG_USB_HCI
 		pkt_offset = pxmitframe->pkt_offset;
 		offset += (pxmitframe->pkt_offset >> 3);
-#endif /* CONFIG_USB_HCI */
 
 #ifdef CONFIG_TX_EARLY_MODE
 		if (pxmitframe->frame_tag == DATA_FRAMETAG) {
@@ -4263,9 +4254,7 @@ void rtl8723d_update_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf)
 {
 	rtl8723d_fill_default_txdesc(pxmitframe, pbuf);
 
-#if defined(CONFIG_USB_HCI)
 	rtl8723d_cal_txdesc_chksum((struct tx_desc *)pbuf);
-#endif
 }
 
 static void hw_var_set_monitor(PADAPTER adapter, u8 variable, u8 *val)

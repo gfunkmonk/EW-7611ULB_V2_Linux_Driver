@@ -290,9 +290,7 @@ void Hal_ReadRFGainOffset(PADAPTER pAdapter, u8 *hwinfo, BOOLEAN AutoLoadFail);
 	void check_bt_status_work(void *data);
 #endif
 
-#ifdef CONFIG_USB_HCI
 	void rtl8723d_cal_txdesc_chksum(struct tx_desc *ptxdesc);
-#endif
 
 #ifdef CONFIG_PCI_HCI
 	BOOLEAN	InterruptRecognized8723DE(PADAPTER Adapter);

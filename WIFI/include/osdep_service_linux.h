@@ -97,10 +97,8 @@
 	#include <linux/fs.h>
 #endif
 
-#ifdef CONFIG_USB_HCI
 	#include <linux/usb.h>
 	#include <linux/usb/ch9.h>
-#endif
 
 #ifdef CONFIG_BT_COEXIST_SOCKET_TRX
 	#include <net/sock.h>
@@ -110,9 +108,7 @@
 	#include <linux/netlink.h>
 #endif /* CONFIG_BT_COEXIST_SOCKET_TRX */
 
-#ifdef CONFIG_USB_HCI
 	typedef struct urb   *PURB;
-#endif
 
 #if defined(CONFIG_RTW_GRO) && (!defined(CONFIG_RTW_NAPI))
 

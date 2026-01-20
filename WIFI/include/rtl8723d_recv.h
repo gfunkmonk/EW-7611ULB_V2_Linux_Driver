@@ -19,7 +19,6 @@
 #define RECV_BLK_CNT 16
 #define RECV_BLK_TH RECV_BLK_CNT
 
-#if defined(CONFIG_USB_HCI)
 
 	#ifndef MAX_RECVBUF_SZ
 		#ifndef CONFIG_MINIMAL_MEMORY_USAGE
@@ -49,7 +48,6 @@
 
 	#define MAX_RECVBUF_SZ (RX_DMA_BOUNDARY_8723D + 1)
 
-#endif
 
 /* Rx smooth factor */
 #define	Rx_Smooth_Factor (20)
@@ -96,11 +94,9 @@
 	s32 rtl8723ds_recv_hdl(_adapter *padapter);
 #endif
 
-#ifdef CONFIG_USB_HCI
 	int rtl8723du_init_recv_priv(_adapter *padapter);
 	void rtl8723du_free_recv_priv(_adapter *padapter);
 	void rtl8723du_init_recvbuf(_adapter *padapter, struct recv_buf *precvbuf);
-#endif
 
 #ifdef CONFIG_PCI_HCI
 	s32 rtl8723de_init_recv_priv(PADAPTER padapter);

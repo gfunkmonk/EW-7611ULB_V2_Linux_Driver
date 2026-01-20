@@ -86,12 +86,10 @@ BOOLEAN efuse_IsMasked(PADAPTER pAdapter, u16 Offset)
 	if (pAdapter->registrypriv.boffefusemask)
 		return FALSE;
 
-#ifdef CONFIG_USB_HCI
 #if defined(CONFIG_RTL8723D)
 	if (IS_HARDWARE_TYPE_8723D(pAdapter))
 		return (IS_MASKED(8723D, _MUSB, Offset)) ? TRUE : FALSE;
 #endif
-#endif /*CONFIG_USB_HCI*/
 
 	return FALSE;
 }

@@ -53,8 +53,7 @@
 	#include "../8192cd_headers.h"
 	#include "../8192cd_debug.h"
 
-	#if defined(CONFIG_RTL_TRIBAND_SUPPORT) && defined(CONFIG_USB_HCI)
-		#define INIT_TIMER_EVENT_ENTRY(_entry, _func, _data) \
+ #if defined(CONFIG_RTL_TRIBAND_SUPPORT) 		#define INIT_TIMER_EVENT_ENTRY(_entry, _func, _data) \
 		do { \
 			_rtw_init_listhead(&(_entry)->list); \
 			(_entry)->data = (_data); \

@@ -6109,9 +6109,7 @@ static int rtw_dbg_port(struct net_device *dev,
 				pxmitpriv->free_xmitbuf_cnt, pxmitpriv->free_xmitframe_cnt,
 				pxmitpriv->free_xmit_extbuf_cnt, pxmitpriv->free_xframe_ext_cnt,
 				 precvpriv->free_recvframe_cnt);
-#ifdef CONFIG_USB_HCI
 			RTW_INFO("rx_urb_pending_cn=%d\n", ATOMIC_READ(&(precvpriv->rx_pending_cnt)));
-#endif
 		}
 			break;
 		case 0x09: {
@@ -7942,10 +7940,8 @@ static int rtw_wowlan_ctrl(struct net_device *dev,
 		rtw_suspend_common(padapter);
 
 	else if (_rtw_memcmp(extra, "disable", 7)) {
-#ifdef CONFIG_USB_HCI
 		RTW_ENABLE_FUNC(padapter, DF_RX_BIT);
 		RTW_ENABLE_FUNC(padapter, DF_TX_BIT);
-#endif
 		rtw_resume_common(padapter);
 
 #ifdef CONFIG_PNO_SUPPORT
@@ -8187,10 +8183,8 @@ static int rtw_ap_wowlan_ctrl(struct net_device *dev,
 
 		rtw_suspend_common(padapter);
 	} else if (_rtw_memcmp(extra, "disable", 7)) {
-#ifdef CONFIG_USB_HCI
 		RTW_ENABLE_FUNC(padapter, DF_RX_BIT);
 		RTW_ENABLE_FUNC(padapter, DF_TX_BIT);
-#endif
 		rtw_resume_common(padapter);
 	} else {
 		RTW_INFO("[%s] Invalid Parameter.\n", __func__);
@@ -8792,9 +8786,7 @@ static int rtw_mp_efuse_get(struct net_device *dev,
 
 
 
-#ifdef CONFIG_USB_HCI
 		addr = EEPROM_VID_8723DU; /* CONFIG_USB_HCI */
-#endif /* CONFIG_RTL8723D */
 
 		cnts = 4;
 
@@ -9417,9 +9409,7 @@ static int rtw_mp_efuse_set(struct net_device *dev,
 
 
 
-#ifdef CONFIG_USB_HCI
 		addr = EEPROM_VID_8723DU; /* CONFIG_USB_HCI */
-#endif /* CONFIG_RTL8723D */
 
 		cnts = strlen(tmp[1]);
 		if (cnts % 2) {

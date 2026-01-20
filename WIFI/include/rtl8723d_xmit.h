@@ -291,10 +291,8 @@
 	SET_BITS_TO_LE_4BYTE(__pTxDesc+28, 0, 16, __Value)
 #endif
 
-#ifdef CONFIG_USB_HCI
 #define SET_TX_DESC_TX_DESC_CHECKSUM_8723D(__pTxDesc, __Value) \
 	SET_BITS_TO_LE_4BYTE(__pTxDesc+28, 0, 16, __Value)
-#endif
 
 #ifdef CONFIG_SDIO_HCI
 #define SET_TX_DESC_TX_TIMESTAMP_8723D(__pTxDesc, __Value) \
@@ -494,7 +492,6 @@ void fill_txdesc_bmc_tx_rate(struct pkt_attrib *pattrib, u8 *ptxdesc);
 	#define hal_xmit_handler rtl8723ds_xmit_buf_handler
 #endif
 
-#ifdef CONFIG_USB_HCI
 	s32 rtl8723du_xmit_buf_handler(PADAPTER padapter);
 	#define hal_xmit_handler rtl8723du_xmit_buf_handler
 	s32 rtl8723du_init_xmit_priv(PADAPTER padapter);
@@ -508,7 +505,6 @@ void fill_txdesc_bmc_tx_rate(struct pkt_attrib *pattrib, u8 *ptxdesc);
 	void rtl8723du_xmit_tasklet(void *priv);
 	s32 rtl8723du_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf);
 	void _dbg_dump_tx_info(_adapter	*padapter, int frame_tag, struct tx_desc *ptxdesc);
-#endif
 
 #ifdef CONFIG_PCI_HCI
 	s32 rtl8723de_init_xmit_priv(PADAPTER padapter);

@@ -1909,7 +1909,6 @@ update_beacon:
 	ResumeTxBeacon(padapter);
 	{
 #if !defined(CONFIG_INTERRUPT_BASED_TXBCN)
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI) || defined(CONFIG_PCI_BCN_POLLING)
 #ifdef CONFIG_SWTIMER_BASED_TXBCN
 		if (pdvobj->nr_ap_if == 1
 			&& mlme_act != MLME_OPCH_SWITCH
@@ -1926,8 +1925,6 @@ update_beacon:
 				RTW_INFO(ADPT_FMT" issue_beacon, fail!\n", ADPT_ARG(pdvobj->padapters[i]));
 		}
 #endif
-#endif
-#endif /* !defined(CONFIG_INTERRUPT_BASED_TXBCN) */
 
 #ifdef CONFIG_FW_HANDLE_TXBCN
 		if (mlme_act != MLME_OPCH_SWITCH
@@ -3330,7 +3327,6 @@ void _update_beacon(_adapter *padapter, u8 ie_id, u8 *oui, u8 tx, u8 flags, cons
 	_exit_critical_bh(&pmlmepriv->bcn_update_lock, &irqL);
 
 #ifndef CONFIG_INTERRUPT_BASED_TXBCN
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI) || defined(CONFIG_PCI_BCN_POLLING)
 	if (tx && updated) {
 		/* send_beacon(padapter); */ /* send_beacon must execute on TSR level */
 		if (0)
@@ -3340,11 +3336,6 @@ void _update_beacon(_adapter *padapter, u8 ie_id, u8 *oui, u8 tx, u8 flags, cons
 		else
 			set_tx_beacon_cmd(padapter, 0);
 	}
-#else
-	{
-		/* PCI will issue beacon when BCN interrupt occurs.		 */
-	}
-#endif
 #endif /* !CONFIG_INTERRUPT_BASED_TXBCN */
 }
 

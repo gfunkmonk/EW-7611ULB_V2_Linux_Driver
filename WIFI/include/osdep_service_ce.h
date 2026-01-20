@@ -24,9 +24,7 @@
 #include "SDCardDDK.h"
 #endif
 
-#ifdef CONFIG_USB_HCI
 #include <usbdi.h>
-#endif
 
 typedef HANDLE 	_sema;
 typedef	LIST_ENTRY	_list;

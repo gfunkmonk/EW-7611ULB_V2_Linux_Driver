@@ -766,7 +766,6 @@ void rtw_hal_clear_interrupt(_adapter *padapter)
 }
 #endif
 
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_PCI_HCI)
 u32	rtw_hal_inirp_init(_adapter *padapter)
 {
 	if (is_primary_adapter(padapter))
@@ -781,8 +780,6 @@ u32	rtw_hal_inirp_deinit(_adapter *padapter)
 
 	return _SUCCESS;
 }
-#endif /* #if defined(CONFIG_USB_HCI) || defined (CONFIG_PCI_HCI) */
-
 #if defined(CONFIG_PCI_HCI)
 void	rtw_hal_irp_reset(_adapter *padapter)
 {
@@ -1072,8 +1069,7 @@ void	rtw_hal_unmap_beacon_icf(_adapter *padapter)
 	padapter->hal_func.unmap_beacon_icf(padapter);
 }
 #endif
-#if defined(CONFIG_USB_HCI) && defined(CONFIG_SUPPORT_USB_INT)
-void	rtw_hal_interrupt_handler(_adapter *padapter, u16 pkt_len, u8 *pbuf)
+#if defined(CONFIG_SUPPORT_USB_INT) void	rtw_hal_interrupt_handler(_adapter *padapter, u16 pkt_len, u8 *pbuf)
 {
 	padapter->hal_func.interrupt_handler(padapter, pkt_len, pbuf);
 }
@@ -2132,7 +2128,6 @@ u8 rtw_hal_ops_check(_adapter *padapter)
 		ret = _FAIL;
 	}
 #endif
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_PCI_HCI)
 	if (NULL == padapter->hal_func.inirp_init) {
 		rtw_hal_error_msg("inirp_init");
 		ret = _FAIL;
@@ -2141,8 +2136,6 @@ u8 rtw_hal_ops_check(_adapter *padapter)
 		rtw_hal_error_msg("inirp_deinit");
 		ret = _FAIL;
 	}
-#endif /* #if defined(CONFIG_USB_HCI) || defined (CONFIG_PCI_HCI) */
-
 
 	/*** interrupt hdl section ***/
 #if defined(CONFIG_PCI_HCI)
@@ -2151,13 +2144,10 @@ u8 rtw_hal_ops_check(_adapter *padapter)
 		ret = _FAIL;
 	}
 #endif/*#if defined(CONFIG_PCI_HCI)*/
-#if (defined(CONFIG_PCI_HCI)) || (defined(CONFIG_USB_HCI) && defined(CONFIG_SUPPORT_USB_INT))
 	if (NULL == padapter->hal_func.interrupt_handler) {
 		rtw_hal_error_msg("interrupt_handler");
 		ret = _FAIL;
 	}
-#endif /*#if (defined(CONFIG_PCI_HCI)) || (defined(CONFIG_USB_HCI) && defined(CONFIG_SUPPORT_USB_INT))*/
-
 #if defined(CONFIG_PCI_HCI) || defined(CONFIG_SDIO_HCI) || defined (CONFIG_GSPI_HCI)
 	if (NULL == padapter->hal_func.enable_interrupt) {
 		rtw_hal_error_msg("enable_interrupt");

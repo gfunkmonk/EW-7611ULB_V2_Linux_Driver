@@ -20,10 +20,8 @@
 #include <drv_types.h>
 
 #if defined(CONFIG_RTW_HW_LED) || defined(CONFIG_RTW_SW_LED)
-#ifdef CONFIG_USB_HCI
 	void rtl8723du_InitLeds(PADAPTER padapter);
 	void rtl8723du_DeInitLeds(PADAPTER padapter);
-#endif
 #endif
 #ifdef CONFIG_RTW_SW_LED
 /* ********************************************************************************

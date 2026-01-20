@@ -51,8 +51,7 @@
 #endif
 
 #if (DM_ODM_SUPPORT_TYPE != ODM_WIN)
-	#if defined(CONFIG_RTL_TRIBAND_SUPPORT) && defined(CONFIG_USB_HCI)
-	/* enable PCI & USB HCI at the same time */
+ #if defined(CONFIG_RTL_TRIBAND_SUPPORT) 	/* enable PCI & USB HCI at the same time */
   	#define RT_PCI_USB_INTERFACE			1
   	#define	RT_PCI_INTERFACE			RT_PCI_USB_INTERFACE
 	#define RT_USB_INTERFACE			RT_PCI_USB_INTERFACE
@@ -203,8 +202,7 @@ enum rt_spinlock_type {
 	#include "../typedef.h"
 
 	#ifdef CONFIG_PCI_HCI
-	#if defined(CONFIG_RTL_TRIBAND_SUPPORT) && defined(CONFIG_USB_HCI)
-		#define DEV_BUS_TYPE		RT_PCI_USB_INTERFACE
+ #if defined(CONFIG_RTL_TRIBAND_SUPPORT) 		#define DEV_BUS_TYPE		RT_PCI_USB_INTERFACE
 	#else
 		#define DEV_BUS_TYPE		RT_PCI_INTERFACE
 	#endif
@@ -256,7 +254,6 @@ enum rt_spinlock_type {
 #elif (DM_ODM_SUPPORT_TYPE == ODM_CE)
 	#include <drv_types.h>
 
-	#ifdef CONFIG_USB_HCI
 		#define DEV_BUS_TYPE	RT_USB_INTERFACE
 	#elif defined(CONFIG_PCI_HCI)
 		#define DEV_BUS_TYPE	RT_PCI_INTERFACE
@@ -264,7 +261,6 @@ enum rt_spinlock_type {
 		#define DEV_BUS_TYPE	RT_SDIO_INTERFACE
 	#elif defined(CONFIG_GSPI_HCI)
 		#define DEV_BUS_TYPE	RT_SDIO_INTERFACE
-	#endif
 
 
 	#if defined(CONFIG_LITTLE_ENDIAN)

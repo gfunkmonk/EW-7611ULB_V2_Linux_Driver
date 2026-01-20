@@ -394,11 +394,9 @@ typedef struct hal_com_data {
 
 	u16	EEPROMVID;
 	u16	EEPROMSVID;
-#ifdef CONFIG_USB_HCI
 	u8	EEPROMUsbSwitch;
 	u16	EEPROMPID;
 	u16	EEPROMSDID;
-#endif
 #ifdef CONFIG_PCI_HCI
 	u16	EEPROMDID;
 	u16	EEPROMSMID;
@@ -619,7 +617,6 @@ typedef struct hal_com_data {
 #endif /* !RTW_HALMAC */
 #endif /* CONFIG_SDIO_HCI */
 
-#ifdef CONFIG_USB_HCI
 
 	/* 2010/12/10 MH Add for USB aggreation mode dynamic shceme. */
 	BOOLEAN		UsbRxHighSpeedMode;
@@ -643,7 +640,6 @@ typedef struct hal_com_data {
 	u8			rxagg_usb_size;
 	u8			rxagg_usb_timeout;
 #endif/* CONFIG_USB_RX_AGGREGATION */
-#endif /* CONFIG_USB_HCI */
 
 
 #ifdef CONFIG_PCI_HCI

@@ -38,7 +38,6 @@ static void dm_CheckPbcGPIO(_adapter *padapter)
 	if (!padapter->registrypriv.hw_wps_pbc)
 		return;
 
-#ifdef CONFIG_USB_HCI
 	tmp1byte = rtw_read8(padapter, GPIO_IO_SEL);
 	tmp1byte |= (HAL_8192C_HW_GPIO_WPS_BIT);
 	rtw_write8(padapter, GPIO_IO_SEL, tmp1byte);	/* enable GPIO[2] as output mode */
@@ -65,7 +64,6 @@ static void dm_CheckPbcGPIO(_adapter *padapter)
 
 	if ((tmp1byte & HAL_8192C_HW_GPIO_WPS_BIT) == 0)
 		bPbcPressed = _TRUE;
-#endif
 
 	if (_TRUE == bPbcPressed) {
 		/* Here we only set bPbcPressed to true */
@@ -161,7 +159,6 @@ dm_InterruptMigration(
 /*
  * Initialize GPIO setting registers
  *   */
-#ifdef CONFIG_USB_HCI
 static void
 dm_InitGPIOSetting(
 		PADAPTER	Adapter
@@ -176,7 +173,6 @@ dm_InitGPIOSetting(
 
 	rtw_write8(Adapter, REG_GPIO_MUXCFG, tmp1byte);
 }
-#endif
 /* ************************************************************
  * functions
  * ************************************************************ */
@@ -206,9 +202,7 @@ rtl8723d_InitHalDm(
 	PHAL_DATA_TYPE	pHalData = GET_HAL_DATA(Adapter);
 	struct dm_struct		*pDM_Odm = &(pHalData->odmpriv);
 
-#ifdef CONFIG_USB_HCI
 	dm_InitGPIOSetting(Adapter);
-#endif
 	rtw_phydm_init(Adapter);
 }
 

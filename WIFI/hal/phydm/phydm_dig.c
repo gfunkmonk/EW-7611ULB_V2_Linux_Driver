@@ -2585,8 +2585,7 @@ void phydm_tdma_dig_para_upd(void *dm_void, enum upd_type type, u8 input)
 }
 
 #ifdef IS_USE_NEW_TDMA
-#if defined(CONFIG_RTL_TRIBAND_SUPPORT) && defined(CONFIG_USB_HCI)
-static void pre_phydm_tdma_dig_cbk(unsigned long task_dm)
+#if defined(CONFIG_RTL_TRIBAND_SUPPORT) static void pre_phydm_tdma_dig_cbk(unsigned long task_dm)
 {
 	struct dm_struct *dm = (struct dm_struct *)task_dm;
 	struct rtl8192cd_priv *priv = dm->priv;
@@ -2632,8 +2631,7 @@ void phydm_tdma_dig_timers(void *dm_void, u8 state)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
 	struct phydm_dig_struct *dig_t = &dm->dm_dig_table;
-#if defined(CONFIG_RTL_TRIBAND_SUPPORT) && defined(CONFIG_USB_HCI)
-	struct rtl8192cd_priv *priv = dm->priv;
+#if defined(CONFIG_RTL_TRIBAND_SUPPORT) 	struct rtl8192cd_priv *priv = dm->priv;
 
 	if (priv->hci_type == RTL_HCI_USB) {
 		phydm_tdma_dig_timers_usb(dm_void, state);

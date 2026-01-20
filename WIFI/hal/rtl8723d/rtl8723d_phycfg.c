@@ -576,11 +576,9 @@ PHY_BBConfig8723D(
 	rtw_write8(Adapter, REG_SYS_FUNC_EN, FEN_PPLL | FEN_PCIEA | FEN_DIO_PCIE | FEN_BB_GLB_RSTn | FEN_BBRSTB);
 #endif
 
-#ifdef CONFIG_USB_HCI
 	/* To Fix MAC loopback mode fail. Suggested by SD4 Johnny. 2010.03.23. */
 	PlatformEFIOWrite1Byte(Adapter, REG_LDOHCI12_CTRL, 0x0f);
 	PlatformEFIOWrite1Byte(Adapter, 0x15, 0xe9);
-#endif
 
 	rtw_write8(Adapter, REG_AFE_XTAL_CTRL + 1, 0x80);
 

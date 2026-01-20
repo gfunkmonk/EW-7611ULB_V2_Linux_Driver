@@ -9420,7 +9420,6 @@ unsigned int send_beacon(_adapter *padapter)
 #endif
 
 /* CONFIG_PCI_BCN_POLLING is for pci interface beacon polling mode */
-#if defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)|| defined(CONFIG_PCI_BCN_POLLING) 
 	u8 bxmitok = _FALSE;
 	int issue = 0;
 	int poll = 0;
@@ -9439,8 +9438,6 @@ unsigned int send_beacon(_adapter *padapter)
 	)
 		return _SUCCESS;
 
-	#if defined(CONFIG_USB_HCI)
-	#endif
 	{
 		rtw_hal_set_hwreg(padapter, HW_VAR_BCN_VALID, NULL);
 		rtw_hal_set_hwreg(padapter, HW_VAR_DL_BCN_SEL, NULL);
@@ -9495,8 +9492,6 @@ unsigned int send_beacon(_adapter *padapter)
 		#endif
 		return _SUCCESS;
 	}
-
-#endif /*defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)*/
 
 }
 #endif /* CONFIG_AP_MODE */
