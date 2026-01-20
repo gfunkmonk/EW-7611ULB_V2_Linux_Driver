@@ -50,6 +50,7 @@ ccflags-y += -I$(src)/hal/phydm -I$(src)/core/crypto -I$(src)/platform
 
 ########################## WIFI IC ############################
 CONFIG_RTL8723D = y
+CONFIG_USB_HCI = y
 
 ccflags-y += -DCONFIG_LITTLE_ENDIAN -DCONFIG_IOCTL_CFG80211
 ccflags-y += -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_RTL8723D
