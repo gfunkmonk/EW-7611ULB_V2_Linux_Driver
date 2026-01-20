@@ -991,9 +991,6 @@ void efuse_PreUpdateAction(
 		BackupRegs[0] = phy_query_mac_reg(pAdapter, REG_RCR, bMaskDWord);
 		BackupRegs[1] = phy_query_mac_reg(pAdapter, REG_RXFLTMAP0, bMaskDWord);
 		BackupRegs[2] = phy_query_mac_reg(pAdapter, REG_RXFLTMAP0+4, bMaskDWord);
-#ifdef CONFIG_RTL8812A
-		BackupRegs[3] = phy_query_mac_reg(pAdapter, REG_AFE_MISC, bMaskDWord);
-#endif
 		PlatformEFIOWrite4Byte(pAdapter, REG_RCR, 0x1);
 		PlatformEFIOWrite1Byte(pAdapter, REG_RXFLTMAP0, 0);
 		PlatformEFIOWrite1Byte(pAdapter, REG_RXFLTMAP0+1, 0);
@@ -1001,10 +998,6 @@ void efuse_PreUpdateAction(
 		PlatformEFIOWrite1Byte(pAdapter, REG_RXFLTMAP0+3, 0);
 		PlatformEFIOWrite1Byte(pAdapter, REG_RXFLTMAP0+4, 0);
 		PlatformEFIOWrite1Byte(pAdapter, REG_RXFLTMAP0+5, 0);
-#ifdef CONFIG_RTL8812A
-		/* <20140410, Kordan> 0x11 = 0x4E, lower down LX_SPS0 voltage. (Asked by Chunchu)*/
-		phy_set_mac_reg(pAdapter, REG_AFE_MISC, bMaskByte1, 0x4E);
-#endif
 		RTW_INFO(" %s , done\n", __func__);
 
 		}
@@ -1020,9 +1013,6 @@ void efuse_PostUpdateAction(
 		phy_set_mac_reg(pAdapter, REG_RCR, bMaskDWord, BackupRegs[0]);
 		phy_set_mac_reg(pAdapter, REG_RXFLTMAP0, bMaskDWord, BackupRegs[1]);
 		phy_set_mac_reg(pAdapter, REG_RXFLTMAP0+4, bMaskDWord, BackupRegs[2]);
-#ifdef CONFIG_RTL8812A
-		phy_set_mac_reg(pAdapter, REG_AFE_MISC, bMaskDWord, BackupRegs[3]);
-#endif
 	RTW_INFO(" %s , done\n", __func__);
 	}
 }
@@ -1504,27 +1494,6 @@ hal_EfuseGetCurrentSize_BT(
 	return retU2;
 }
 
-#ifdef CONFIG_RTL8822C
-void rtw_pre_bt_efuse(PADAPTER padapter)
-{
-	char pgdata[4] = {0x72, 0x80, 0x14, 0x90}; /*BT 5M PLL*/
-	u8 status = 1;
-	u8 bkmask;
-	BOOLEAN bt_en;
-
-	bkmask = padapter->registrypriv.boffefusemask;
-	padapter->registrypriv.boffefusemask = 1;
-
-	bt_en = rtw_read8(padapter, 0x6A) & BIT2 ? _TRUE : _FALSE;
-	if (IS_HARDWARE_TYPE_8822C(padapter) && bt_en == _TRUE) {
-			status = rtw_BT_efuse_map_write(padapter, 0x1f8, 4, pgdata);
-			RTW_INFO("%s done!!!\n", __FUNCTION__);
-	}
-	if (status == _FAIL)
-		RTW_INFO("%s: fail\n", __FUNCTION__);
-	padapter->registrypriv.boffefusemask = bkmask;
-}
-#endif
 
 u8 rtw_BT_efuse_map_write(PADAPTER adapter, u16 addr, u16 cnts, u8 *data)
 {
@@ -2360,13 +2329,6 @@ efuse_OneByteRead(
 		return bResult;
 	}
 
-#ifdef CONFIG_RTL8710B
-	/* <20171208, Peter>, Dont do the following write16(0x34) */
-	if (IS_HARDWARE_TYPE_8710B(pAdapter)) {
-		bResult = pAdapter->hal_func.efuse_indirect_read4(pAdapter, addr, data);
-		return bResult;
-	}
-#endif
 
 	if (IS_HARDWARE_TYPE_8723B(pAdapter) ||
 	    (IS_HARDWARE_TYPE_8192E(pAdapter) && (!IS_A_CUT(pHalData->version_id))) ||
@@ -2782,16 +2744,6 @@ u8 rtw_efuse_map_write(PADAPTER padapter, u16 addr, u16 cnts, u8 *data)
 			if (efuse[addr + idx] != map[addr + idx]) {
 				word_en &= ~BIT(i >> 1);
 				newdata[i] = efuse[addr + idx];
-#ifdef CONFIG_RTL8723B
-				if (addr + idx == 0x8) {
-					if (IS_C_CUT(pHalData->version_id) || IS_B_CUT(pHalData->version_id)) {
-						if (pHalData->adjuseVoltageVal == 6) {
-							newdata[i] = map[addr + idx];
-							RTW_INFO(" %s ,\n adjuseVoltageVal = %d ,newdata[%d] = %x\n", __func__, pHalData->adjuseVoltageVal, i, newdata[i]);
-						}
-					}
-				}
-#endif
 			}
 		}
 
