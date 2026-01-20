@@ -349,11 +349,6 @@
 #endif
 
 #ifndef CONFIG_IEEE80211_BAND_5GHZ
-	#if defined(CONFIG_RTL8821A) || defined(CONFIG_RTL8821C) \
-		|| defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8822C) \
-		|| defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8814B) || defined(CONFIG_RTL8723F)
-	#define CONFIG_IEEE80211_BAND_5GHZ 1
-	#else
 	#define CONFIG_IEEE80211_BAND_5GHZ 0
 	#endif
 #endif
@@ -440,9 +435,6 @@
 	#ifdef CONFIG_CUSTOMER_EZVIZ_CHIME2
 		#undef CONFIG_ACTIVE_KEEP_ALIVE_CHECK
 	#endif
-#if defined(CONFIG_RTL8192E) || defined(CONFIG_RTL8192F) || defined(CONFIG_RTL8822B)
-	#define CONFIG_RTW_TX_NPATH_EN		/*	mutually incompatible with STBC_TX & Beamformer	*/
-#endif
 #endif
 /* #define CONFIG_RTW_TOKEN_BASED_XMIT */
 #ifdef CONFIG_RTW_TOKEN_BASED_XMIT
@@ -704,9 +696,6 @@
 #endif
 
 #ifdef RTW_REDUCE_SCAN_SWITCH_CH_TIME
-#ifndef CONFIG_RTL8822B
-	#error "Only 8822B support RTW_REDUCE_SCAN_SWITCH_CH_TIME"
-#endif
 	#ifndef RTW_CHANNEL_SWITCH_OFFLOAD
 		#define RTW_CHANNEL_SWITCH_OFFLOAD
 	#endif

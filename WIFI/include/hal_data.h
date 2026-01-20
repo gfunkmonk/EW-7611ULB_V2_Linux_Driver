@@ -110,16 +110,8 @@ typedef enum _RX_AGG_MODE {
 #endif /* RTW_RX_AGGREGATION */
 
 /* E-Fuse */
-#if defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8821A) || defined(CONFIG_RTL8814A)
-	#define EFUSE_MAP_SIZE	512
-#endif
 	#define EFUSE_MAP_SIZE	512
 
-#if defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8814B)
-	#define EFUSE_MAX_SIZE	1024
-#elif defined(CONFIG_RTL8188E) || defined(CONFIG_RTL8188F) || defined(CONFIG_RTL8188GTV) || defined(CONFIG_RTL8703B) || defined(CONFIG_RTL8710B)
-	#define EFUSE_MAX_SIZE	256
-#else
 	#define EFUSE_MAX_SIZE	512
 #endif
 /* end of E-Fuse */
@@ -483,10 +475,6 @@ typedef struct hal_com_data {
 
 	bool set_entire_txpwr;
 
-#if defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8822C) || defined(CONFIG_RTL8814B) \
-    || defined(CONFIG_RTL8723F)
-	u32 txagc_set_buf;
-#endif
 
 #ifdef CONFIG_FW_OFFLOAD_SET_TXPWR_IDX
 	u8 txpwr_idx_offload_buf[3]; /* for CCK, OFDM, HT1SS */
@@ -526,9 +514,6 @@ typedef struct hal_com_data {
 	/* RDG enable */
 	BOOLEAN	 bRDGEnable;
 
-	#if defined (CONFIG_RTL8812A) || defined(CONFIG_RTL8821A)
-	u32 RegRRSR;
-	#endif
 
 	/****** antenna diversity ******/
 	u8	AntDivCfg;
@@ -625,9 +610,6 @@ typedef struct hal_com_data {
 	/* SDIO Rx FIFO related. */
 	/*  */
 	u8			SdioRxFIFOCnt;
-#if defined (CONFIG_RTL8822C) || defined (CONFIG_RTL8192F)
-	u32			SdioRxFIFOSize;
-#else
 	u16			SdioRxFIFOSize;
 #endif
 

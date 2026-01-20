@@ -2230,7 +2230,7 @@ u8 rtw_hal_ops_check(_adapter *padapter)
 		rtw_hal_error_msg("hal_mac_c2h_handler");
 		ret = _FAIL;
 	}
-#elif !defined(CONFIG_RTL8188E)
+#else
 	if (NULL == padapter->hal_func.c2h_handler) {
 		rtw_hal_error_msg("c2h_handler");
 		ret = _FAIL;

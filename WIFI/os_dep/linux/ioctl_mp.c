@@ -1333,9 +1333,6 @@ int rtw_mp_thermal(struct net_device *dev,
 	struct hal_spec_t *hal_spec = GET_HAL_SPEC(padapter);
 	int rfpath = RF_PATH_A;
 
-#if defined(CONFIG_RTL8812A) || defined(CONFIG_RTL8821A) || defined(CONFIG_RTL8814A)
-	ther_path_addr[0] = EEPROM_THERMAL_METER_8812;
-#endif
 	ther_path_addr[0] = EEPROM_THERMAL_METER_8723D;
 
 	if (copy_from_user(extra, wrqu->pointer, wrqu->length))
@@ -2470,29 +2467,6 @@ int rtw_mp_hwtx(struct net_device *dev,
 	PMPT_CONTEXT		pMptCtx = &(padapter->mppriv.mpt_ctx);
 	char *pch;
 
-#if defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8821B) || defined(CONFIG_RTL8822B) \
-	|| defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822C) || defined(CONFIG_RTL8723F)
-	if (copy_from_user(extra, wrqu->data.pointer, wrqu->data.length))
-		return -EFAULT;
-	*(extra + wrqu->data.length) = '\0';
-
-	_rtw_memset(&pMptCtx->PMacTxInfo, 0, sizeof(RT_PMAC_TX_INFO));
-	_rtw_memcpy((void *)&pMptCtx->PMacTxInfo, (void *)extra, sizeof(RT_PMAC_TX_INFO));
-	_rtw_memset(extra, 0, wrqu->data.length);
-	pch = extra;
-
-	if (pMptCtx->PMacTxInfo.bEnPMacTx == 1 && pmp_priv->mode != MP_ON) {
-		pch += sprintf(pch, "MP Tx Running, Please Set PMac Tx Mode Stop\n");
-		RTW_INFO("Error !!! MP Tx Running, Please Set PMac Tx Mode Stop\n");
-	} else {
-		RTW_INFO("To set MAC Tx mode\n");
-		if (mpt_ProSetPMacTx(padapter))
-			pch += sprintf(pch, "Set PMac Tx Mode OK\n");
-		else
-			pch += sprintf(pch, "Set PMac Tx Mode Error\n");
-	}
-	wrqu->data.length = strlen(extra);
-#endif
 	return 0;
 
 }

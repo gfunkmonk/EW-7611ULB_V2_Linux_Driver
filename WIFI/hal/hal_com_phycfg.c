@@ -5847,13 +5847,6 @@ u8 hal_com_get_txpwr_idx(_adapter *adapter, enum rf_path rfpath
 		* 3. amends diff (per rate)
 		* base is selected that power index of MCS7 ==  halrf_get_tssi_codeword_for_txindex()
 		*/
-#if defined(CONFIG_RTL8822C) || defined(CONFIG_RTL8814B)
-		s8 mcs7_idx;
-
-		mcs7_idx = phy_get_tssi_txpwr_by_rate_ref(adapter, rfpath, bw, cch, opch);
-		base = halrf_get_tssi_codeword_for_txindex(adapter_to_phydm(adapter)) - mcs7_idx;
-		power_idx = base + rate_target + rate_amends;
-#else
 		base = 0;
 		power_idx = rate_target + rate_amends;
 #endif
@@ -5872,11 +5865,6 @@ u8 hal_com_get_txpwr_idx(_adapter *adapter, enum rf_path rfpath
 	else if (power_idx > hal_spec->txgi_max)
 		power_idx = hal_spec->txgi_max;
 
-#if defined(CONFIG_RTL8821A) || defined(CONFIG_RTL8812A)
-	if ((IS_HARDWARE_TYPE_8821(adapter) || IS_HARDWARE_TYPE_8812(adapter))
-		&& power_idx % 2 == 1 && !IS_NORMAL_CHIP(hal->version_id))
-		--power_idx;
-#endif
 
 	return power_idx;
 }
