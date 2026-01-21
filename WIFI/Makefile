@@ -1,5 +1,5 @@
 # Install location of module
-DESTDIR := drivers/net/wireless/
+DESTDIR := kernel/drivers/net/wireless/
 
 # Filename of finished module
 MODULE_NAME := 8723du
@@ -14,19 +14,21 @@ ccflags-y += -O3 -fno-pic -fno-pie -fno-jump-tables
 ldflags-y += --strip-all -O3
 
 ##################### Compile-time Warnings #######################
-ccflags-y += -Wno-missing-include-dirs -Wno-missing-prototypes
-ccflags-y += -Wno-missing-declarations -Wno-unused-parameter
-ccflags-y += -Wno-unused-variable -Wno-unused-value -Wno-unused-label
-ccflags-y += -Wno-unused -Wno-unused-function -Wno-unused-const-variable
-ccflags-y += -Wno-implicit-function-declaration -Wno-implicit-fallthrough
-ccflags-y += -Wno-missing-format-attribute -Wno-format-truncation
-ccflags-y += -Wno-incompatible-pointer-types -Wno-misleading-indentation
-ccflags-y += -Wno-old-style-declaration -Wno-discarded-qualifiers
-ccflags-y += -Wno-cast-function-type -Wno-ignored-attributes
-ccflags-y += -Wno-sizeof-array-div -Wno-enum-conversion -Wno-uninitialized
-ccflags-y += -Wno-empty-body -Wno-attributes -Wno-address
-ccflags-y += -Wno-stringop-overread -Wno-vla -Wno-undef
-ccflags-y += -Wno-date-time
+# Suppress common warnings to reduce noise
+WARN_FLAGS := -Wno-missing-include-dirs -Wno-missing-prototypes \
+	-Wno-missing-declarations -Wno-unused-parameter \
+	-Wno-unused-variable -Wno-unused-value -Wno-unused-label \
+	-Wno-unused -Wno-unused-function -Wno-unused-const-variable \
+	-Wno-implicit-function-declaration -Wno-implicit-fallthrough \
+	-Wno-missing-format-attribute -Wno-format-truncation \
+	-Wno-incompatible-pointer-types -Wno-misleading-indentation \
+	-Wno-old-style-declaration -Wno-discarded-qualifiers \
+	-Wno-cast-function-type -Wno-ignored-attributes \
+	-Wno-sizeof-array-div -Wno-enum-conversion -Wno-uninitialized \
+	-Wno-empty-body -Wno-attributes -Wno-address \
+	-Wno-stringop-overread -Wno-vla -Wno-undef -Wno-date-time
+
+ccflags-y += $(WARN_FLAGS)
 
 ############## CLANG/LLVM  #################
 ifeq ($(CC), clang)
@@ -186,9 +188,9 @@ ifndef ARCH
 endif
 
 CROSS_COMPILE ?=
-KVER ?= $(shell if [ -n "${NEW_VERSION}" ] && [ -n "${FLAVOR}" ]; then echo "${NEW_VERSION}-${FLAVOR}"; else uname -r; fi)
+KVER ?= $(shell if [ -n "$(NEW_VERSION)" ] && [ -n "$(FLAVOR)" ]; then echo "$(NEW_VERSION)-$(FLAVOR)"; else uname -r; fi)
 KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(shell uname -r)/kernel/$(DESTDIR)
+MODDESTDIR := /lib/modules/$(shell uname -r)/$(DESTDIR)
 
 ###################### COMMON  ##################################
 _PLATFORM_FILES := platform/platform_ops.o
@@ -623,7 +625,8 @@ build:
 		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules || exit 1; \
 		echo "$(HOTPINK)✓ Module successfully built!$(NC)"; \
 	else \
-		echo "$(BROWN)Module $(MODULE_NAME).ko already exists, skipping compilation.$(NC)"; \
+	echo "$(BROWN)⚠ Module $(MODULE_NAME).ko already exists$(NC)"; \
+	echo "$(BROWN)  Run 'make clean' first to rebuild$(NC)"; \
 	fi
 
 install:
@@ -633,21 +636,22 @@ install:
 		echo "$(TEAL)✓ Module successfully built!$(NC)"; \
 	fi
 	@echo "$(VIOLET)Installing $(MODULE_NAME) module...$(NC)"
-	@-rmmod $(MODULE_NAME) 2>/dev/null || true
 	@mkdir -p $(MODDESTDIR)
-	#@install -p -m 644 $(MODULE_NAME).ko $(MODDESTDIR)
-	#@/sbin/depmod -a $(KVER)
+	@-rmmod $(MODULE_NAME) 2>/dev/null && echo "$(YELLOW)✓ Unloaded existing module$(NC)" || true
 	$(MAKE) INSTALL_MOD_DIR=$(DESTDIR) -C $(KSRC) M=$(shell pwd) modules_install || exit 1
+	@/sbin/depmod -a $(KVER)
 	@echo "$(GREEN)✓ Module installed successfully!$(NC)"
+	@echo "$(JUNEBUD)  To load: modprobe $(MODULE_NAME)$(NC)"
 
 uninstall:
-	@echo "$(CYAN)Uninstalling $(MODULE_NAME) module...$(NC)"
-	@-rmmod $(MODULE_NAME) 2>/dev/null || true
-	@rm -f $(MODDESTDIR)/$(MODULE_NAME).ko*
+	@echo "$(CYAN)▶ Uninstalling $(MODULE_NAME) module...$(NC)"
+	@-rmmod $(MODULE_NAME) 2>/dev/null && echo "$(GREEN)✓ Module unloaded$(NC)" || true
+	@find /lib/modules/$(KVER) -name "$(MODULE_NAME).ko*" -delete 2>/dev/null || true
 	@/sbin/depmod -a $(KVER)
 	@echo "$(GREEN)✓ Module uninstalled successfully!$(NC)"
 
 clean:
+	@echo "$(PINK)▶ Cleaning build artifacts...$(NC)"
 	@find hal core os_dep platform -type f \( -name '*.mod.c' -o -name '*.mod' -o -name '*.o' -o -name '.*.o.d' -o -name '.*.cmd' -o -name '*.ko' \) -delete 2>/dev/null || true
 	@rm -f Module.symvers Module.markers modules.order *.mod.c *.mod *.o *.o.d .*.cmd *.ko *~
 	@rm -rf .tmp_versions .module-common.o
