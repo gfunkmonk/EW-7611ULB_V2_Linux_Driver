@@ -21,11 +21,6 @@
 #define strlcpy strscpy
 #endif
 
-MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("Realtek Wireless Lan Driver");
-MODULE_AUTHOR("Realtek Semiconductor Corp.");
-MODULE_VERSION(DRIVERVERSION);
-
 /* module param defaults */
 int rtw_chip_version = 0x00;
 int rtw_rfintfs = HWPI;
