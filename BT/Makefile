@@ -28,6 +28,8 @@ NC := [0m
 
 .PHONY: build firmware install uninstall clean all help
 
+all: install
+
 build:
 	@if [ ! -f $(BTMOD).ko ]; then \
 		echo "$(DKPURPLE)Building $(BTMOD) modules...$(RESET)"; \
@@ -91,8 +93,6 @@ clean:
 	@rm -rf *.o *.mod.c *.mod.o *.ko *.symvers *.order *.markers .*.o .*.cmd
 	@rm -rf *.a *.cmd *.mod .tmp_versions Module.symvers modules.order
 	@echo "$(CYAN)✓ All clean!$(RESET)"
-
-all: install
 
 help:
 	@echo "$(GREEN)═══════════════════════════════════════════════════════$(RESET)"
