@@ -190,7 +190,7 @@ endif
 CROSS_COMPILE ?=
 KVER ?= $(shell if [ -n "$(NEW_VERSION)" ] && [ -n "$(FLAVOR)" ]; then echo "$(NEW_VERSION)-$(FLAVOR)"; else uname -r; fi)
 KSRC := /lib/modules/$(KVER)/build
-MODDESTDIR := /lib/modules/$(shell uname -r)/$(DESTDIR)
+MODDESTDIR := /lib/modules/$(KVER)/$(DESTDIR)
 
 ###################### COMMON  ##################################
 _PLATFORM_FILES := platform/platform_ops.o
@@ -625,8 +625,8 @@ build:
 		$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) modules || exit 1; \
 		echo "$(HOTPINK)✓ Module successfully built!$(NC)"; \
 	else \
-	echo "$(BROWN)⚠ Module $(MODULE_NAME).ko already exists$(NC)"; \
-	echo "$(BROWN)  Run 'make clean' first to rebuild$(NC)"; \
+		echo "$(BROWN)⚠ Module $(MODULE_NAME).ko already exists$(NC)"; \
+		echo "$(BROWN)  Run 'make clean' first to rebuild$(NC)"; \
 	fi
 
 install:
@@ -638,7 +638,14 @@ install:
 	@echo "$(VIOLET)Installing $(MODULE_NAME) module...$(NC)"
 	@mkdir -p $(MODDESTDIR)
 	@-rmmod $(MODULE_NAME) 2>/dev/null && echo "$(YELLOW)✓ Unloaded existing module$(NC)" || true
-	$(MAKE) INSTALL_MOD_DIR=$(DESTDIR) -C $(KSRC) M=$(shell pwd) modules_install || exit 1
+	@cp -f $(MODULE_NAME).ko $(MODDESTDIR)/$(MODULE_NAME).ko
+	@if grep -q "CONFIG_MODULE_COMPRESS_ZSTD=y" $(KSRC)/include/config/auto.conf 2>/dev/null; then \
+		zstd -f -q --rm $(MODDESTDIR)/$(MODULE_NAME).ko; \
+	elif grep -q "CONFIG_MODULE_COMPRESS_XZ=y" $(KSRC)/include/config/auto.conf 2>/dev/null; then \
+		xz -f $(MODDESTDIR)/$(MODULE_NAME).ko; \
+	elif grep -q "CONFIG_MODULE_COMPRESS_GZIP=y" $(KSRC)/include/config/auto.conf 2>/dev/null; then \
+		gzip -f $(MODDESTDIR)/$(MODULE_NAME).ko; \
+	fi
 	@/sbin/depmod -a $(KVER)
 	@echo "$(GREEN)✓ Module installed successfully!$(NC)"
 	@echo "$(JUNEBUD)  To load: modprobe $(MODULE_NAME)$(NC)"

@@ -67,6 +67,13 @@ install: firmware
 	-@rmmod $(BTMOD) 2>/dev/null || true
 	@mkdir -p $(DRV_DIR)
 	@cp -f $(BTMOD).ko $(DRV_DIR)/$(BTMOD).ko
+	@if grep -q "CONFIG_MODULE_COMPRESS_ZSTD=y" $(MDL_DIR)/build/include/config/auto.conf 2>/dev/null; then \
+		zstd -f -q --rm $(DRV_DIR)/$(BTMOD).ko; \
+	elif grep -q "CONFIG_MODULE_COMPRESS_XZ=y" $(MDL_DIR)/build/include/config/auto.conf 2>/dev/null; then \
+		xz -f $(DRV_DIR)/$(BTMOD).ko; \
+	elif grep -q "CONFIG_MODULE_COMPRESS_GZIP=y" $(MDL_DIR)/build/include/config/auto.conf 2>/dev/null; then \
+		gzip -f $(DRV_DIR)/$(BTMOD).ko; \
+	fi
 	@depmod -a $(shell uname -r)
 	@echo "$(GREEN)✓ Install $(BTMOD) success!$(RESET)"
 
@@ -76,7 +83,7 @@ uninstall:
 	#	mv -n $(DRV_DIR)/btusb_bak $(DRV_DIR)/btusb.ko 2>/dev/null || true; \
 	#fi
 	-@rmmod $(BTMOD) 2>/dev/null || true
-	@rm -f $(DRV_DIR)/$(BTMOD).ko
+	@rm -f $(DRV_DIR)/$(BTMOD).ko*
 	@depmod -a $(shell uname -r)
 	@echo "$(RED)✓ Uninstall $(BTMOD) success!$(RESET)"
 
