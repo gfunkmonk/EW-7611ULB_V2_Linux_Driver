@@ -5,4 +5,4 @@ I use one in my elderly Raspberry pi 2. 😂
 
 
 <a href="https://www.edimax.com/edimax/download/download/data/edimax/us/download/bluetooth/ew-7611ulb_v2" /> EW-7611ULB V2 Download </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img width="289" height="61" alt="logo (1)" src="https://github.com/user-attachments/assets/bc379068-438a-4fe2-850b-227fd1dc4333" />
+<img width="289" height="61" alt="logo (1)" src="https://github.com/user-attachments/assets/fe7977ab-ab68-4ec8-82ce-c7724a8ce924" />
